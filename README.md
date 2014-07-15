@@ -18,20 +18,23 @@ TTKD Student Management Application
 ###Installation
 
 ####Prerequisites
-	1. MongoDB
-	2. NodeJS ~0.10.28
+- MongoDB
+- NodeJS ~0.10.28
 
 ####Steps
-	1. Clone/Fork this repository
-	2. Execute
-		```
-		$ npm install
-		```
-	3. To run with grunt
-		```
-		$ grunt serve 
-		```
-	4. To run without grunt
-		```
-		node server.js
-		```
+- Clone/Fork this repository
+- Execute
+```bash
+$ npm install
+```
+- To run with grunt
+```bash
+$ grunt serve
+```
+
+or
+
+- To run without grunt
+```bash 
+$ node server.js
+```
