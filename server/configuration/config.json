@@ -5,7 +5,7 @@
         "password": "",
         "hostname": "localhost",
         "port": "",
-        "database": "toastycms",
+        "database": "ttkd",
         "options": ""
     },
     "test": {
@@ -14,16 +14,16 @@
         "password": "",
         "hostname": "localhost",
         "port": "",
-        "database": "toastycms-test",
+        "database": "ttkd-test",
         "options": ""
     },
     "security": {
-    	"cookieSecret": "yds93NzWnp0In64DJDGi",
-    	"sessionSecret": "BricWayvEVMIQ8eFqr5i",
-    	"sessionKey": "Toasty Session Key",
+    	"cookieSecret": "PBLzoCVeXHu1c3ophfoY",
+    	"sessionSecret": "BavUliXi1LLP4M5tVSf3",
+    	"sessionKey": "TTKD Session Key",
     	"sessionStore": {
     		"hostname": "localhost",
-    		"database": "toastycms-session"
+    		"database": "ttkd-session"
     	}
     }
 }
