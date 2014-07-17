@@ -1,13 +1,10 @@
 {
-  "name": "ttkd",
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/icompuiz/node-ttkd.git"
-  },
+  "name": "tcms2",
   "version": "0.0.0",
   "dependencies": {},
   "devDependencies": {
     "async": "^0.9.0",
+    "buffertools": "^2.1.2",
     "connect-mongo": "^0.4.1",
     "express": "~3.5.x",
     "grunt": "~0.4.1",
@@ -38,7 +35,7 @@
     "jshint-stylish": "~0.1.3",
     "load-grunt-tasks": "~0.4.0",
     "lodash": "^2.4.1",
-    "mongoose": "3.6.13",
+    "mongoose": "^3.8.9",
     "mongoose-schema-extend": "^0.1.7",
     "node-restful": "^0.1.16",
     "optimist": "^0.6.1",
@@ -46,8 +43,7 @@
     "passport-local": "^1.0.0",
     "passport-local-mongoose": "^0.3.0",
     "supertest": "^0.13.0",
-    "time-grunt": "~0.2.1",
-    "tungus": "0.0.2"
+    "time-grunt": "~0.2.1"
   },
   "engines": {
     "node": ">=0.10.0"

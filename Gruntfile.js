@@ -34,12 +34,12 @@ module.exports = function(grunt) {
       },
       dev: {
         options: {
-          script: '<%= yeoman.server %>/server.js'
+          script: 'server.js'
         },
       },
       initdb: {
         options: {
-          script: '<%= yeoman.server %>/server.js',
+          script: 'server.js',
           args: [
             '--initdb'
           ]
@@ -419,7 +419,7 @@ module.exports = function(grunt) {
     if (target === 'initdb') {
       return grunt.task.run([
         'clean:server',
-        'bowerInstall',
+        // 'bowerInstall',
         'concurrent:server',
         'autoprefixer',
         'express:initdb',
@@ -430,7 +430,7 @@ module.exports = function(grunt) {
 
     grunt.task.run([
       'clean:server',
-      'bowerInstall',
+      // 'bowerInstall',
       'concurrent:server',
       'autoprefixer',
       'express:dev',
@@ -454,7 +454,7 @@ module.exports = function(grunt) {
 
   grunt.registerTask('build', [
     'clean:dist',
-    'bowerInstall',
+    // 'bowerInstall',
     'useminPrepare',
     'concurrent:dist',
     'autoprefixer',
