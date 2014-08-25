@@ -4,18 +4,14 @@ var mongoose = require('mongoose'),
 	Schema = mongoose.Schema,
 	ObjectId = mongoose.Schema.Types.ObjectId;
 
-var programSchema = new Schema({
+var workshopsSchema = new Schema({
 	name: String,
-	classes: [{
+	workshops: [{
 		ref: 'Class',
-		type: ObjectId
-	}],
-	ranks: [{
-		ref: 'Rank',
 		type: ObjectId
 	}]
 });
 
-var Program = mongoose.model('Program', programSchema);
+var Workshops = mongoose.model('Workshops', workshopsSchema);
 
-module.exports = Program;
+module.exports = Workshops;
