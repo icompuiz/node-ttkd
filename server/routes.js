@@ -13,6 +13,22 @@ var Mock = require('./controllers/mock.js');
 var Route = require('./controllers/route.js');
 var Directory = require('./controllers/directory.js');
 var File = require('./controllers/file.js');
+var StudentList = require('./controllers/studentList.js');
+var Achievement = require('./controllers/achievement.js');
+var Attendance = require('./controllers/attendance.js');
+var Class = require('./controllers/class.js');
+var AccessControlEntry = require('./controllers/accessControlEntry.js');
+var AccessControlList = require('./controllers/accessControlList.js');
+var ContentProperty = require('./controllers/contentProperty.js');
+var ContentTypeProperty = require('./controllers/contentTypeProperty.js');
+var EmergencyContact = require('./controllers/emergencyContact.js');
+var FileSystem = require('./controllers/fileSystem.js');
+var GroupAccessControlEntry = require('./controllers/groupAccessControlEntry.js');
+var Rank = require('./controllers/rank.js');
+var Student = require('./controllers/student.js');
+var UserAccessControlEntry = require('./controllers/userAccessControlEntry.js');
+
+
 
 var Content = require('./controllers/content.js');
 var ContentType = require('./controllers/contentType.js');
@@ -163,6 +179,291 @@ var apiRoutes = [{
 }, {
     path: '/api/templates',
     controller: Template,
+    access: {
+        users: [{
+            username: 'public',
+            access: {
+                read: true,
+                create: true
+            }
+        }],
+        groups: [{
+            name: 'users',
+            access: {
+                read: true,
+                create: true
+            }
+        }]
+    }
+}, {
+    path: '/api/studentlists',
+    controller: StudentList,
+    access: {
+        users: [{
+            username: 'public',
+            access: {
+                read: true,
+                create: true
+            }
+        }],
+        groups: [{
+            name: 'users',
+            access: {
+                read: true,
+                create: true
+            }
+        }]
+    }
+}, {
+    path: '/api/achievements',
+    controller: Achievement,
+    access: {
+        users: [{
+            username: 'public',
+            access: {
+                read: true,
+                create: true
+            }
+        }],
+        groups: [{
+            name: 'users',
+            access: {
+                read: true,
+                create: true
+            }
+        }]
+    }
+}, {
+    path: '/api/attendance',
+    controller: Attendance,
+    access: {
+        users: [{
+            username: 'public',
+            access: {
+                read: true,
+                create: true
+            }
+        }],
+        groups: [{
+            name: 'users',
+            access: {
+                read: true,
+                create: true
+            }
+        }]
+    }
+}, {
+    path: '/api/classes',
+    controller: Class,
+    access: {
+        users: [{
+            username: 'public',
+            access: {
+                read: true,
+                create: true
+            }
+        }],
+        groups: [{
+            name: 'users',
+            access: {
+                read: true,
+                create: true
+            }
+        }]
+    }
+}, {
+    path: '/api/accesscontrolentries',
+    controller: AccessControlEntry,
+    access: {
+        users: [{
+            username: 'public',
+            access: {
+                read: true,
+                create: true
+            }
+        }],
+        groups: [{
+            name: 'users',
+            access: {
+                read: true,
+                create: true
+            }
+        }]
+    }
+}, {
+    path: '/api/accesscontrollists',
+    controller: AccessControlList,
+    access: {
+        users: [{
+            username: 'public',
+            access: {
+                read: true,
+                create: true
+            }
+        }],
+        groups: [{
+            name: 'users',
+            access: {
+                read: true,
+                create: true
+            }
+        }]
+    }
+}, {
+    path: '/api/contentproperties',
+    controller: ContentProperty,
+    access: {
+        users: [{
+            username: 'public',
+            access: {
+                read: true,
+                create: true
+            }
+        }],
+        groups: [{
+            name: 'users',
+            access: {
+                read: true,
+                create: true
+            }
+        }]
+    }
+}, {
+    path: '/api/contenttypeproperties',
+    controller: ContentTypeProperty,
+    access: {
+        users: [{
+            username: 'public',
+            access: {
+                read: true,
+                create: true
+            }
+        }],
+        groups: [{
+            name: 'users',
+            access: {
+                read: true,
+                create: true
+            }
+        }]
+    }
+}, {
+    path: '/api/emergencycontacts',
+    controller: EmergencyContact,
+    access: {
+        users: [{
+            username: 'public',
+            access: {
+                read: true,
+                create: true
+            }
+        }],
+        groups: [{
+            name: 'users',
+            access: {
+                read: true,
+                create: true
+            }
+        }]
+    }
+}, {
+    path: '/api/filesystemitems',
+    controller: FileSystem,
+    access: {
+        users: [{
+            username: 'public',
+            access: {
+                read: true,
+                create: true
+            }
+        }],
+        groups: [{
+            name: 'users',
+            access: {
+                read: true,
+                create: true
+            }
+        }]
+    }
+}, {
+    path: '/api/groupaccesscontrolentries',
+    controller: GroupAccessControlEntry,
+    access: {
+        users: [{
+            username: 'public',
+            access: {
+                read: true,
+                create: true
+            }
+        }],
+        groups: [{
+            name: 'users',
+            access: {
+                read: true,
+                create: true
+            }
+        }]
+    }
+}, {
+    path: '/api/ranks',
+    controller: Rank,
+    access: {
+        users: [{
+            username: 'public',
+            access: {
+                read: true,
+                create: true
+            }
+        }],
+        groups: [{
+            name: 'users',
+            access: {
+                read: true,
+                create: true
+            }
+        }]
+    }
+}, {
+    path: '/api/routes',
+    controller: Route,
+    access: {
+        users: [{
+            username: 'public',
+            access: {
+                read: true,
+                create: true
+            }
+        }],
+        groups: [{
+            name: 'users',
+            access: {
+                read: true,
+                create: true
+            }
+        }]
+    }
+}, {
+    path: '/api/students',
+    controller: Student,
+    access: {
+        users: [{
+            username: 'public',
+            access: {
+                read: true,
+                create: true
+            }
+        }],
+        groups: [{
+            name: 'users',
+            access: {
+                read: true,
+                create: true
+            }
+        }]
+    }
+}, {
+    path: '/api/useraccesscontrolentries',
+    controller: UserAccessControlEntry,
     access: {
         users: [{
             username: 'public',
