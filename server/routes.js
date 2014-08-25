@@ -17,16 +17,9 @@ var StudentList = require('./controllers/studentList.js');
 var Achievement = require('./controllers/achievement.js');
 var Attendance = require('./controllers/attendance.js');
 var Class = require('./controllers/class.js');
-var AccessControlEntry = require('./controllers/accessControlEntry.js');
-var AccessControlList = require('./controllers/accessControlList.js');
-var ContentProperty = require('./controllers/contentProperty.js');
-var ContentTypeProperty = require('./controllers/contentTypeProperty.js');
 var EmergencyContact = require('./controllers/emergencyContact.js');
-var FileSystem = require('./controllers/fileSystem.js');
-var GroupAccessControlEntry = require('./controllers/groupAccessControlEntry.js');
 var Rank = require('./controllers/rank.js');
 var Student = require('./controllers/student.js');
-var UserAccessControlEntry = require('./controllers/userAccessControlEntry.js');
 
 
 
@@ -272,122 +265,8 @@ var apiRoutes = [{
         }]
     }
 }, {
-    path: '/api/accesscontrolentries',
-    controller: AccessControlEntry,
-    access: {
-        users: [{
-            username: 'public',
-            access: {
-                read: true,
-                create: true
-            }
-        }],
-        groups: [{
-            name: 'users',
-            access: {
-                read: true,
-                create: true
-            }
-        }]
-    }
-}, {
-    path: '/api/accesscontrollists',
-    controller: AccessControlList,
-    access: {
-        users: [{
-            username: 'public',
-            access: {
-                read: true,
-                create: true
-            }
-        }],
-        groups: [{
-            name: 'users',
-            access: {
-                read: true,
-                create: true
-            }
-        }]
-    }
-}, {
-    path: '/api/contentproperties',
-    controller: ContentProperty,
-    access: {
-        users: [{
-            username: 'public',
-            access: {
-                read: true,
-                create: true
-            }
-        }],
-        groups: [{
-            name: 'users',
-            access: {
-                read: true,
-                create: true
-            }
-        }]
-    }
-}, {
-    path: '/api/contenttypeproperties',
-    controller: ContentTypeProperty,
-    access: {
-        users: [{
-            username: 'public',
-            access: {
-                read: true,
-                create: true
-            }
-        }],
-        groups: [{
-            name: 'users',
-            access: {
-                read: true,
-                create: true
-            }
-        }]
-    }
-}, {
     path: '/api/emergencycontacts',
     controller: EmergencyContact,
-    access: {
-        users: [{
-            username: 'public',
-            access: {
-                read: true,
-                create: true
-            }
-        }],
-        groups: [{
-            name: 'users',
-            access: {
-                read: true,
-                create: true
-            }
-        }]
-    }
-}, {
-    path: '/api/filesystemitems',
-    controller: FileSystem,
-    access: {
-        users: [{
-            username: 'public',
-            access: {
-                read: true,
-                create: true
-            }
-        }],
-        groups: [{
-            name: 'users',
-            access: {
-                read: true,
-                create: true
-            }
-        }]
-    }
-}, {
-    path: '/api/groupaccesscontrolentries',
-    controller: GroupAccessControlEntry,
     access: {
         users: [{
             username: 'public',
@@ -424,25 +303,6 @@ var apiRoutes = [{
         }]
     }
 }, {
-    path: '/api/routes',
-    controller: Route,
-    access: {
-        users: [{
-            username: 'public',
-            access: {
-                read: true,
-                create: true
-            }
-        }],
-        groups: [{
-            name: 'users',
-            access: {
-                read: true,
-                create: true
-            }
-        }]
-    }
-}, {
     path: '/api/students',
     controller: Student,
     access: {
@@ -462,8 +322,27 @@ var apiRoutes = [{
         }]
     }
 }, {
-    path: '/api/useraccesscontrolentries',
-    controller: UserAccessControlEntry,
+    path: '/api/programs',
+    controller: Program,
+    access: {
+        users: [{
+            username: 'public',
+            access: {
+                read: true,
+                create: true
+            }
+        }],
+        groups: [{
+            name: 'users',
+            access: {
+                read: true,
+                create: true
+            }
+        }]
+    }
+}, {
+    path: '/api/workshops',
+    controller: Workshop,
     access: {
         users: [{
             username: 'public',
