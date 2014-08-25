@@ -21,7 +21,7 @@ var EmergencyContact = require('./controllers/emergencyContact.js');
 var Rank = require('./controllers/rank.js');
 var Student = require('./controllers/student.js');
 var Program = require('./controllers/program.js');
-var Workshop = require('./controllers/workshop.js');
+var Workshop = require('./controllers/workshops.js');
 
 var Content = require('./controllers/content.js');
 var ContentType = require('./controllers/contentType.js');

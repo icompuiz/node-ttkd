@@ -4,7 +4,7 @@ var mongoose = require('mongoose'),
 	Schema = mongoose.Schema,
 	ObjectId = mongoose.Schema.Types.ObjectId;
 
-var workshopsSchema = new Schema({
+var workshopSchema = new Schema({
 	name: String,
 	workshops: [{
 		ref: 'Class',
@@ -12,6 +12,6 @@ var workshopsSchema = new Schema({
 	}]
 });
 
-var Workshops = mongoose.model('Workshops', workshopsSchema);
+var Workshops = mongoose.model('Workshops', workshopSchema);
 
 module.exports = Workshops;

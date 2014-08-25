@@ -10,6 +10,7 @@ var resource = restful
 	.methods(['get', 'post', 'put', 'delete']);
 
 
+
 function register(){
 	// put any middleware here
 	return resource;
