@@ -16,6 +16,6 @@ define([
      */
 
     require(['domReady!'], function (document) {
-        ng.bootstrap(document, ['toastycms']);
+        ng.bootstrap(document, ['ttkd']);
     });
 });

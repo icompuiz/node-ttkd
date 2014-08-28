@@ -15,15 +15,21 @@ define('app', [
 ], function (ng) {
     'use strict';
 
-    return ng.module('toastycms', [
-        'toastycms.controllers',
+    return ng.module('ttkd', [
+        'ttkd.controllers',
         'restangular',
-        'toastycms.directives',
-        'toastycms.services',
-        'toastycms.states',
+        'ttkd.directives',
+        'ttkd.services',
+        'ttkd.states',
         'ui.bootstrap',
         'ui.bootstrap.tpls',
         'ui.router',
+    ]).config(['$locationProvider',
+        function($locationProvider) {
+
+            $locationProvider.html5Mode(true).hashPrefix('!');
+
+        }
     ]).run(function($state, $rootScope, RestangularProvider) {
 
         RestangularProvider.setBaseUrl('/api');

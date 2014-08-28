@@ -397,6 +397,14 @@ var staticRoutes = [{
             user: req.user
         });
     },
+}, {
+    path: '/*',
+    httpMethod: 'GET',
+    middleware: function(req, res) {
+        res.render('index', {
+            user: req.user
+        });
+    },
 }];
 
 
@@ -455,61 +463,69 @@ function main(app, afterRoutesRegistered) {
                 return afterRegisterRoute(err);
         }
 
+        app.all('*', function(req, res, next) {
+            res.header('Access-Control-Allow-Origin', '*');
+            res.header('Access-Control-Allow-Headers', '*');
+            res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, DELETE');
+            next();
+        });
+
         afterRegisterRoute();
 
     }
 
     function registerAuthRoutes(afterRegisterAuthRoutes) {
 
-    	async.each(authRoutes, registerRoute, afterRegisterAuthRoutes);
+        async.each(authRoutes, registerRoute, afterRegisterAuthRoutes);
+
 
     }
 
     function registerStaticRoutes(afterRegisterStaticRoutes) {
-    	
-    	async.each(staticRoutes, registerRoute, afterRegisterStaticRoutes);
+
+        async.each(staticRoutes, registerRoute, afterRegisterStaticRoutes);
 
     }
 
     function registerAPIRoutes(afterRegisterAPIRoutes) {
-	    
-	    async.each(apiRoutes, function(route, afterRegisterRoute) {
 
-	        console.log('Registering route', route.path);
+        async.each(apiRoutes, function(route, afterRegisterRoute) {
 
-	        route.controller.resource
-	            .before('get', Route.checkRoute)
-	            .before('post', Route.checkRoute);
+            console.log('Registering route', route.path);
 
-	        route.controller.register();
+            route.controller.resource
+                .before('get', Route.checkRoute)
+                .before('post', Route.checkRoute);
 
-	        route.controller.resource
-	        	.after('get', cleanRequest)
-	            .after('post', cleanRequest)
-	            .after('put', cleanRequest)
-	            .after('delete', cleanRequest);
+            route.controller.register();
 
-	        route.controller.resource.register(app, route.path);
+            route.controller.resource
+                .after('get', cleanRequest)
+                .after('post', cleanRequest)
+                .after('put', cleanRequest)
+                .after('delete', cleanRequest);
 
-	        afterRegisterRoute();
+            route.controller.resource.register(app, route.path);
 
-	    }, afterRegisterAPIRoutes);
+            afterRegisterRoute();
+
+        }, afterRegisterAPIRoutes);
 
     }
 
     async.series({
 
-    	registerAuthRoutes: registerAuthRoutes,
-		registerStaticRoutes: registerStaticRoutes,
-		registerAPIRoutes: registerAPIRoutes
+        registerAuthRoutes: registerAuthRoutes,
+        registerStaticRoutes: registerStaticRoutes,
+        registerAPIRoutes: registerAPIRoutes
 
     }, afterRoutesRegistered);
-    
+
 }
 
 module.exports = {
-	apiRoutes: apiRoutes,
-	authRoutes: authRoutes,
-	staticRoutes: staticRoutes,
+    apiRoutes: apiRoutes,
+    authRoutes: authRoutes,
+    staticRoutes: staticRoutes,
     register: main
 };

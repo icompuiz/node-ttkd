@@ -7,5 +7,5 @@
  **/
 define(['angular', 'angular-ui-router'], function (ng) {
     'use strict';
-    return ng.module('toastycms.states', ['ui.router']);
+    return ng.module('ttkd.states', ['ui.router']);
 });
