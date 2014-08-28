@@ -7,5 +7,5 @@
  **/
 define(['angular'], function (ng) {
     'use strict';
-    return ng.module('toastycms.directives', []);
+    return ng.module('ttkd.directives', []);
 });
