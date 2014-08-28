@@ -12,7 +12,7 @@ define('app', [
     './directives/index',
     './services/index',
     './states/index'
-], function (ng) {
+], function(ng) {
     'use strict';
 
     return ng.module('ttkd', [
@@ -30,10 +30,14 @@ define('app', [
             $locationProvider.html5Mode(true).hashPrefix('!');
 
         }
-    ]).run(function($state, $rootScope, RestangularProvider) {
+    ]).run(function($state, $rootScope, Restangular) {
 
-        RestangularProvider.setBaseUrl('/api');
+        Restangular.setBaseUrl('/api');
 
-        $state.go('management');
+        Restangular.setRestangularFields({
+            id: "_id",
+        });
+
+        $state.go('login');
     });
 });

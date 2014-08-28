@@ -1,5 +1,5 @@
 /**
- * Defines the main routes in the application.
+ * Defines the main routes in the application. Think of this as the entry point into the module
  * The routes you see here will be anchors '#/' unless specifically configured otherwise.
  */
 
@@ -8,30 +8,12 @@ define(['./module'], function (states) {
 
     return states.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $urlRouterProvider) {
 
-        $stateProvider.state('management', {
-            url: '/management',
-            templateUrl: 'partials/management/index',
+        $stateProvider.state('login', {
+            url: '/login',
+            templateUrl: 'partials/login',
             controller: function($state) {
-                $state.transitionTo('management.login');
+                
             }
-        });
-
-        $stateProvider.state('management.login', {
-            url:'/management/login',
-            templateUrl: 'partials/management/loginlogout/login',
-            controller: function() {}
-        });
-
-        $stateProvider.state('management.logout', {
-            url:'/management/logout',
-            templateUrl: 'partials/management/loginlogout/logout',
-            controller: function() {}
-        });
-
-        $stateProvider.state('management.dashboard', {
-            url:'/management/dashboard',
-            templateUrl: 'partials/management/dashboard',
-            controller: function() {}
         });
 
     }]);
