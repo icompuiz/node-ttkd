@@ -10,7 +10,7 @@ define(['./module'], function (states) {
 
         $stateProvider.state('login', {
             url: '/login',
-            templateUrl: 'partials/login',
+            templateUrl: 'partials/management/loginlogout/login',
             controller: function($state) {
                 
             }
