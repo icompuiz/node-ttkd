@@ -1,4 +1,8 @@
 /**
  * Attach all state definitions
  **/
-define(['./main'], function () {});
+define([
+	'./main',
+	'./tabs'
+
+], function () {});

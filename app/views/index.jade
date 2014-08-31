@@ -13,10 +13,17 @@ html.no-js
 	// build:css({.tmp,app}) styles/main.css 
 	link(rel='stylesheet', href='styles/main.css')
 	// endbuild 
-	body(ui-view)
-	script(src='/bower_components/requirejs/require.js', data-main='/scripts/dependencies.js')
+	body
+		div(ng-controller='tabCtrl')
+			tabset(justified='true' type='pills')
+				tab(ng-repeat='tab in tabs' ui-sref='{{tab.state}}' heading='{{tab.title}}' active='tab.active' class='h4')
+					div(ui-view)
+				tab
+					tab-heading
+						i(class='glyphicon glyphicon-cog')
+	script(src='bower_components/requirejs/require.js', data-main='scripts/dependencies.js')
 	// endbower 
 	// endbuild 
 	// build:js({.tmp,app}) scripts/scripts.js 
-	//- script(src='scripts/app.js')
+	script(src='scripts/app.js')
 	// endbuild 
