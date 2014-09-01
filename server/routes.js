@@ -22,6 +22,7 @@ var Rank = require('./controllers/rank.js');
 var Student = require('./controllers/student.js');
 var Program = require('./controllers/program.js');
 var Workshop = require('./controllers/workshops.js');
+var WorkshopAttendanceList = require('./controllers/workshopAttendanceList.js');
 
 var Content = require('./controllers/content.js');
 var ContentType = require('./controllers/contentType.js');
@@ -359,6 +360,25 @@ var apiRoutes = [{
             }
         }]
     }
+}, {
+    path: '/api/workshopattendancelists',
+    controller: WorkshopAttendanceList,
+    access: {
+        users: [{
+            username: 'public',
+            access: {
+                read: true,
+                create: true
+            }
+        }],
+        groups: [{
+            name: 'users',
+            access: {
+                read: true,
+                create: true
+            }
+        }]
+    }
 }];
 
 var authRoutes = [{
@@ -397,7 +417,10 @@ var staticRoutes = [{
             user: req.user
         });
     },
-}, {
+}];
+/*
+//TODO: talk about this, why it was deleted to work
+, {
     path: '/*',
     httpMethod: 'GET',
     middleware: function(req, res) {
@@ -406,6 +429,7 @@ var staticRoutes = [{
         });
     },
 }];
+*/
 
 
 function cleanRequest(req, res, next) {
