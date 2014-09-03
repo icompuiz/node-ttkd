@@ -21,10 +21,20 @@ define(['../module'], function (states) {
         $stateProvider.state('admin.students.home', {
             url: '/students',
             views: {
-            	'section-body': {
-            		templateUrl: 'partials/students/home',
-            		controller: 'StudentsCtrl'
-            	}
+                'section-body': {
+                    templateUrl: 'partials/students/home',
+                    controller: 'StudentsCtrl'
+                }
+            }
+        });
+
+        $stateProvider.state('admin.students.create', {
+            url: '/students/create',
+            views: {
+                'section-body': {
+                    templateUrl: 'partials/students/create',
+                    controller: 'StudentsCtrl'
+                }
             }
         });
     }]);
