@@ -1,1 +1,8 @@
 h1 Programs
+
+ul
+	li(ng-repeat='program in programs')
+		{{program.name}}
+
+button(ng-click='goToAddProgram()')
+	| Create new program

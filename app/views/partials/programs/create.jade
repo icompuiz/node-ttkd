@@ -1,0 +1,27 @@
+h1 Create Program
+
+
+
+form
+	div(class='input-group')
+		input(type='text', class='form-control', placeholder='Program name' ng-model="newProgram.name")
+		span(class='input-group-addon')
+			span(class='glyphicon glyphicon-ok input-valid')
+	| Classes
+	ul
+		li(ng-repeat='class in newProgram.classes')
+			{{class.name}}
+		li
+			div(class='input-group')
+				input(type='text', class='form-control', placeHolder='Class name' ng-model='newClass.name')
+				span(class='input-group-addon')
+					button(class='btn glyphicon glyphicon-plus' ng-click="addClass()")
+
+	div(class='input-group')
+		| Input ranks
+
+
+	input(type='submit', value='Create New Program', class='pull-right' ng-click="addProgram();goToProgramsHome()")
+	input(type='reset', value='Cancel', class='pull-right' ng-click='goToProgramsHome()')
+
+	div(class='clearfix')

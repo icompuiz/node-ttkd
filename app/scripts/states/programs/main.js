@@ -27,6 +27,16 @@ define(['../module'], function (states) {
             	}
             }
         });
+
+        $stateProvider.state('admin.programs.create', {
+            url: '/programs/create',
+            views: {
+                'section-body': {
+                    templateUrl: 'partials/programs/create',
+                    controller: 'ProgramsCtrl'
+                }
+            }
+        });
     }]);
 
 });
