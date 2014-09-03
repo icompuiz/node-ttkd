@@ -1,58 +1,11 @@
 'use strict';
 
 var $async = require('async'),
-    $mongoose = require('mongoose'),
-    $routes = require('../routes');
+    $mongoose = require('mongoose');
 
 var userData = require('./users'),
-    groupData = require('./groups');
-
-
-
-
-function removeDirectories(doneRemovingDirectories) {
-
-    var Directory = $mongoose.model('Directory');
-    Directory.remove({}, function(err) {
-
-
-        if (err) {
-            console.log('loadData::removeDirectories::fail', err);
-            return doneRemovingDirectories(err);
-        }
-        console.log('loadData::removeDirectories::success');
-        doneRemovingDirectories();
-    });
-
-}
-
-function removeFiles(doneRemovingFiles) {
-
-    var File = $mongoose.model('File');
-    File.remove({}, function(err) {
-
-        if (err) {
-            console.log('loadData::removeFiles::fail', err);
-            return doneRemovingFiles(err);
-        }
-        console.log('loadData::removeFiles::success');
-        doneRemovingFiles();
-
-    });
-
-}
-
-function removeRoutes(doneRemovingRoutes) {
-    var Route = $mongoose.model('Route');
-    Route.remove({}, function(err) {
-        if (err) {
-            console.log('loadData::removeRoutes::fail', err);
-            return doneRemovingRoutes(err);
-        }
-        console.log('loadData::removeRoutes::success');
-        doneRemovingRoutes();
-    });
-}
+    groupData = require('./groups'),
+    assetData = require('./assets');
 
 function removeMockObjects(doneRemovingMocks) {
     var Mock = $mongoose.model('Mock');
@@ -112,6 +65,25 @@ function removeGroups(doneRemovingGroups) {
 
         doneRemovingGroups();
     });
+}
+
+function removeAssets(doneRemovingAssets) {
+
+    var Asset = $mongoose.model('Route');
+
+    console.log('loadData::removeAssets::enter');
+
+
+    Asset.remove({}, function(err) {
+        if (err) {
+            console.log('loadData::removeAssets::fail', err);
+            return doneRemovingAssets(err);
+        }
+        console.log('loadData::removeAssets::success');
+
+        doneRemovingAssets();
+    });
+
 }
 
 function removeUsers(doneRemovingUsers) {
@@ -186,6 +158,38 @@ function addUsers(doneAddingUsers) {
 
     }
 
+    function definePublicUser(doneAddingPublicUser) {
+
+        var publicUser = userData.public;
+
+        var user = new User(publicUser);
+
+        console.log('loadData::addUsers::definePublicUser::enter');
+        var password = publicUser.password;
+        publicUser.password = null;
+        User.register(user, password, function(err, user) {
+
+            if (err) {
+                console.log('loadData::addUsers::definePublicUser::fail', err);
+                return doneAddingPublicUser(err);
+            }
+
+            console.log('loadData::addUsers::definePublicUser::success');
+
+            user.addToGroups(['public'], function(err) {
+
+                if (err) {
+                    console.log('loadData::addUsers::definePublicUser::addToGroups::error');
+                }
+                console.log('loadData::addUsers::definePublicUser::addToGroups::success');
+                doneAddingPublicUser(null, 'addUsers::definePublicUser::sucessful');
+
+            });
+
+        });
+
+    }
+
     function defineAllUsers(doneDefiningAllUsers) {
         var all = userData.all;
         console.log('loadData::addUsers::defineAllUsers::enter');
@@ -238,6 +242,7 @@ function addUsers(doneAddingUsers) {
     $async.series({
         root: defineRootUser,
         administrator: defineAdministratorUser,
+        'public': definePublicUser,
         allUsers: defineAllUsers
     }, function(err) {
 
@@ -300,87 +305,102 @@ function addMocks(doneAddingMocks) {
     });
 }
 
-function addRoutes(doneAddingRoutes) {
-    console.log('loadData::addRoutes::enter');
 
-    var routes = $routes.apiRoutes;
+function addAssets(doneAddingAssets) {
+    console.log('loadData::addAssets::enter');
 
-    var Route = $mongoose.model('Route'),
+    var Asset = $mongoose.model('Route'),
         AccessControlList = $mongoose.model('AccessControlList');
-        // User = $mongoose.model('User'),
-        // UserAccessControlEntry = $mongoose.model('UserAccessControlEntry'),
-        // Group = $mongoose.model('Group'),
-        // GroupAccessControlEntry = $mongoose.model('GroupAccessControlEntry');
 
-    $async.each(routes, function(routeData, processNextRoute) {
+    var assets = assetData.data;
 
-        console.log('loadData::addRoutes::each::enter');
+    $async.eachSeries(assets, function(current, processNextAsset) {
 
+        var name = current.name;
+        var accessItems = current.items;
 
-        var route = new Route({
-            path: routeData.path
+        var asset = new Asset({
+            path: name
         });
 
-        function addUsers(doneAddingUsers) {
-            console.log('loadData::addRoutes::each::addUsers::enter', route.acl);
-            AccessControlList
-                .addUsers(route.acl, routeData.access.users, doneAddingUsers);
-        }
 
-        function addGroups(doneAddingGroups) {
-            console.log('loadData::addRoutes::each::addGroups::enter', route.acl);
-            AccessControlList
-                .addGroups(route.acl, routeData.access.groups, doneAddingGroups);
-        }
-
-        route.save(function(err) {
+        asset.save(function(err) {
 
             // add access
             if (err) {
-                return processNextRoute(err);
+                return processNextAsset(err);
             }
 
-            if (routeData.access) {
+            $async.each(accessItems, function(accessItem, processNextAccessItem) {
 
-                console.log('loadData::addRoutes::saveRoute::success', routeData.path);
-                console.log('loadData::addRoutes::saveRoute', 'Adding Users and Groups');
+
+                console.log('loadData::addAssets::eachAccessItem::enter for', name);
+
+                function addUsers(doneAddingUsers) {
+                    console.log('loadData::addAssets::eachAccessItem::addUsers::enter', name, asset.acl);
+
+                    if (accessItem.users) {
+
+                        AccessControlList
+                            .addUsers(asset.acl, accessItem.users, doneAddingUsers);
+                    } else {
+                        doneAddingUsers();
+                    }
+
+                }
+
+                function addGroups(doneAddingGroups) {
+                    console.log('loadData::addAssets::eachAccessItem::addGroups::enter', name, asset.acl);
+
+                    if (accessItem.groups) {
+                        AccessControlList
+                            .addGroups(asset.acl, accessItem.groups, doneAddingGroups);
+                    } else {
+                        doneAddingGroups();
+                    }
+                }
+
+                console.log('loadData::addAssets::saveRoute::success', name);
+                console.log('loadData::addAssets::saveRoute', 'Adding Users and Groups');
+
                 $async.series({
                     users: addUsers,
                     groups: addGroups
                 }, function(err) {
                     if (err) {
-                        return processNextRoute(err);
+                        return processNextAccessItem(err);
                     }
 
-                    processNextRoute();
+                    processNextAccessItem();
                 });
 
-            }
+            }, processNextAsset);
 
         });
 
-    }, function(err) {
-        if (err) {
-            return doneAddingRoutes(err, err);
-        }
 
-        doneAddingRoutes(null, 'addRoutes::sucessful');
+
+
+
+
+
+    }, function(err) {
+        doneAddingAssets(err, 'loadData::addAssets::success');
     });
+
 }
 
 var tasks = {
     removeUsers: removeUsers,
     removeGroups: removeGroups,
-    removeDirectories: removeDirectories,
-    removeFiles: removeFiles,
     removeAccessControlLists: removeAccessControlLists,
     removeAccessControlEntries: removeAccessControlEntries,
-    removeRoutes: removeRoutes,
     removeMockObjects: removeMockObjects,
+    removeAssets: removeAssets,
     addGroups: addGroups,
     addUsers: addUsers,
-    addRoutes: addRoutes,
-    addMocks: addMocks
+    addAssets: addAssets,
+    addMocks: addMocks,
 };
 
 function main(onDataInitialized) {

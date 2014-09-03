@@ -18,17 +18,7 @@ var administrator = {
 	}
 };
 
-var users = [{
-	username: 'basic',
-	password: 'basic',
-	fullname: 'Basic User',
-	email: 'basic@email.com',
-	options: {
-		groups: [
-			'users'
-		]
-	}
-},{
+var pub = {
 	username: 'public',
 	password: 'public',
 	fullname: 'public',
@@ -40,10 +30,23 @@ var users = [{
 			'public'
 		],
 	}
+}
+
+var users = [{
+	username: 'basic',
+	password: 'basic',
+	fullname: 'Basic User',
+	email: 'basic@email.com',
+	options: {
+		groups: [
+			'users'
+		]
+	}
 }];
 
 module.exports = {
 	root: root,
 	administrator: administrator,
+	'public': pub,
 	all: users
 };

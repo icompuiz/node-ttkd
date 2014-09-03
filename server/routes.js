@@ -33,352 +33,61 @@ var Template = require('./controllers/template.js');
 
 var apiRoutes = [{
     path: '/api/mocks',
-    controller: Mock,
-    access: {
-        users: [{
-            username: 'public',
-            access: {
-                read: true,
-                create: true
-            }
-        }],
-        groups: [{
-            name: 'users',
-            access: {
-                read: true,
-                create: true
-            }
-        }]
-    }
+    controller: Mock
 }, {
     path: '/api/fs/directories',
-    controller: Directory,
-    access: {
-        users: [{
-            username: 'public',
-            access: {
-                read: true,
-                create: true
-            }
-        }],
-        groups: [{
-            name: 'users',
-            access: {
-                read: true,
-                create: true
-            }
-        }]
-    }
+    controller: Directory
 
 }, {
     path: '/api/fs/files',
-    controller: File,
-    access: {
-        users: [{
-            username: 'public',
-            access: {
-                read: true,
-                create: true
-            }
-        }],
-        groups: [{
-            name: 'users',
-            access: {
-                read: true,
-                create: true
-            }
-        }]
-    }
-
+    controller: File
 }, {
     path: '/api/contentitems',
-    controller: Content,
-    access: {
-        users: [{
-            username: 'public',
-            access: {
-                read: true,
-                create: true
-            }
-        }],
-        groups: [{
-            name: 'users',
-            access: {
-                read: true,
-                create: true
-            }
-        }]
-    }
+    controller: Content
 
 }, {
     path: '/api/contenttypes',
-    controller: ContentType,
-    access: {
-        users: [{
-            username: 'public',
-            access: {
-                read: true,
-                create: true
-            }
-        }],
-        groups: [{
-            name: 'users',
-            access: {
-                read: true,
-                create: true
-            }
-        }]
-    }
-
+    controller: ContentType
 }, {
     path: '/api/inputformats',
-    controller: InputFormat,
-    access: {
-        users: [{
-            username: 'public',
-            access: {
-                read: true,
-                create: true
-            }
-        }],
-        groups: [{
-            name: 'users',
-            access: {
-                read: true,
-                create: true
-            }
-        }]
-    }
-
+    controller: InputFormat
 }, {
     path: '/api/outputformats',
-    controller: OutputFormat,
-    access: {
-        users: [{
-            username: 'public',
-            access: {
-                read: true,
-                create: true
-            }
-        }],
-        groups: [{
-            name: 'users',
-            access: {
-                read: true,
-                create: true
-            }
-        }]
-    }
+    controller: OutputFormat
 
 }, {
     path: '/api/templates',
-    controller: Template,
-    access: {
-        users: [{
-            username: 'public',
-            access: {
-                read: true,
-                create: true
-            }
-        }],
-        groups: [{
-            name: 'users',
-            access: {
-                read: true,
-                create: true
-            }
-        }]
-    }
+    controller: Template
 }, {
     path: '/api/studentlists',
-    controller: StudentList,
-    access: {
-        users: [{
-            username: 'public',
-            access: {
-                read: true,
-                create: true
-            }
-        }],
-        groups: [{
-            name: 'users',
-            access: {
-                read: true,
-                create: true
-            }
-        }]
-    }
+    controller: StudentList
 }, {
     path: '/api/achievements',
-    controller: Achievement,
-    access: {
-        users: [{
-            username: 'public',
-            access: {
-                read: true,
-                create: true
-            }
-        }],
-        groups: [{
-            name: 'users',
-            access: {
-                read: true,
-                create: true
-            }
-        }]
-    }
+    controller: Achievement
 }, {
     path: '/api/attendance',
-    controller: Attendance,
-    access: {
-        users: [{
-            username: 'public',
-            access: {
-                read: true,
-                create: true
-            }
-        }],
-        groups: [{
-            name: 'users',
-            access: {
-                read: true,
-                create: true
-            }
-        }]
-    }
+    controller: Attendance
 }, {
     path: '/api/classes',
-    controller: Class,
-    access: {
-        users: [{
-            username: 'public',
-            access: {
-                read: true,
-                create: true
-            }
-        }],
-        groups: [{
-            name: 'users',
-            access: {
-                read: true,
-                create: true
-            }
-        }]
-    }
+    controller: Class
 }, {
     path: '/api/emergencycontacts',
-    controller: EmergencyContact,
-    access: {
-        users: [{
-            username: 'public',
-            access: {
-                read: true,
-                create: true
-            }
-        }],
-        groups: [{
-            name: 'users',
-            access: {
-                read: true,
-                create: true
-            }
-        }]
-    }
+    controller: EmergencyContact
 }, {
     path: '/api/ranks',
-    controller: Rank,
-    access: {
-        users: [{
-            username: 'public',
-            access: {
-                read: true,
-                create: true
-            }
-        }],
-        groups: [{
-            name: 'users',
-            access: {
-                read: true,
-                create: true
-            }
-        }]
-    }
+    controller: Rank
 }, {
     path: '/api/students',
-    controller: Student,
-    access: {
-        users: [{
-            username: 'public',
-            access: {
-                read: true,
-                create: true
-            }
-        }],
-        groups: [{
-            name: 'users',
-            access: {
-                read: true,
-                create: true
-            }
-        }]
-    }
+    controller: Student
 }, {
     path: '/api/programs',
-    controller: Program,
-    access: {
-        users: [{
-            username: 'public',
-            access: {
-                read: true,
-                create: true
-            }
-        }],
-        groups: [{
-            name: 'users',
-            access: {
-                read: true,
-                create: true
-            }
-        }]
-    }
+    controller: Program
 }, {
     path: '/api/workshops',
-    controller: Workshop,
-    access: {
-        users: [{
-            username: 'public',
-            access: {
-                read: true,
-                create: true
-            }
-        }],
-        groups: [{
-            name: 'users',
-            access: {
-                read: true,
-                create: true
-            }
-        }]
-    }
+    controller: Workshop
 }, {
     path: '/api/workshopattendancelists',
-    controller: WorkshopAttendanceList,
-    access: {
-        users: [{
-            username: 'public',
-            access: {
-                read: true,
-                create: true
-            }
-        }],
-        groups: [{
-            name: 'users',
-            access: {
-                read: true,
-                create: true
-            }
-        }]
-    }
+    controller: WorkshopAttendanceList
 }];
 
 var authRoutes = [{
@@ -417,10 +126,7 @@ var staticRoutes = [{
             user: req.user
         });
     },
-}];
-/*
-//TODO: talk about this, why it was deleted to work
-, {
+},{
     path: '/*',
     httpMethod: 'GET',
     middleware: function(req, res) {
@@ -429,7 +135,7 @@ var staticRoutes = [{
         });
     },
 }];
-*/
+
 
 
 function cleanRequest(req, res, next) {
@@ -487,13 +193,6 @@ function main(app, afterRoutesRegistered) {
                 return afterRegisterRoute(err);
         }
 
-        app.all('*', function(req, res, next) {
-            res.header('Access-Control-Allow-Origin', '*');
-            res.header('Access-Control-Allow-Headers', '*');
-            res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, DELETE');
-            next();
-        });
-
         afterRegisterRoute();
 
     }
@@ -540,8 +239,8 @@ function main(app, afterRoutesRegistered) {
     async.series({
 
         registerAuthRoutes: registerAuthRoutes,
-        registerStaticRoutes: registerStaticRoutes,
-        registerAPIRoutes: registerAPIRoutes
+        registerAPIRoutes: registerAPIRoutes,
+        registerStaticRoutes: registerStaticRoutes
 
     }, afterRoutesRegistered);
 
