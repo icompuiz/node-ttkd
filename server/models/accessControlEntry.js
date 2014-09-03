@@ -3,6 +3,10 @@ var $mongoose = require('mongoose'),
 
 
 var AccessControlEntrySchema = new Schema({
+	acl: {
+		type: $mongoose.Schema.Types.ObjectId,
+		ref: 'AccessControlList'
+	},
 	access: {
 		all: {
 			type: Boolean,

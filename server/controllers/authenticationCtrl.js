@@ -2,70 +2,94 @@
 
 var $passport = require('passport'),
     $mongoose = require('mongoose'),
-    User = $mongoose.model('User')
+    _ = require('lodash'),
+    $toastySession = require('../toastySession'),
+    User = $mongoose.model('User');
 
 function login(user, req, res, next) {
-  req.logIn(user, function(err) {
-    if (err) {
-      return next(err);
-    }
-    
-    user.salt = null;
-    user.hash = null;
+    req.logIn(user, function(err) {
+        if (err) {
+            return next(err);
+        }
 
-    res.json(200, user);
-  });
+        user.salt = null;
+        user.hash = null;
+
+        $toastySession.user = req.user;
+
+        authenticaltionCtrl.currentUser(req, res, next);
+
+        // res.json(200, user);
+    });
 }
 
-module.exports = {
-  login: function(req, res, next) {
-    
-    if (req.isAuthenticated()) {
-      console.log('authenticaltionCtrl::login::isAuthenticated', 'User is already logged in', 'resetting session');
-      req.logout();
-    }
+var authenticaltionCtrl = {
+    currentUser: function(req, res, next) {
 
-    return $passport.authenticate('local', function(err, user) {
-    
-      if (err) {
+        var Route = $mongoose.model('Route');
 
-        return next(err);
-      }
-      if (!user) {
-        
-        return res.send(401,'Unauthorized: Bad username or password');
-      }
+        Route.whatResources($toastySession.user._id, function(err, assets) {
+
+            var user = $toastySession.user.toObject();
+            user.assets = assets;
+            return res.jsonp(200, user);
+
+        });
 
 
-      if (req.body.rememberme) req.session.cookie.maxAge = 1000 * 60 * 60 * 24 * 7;
+    },
+    login: function(req, res, next) {
+
+        if (req.isAuthenticated()) {
+            console.log('authenticaltionCtrl::login::isAuthenticated', 'User is already logged in', 'resetting session');
+            req.logout();
+        }
+
+        return $passport.authenticate('local', function(err, user) {
+
+            if (err) {
+
+                return next(err);
+            }
+            if (!user) {
+
+                return res.send(401, 'Unauthorized: Bad username or password');
+            }
 
 
-      login(user, req, res, next);
+            if (req.body.rememberme) req.session.cookie.maxAge = 1000 * 60 * 60 * 24 * 7;
 
-    })(req, res, next);
-  },
 
-  logout: function(req, res) {
-    req.logout();
-    return res.send(200);
-  },
-  register: function(req, res, next) {
-    try {
-      User.validate(req.body);
-    } catch (err) {
-      return res.send(400, err.message);
-    }
+            login(user, req, res, next);
 
-    var password = req.body.password; // Copy password as we pass this seprately so it can be hashed
+        })(req, res, next);
+    },
 
-    User.register(new User(req.body), password, function(err, user) {
-      if (err) {
-        console.log("Auth.register ERROR:");
-        console.log(err);
-        return res.send(400, err);
-      }
+    logout: function(req, res) {
+        req.logout();
 
-      login(user, req, res, next);
-    });
-  },
+        return res.send(200);
+    },
+    register: function(req, res, next) {
+        try {
+            User.validate(req.body);
+        } catch (err) {
+            return res.send(400, err.message);
+        }
+
+        var password = req.body.password; // Copy password as we pass this seprately so it can be hashed
+
+        User.register(new User(req.body), password, function(err, user) {
+            if (err) {
+                console.log("Auth.register ERROR:");
+                console.log(err);
+                return res.send(400, err);
+            }
+
+            login(user, req, res, next);
+        });
+    },
 };
+
+
+module.exports = authenticaltionCtrl;

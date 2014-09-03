@@ -1,0 +1,20 @@
+doctype html
+.site-wrapper
+	div.container
+		div.banner-login
+			img(src="images/logo-md.png")
+		div.form-login
+			.alert.alert-danger(ng-if="statusMessage") {{statusMessage}}
+			form(role="form", name="loginForm")
+				.form-group
+					label(for="username") Email Address
+					input#login-form-username.form-control(type="text", name="username", ng-model="username")
+				.form-group
+					label(for="password") Password
+					input#login-form-password.form-control(type="password", name="password", ng-model="password")
+				.checkbox
+					label
+						input(type='checkbox', name="rememberme")
+						| Remember Me
+				button.btn.btn-default.pull-right(ng-click="submit()") Login
+			div.clearfix

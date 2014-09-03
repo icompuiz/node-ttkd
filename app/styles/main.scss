@@ -15,8 +15,8 @@ $icon-font-path: "/bower_components/bootstrap-sass-official/vendor/assets/fonts/
 
 /* Space out content a bit */
 body {
-    padding-top: 20px;
-    padding-bottom: 20px;
+    // padding-top: 20px;
+    // padding-bottom: 20px;
 }
 
 /* Everything but the jumbotron gets side spacing for mobile first views */
@@ -92,4 +92,38 @@ body {
     .jumbotron {
         border-bottom: 0;
     }
+}
+
+
+@import url(http://fonts.googleapis.com/css?family=Bree+Serif|Open+Sans|Open+Sans+Condensed:300|Open+Sans+Condensed:700);
+
+$sidebar-width: 253px;
+$sidebar-font-size: 1.2em;
+$sidebar-item-height: 50px;
+$sidebar-separator-color: #333;
+$navbar-height: 50px;
+$tdark: #191818;
+$bootstrap-blue: #2a6496;
+$light-border-color: #e7e7e7;
+$tarea-padding-top: 15px;
+
+body {
+    font-family: "Open Sans";
+    background: #f8f8f8;
+}
+
+.banner-login {
+    text-align: center;
+    margin: 25px 0;
+}
+
+.navbar-brand {
+    font-size: 2em;
+    text-align: center;
+    width: 100px;
+    font-family: "Bree Serif";
+}
+
+.btn-logout {
+    cursor: pointer;
 }

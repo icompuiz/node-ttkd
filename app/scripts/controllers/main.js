@@ -6,5 +6,13 @@
 define(['./module'], function (controllers) {
     'use strict';
 
-    return controllers.config([function() {}]);
+    return controllers.config([function() {}]).run(['$rootScope','$state', 'AuthenticationSvc', function($rootScope, $state, AuthenticationSvc) {
+		$rootScope.logout = function() {
+			AuthenticationSvc.logout().then(function(data) {
+
+				$state.go('login');
+
+			});
+		}
+	}]);
 });

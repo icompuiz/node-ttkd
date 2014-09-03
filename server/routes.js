@@ -102,6 +102,10 @@ var authRoutes = [{
     path: '/logout',
     httpMethod: 'GET',
     middleware: [Authentication.logout]
+}, {
+    path: '/me',
+    httpMethod: 'GET',
+    middleware: [Authentication.currentUser]
 }];
 
 var staticRoutes = [{

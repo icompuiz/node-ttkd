@@ -8,68 +8,20 @@ define(['./module'], function (states) {
 
     return states.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $urlRouterProvider) {
 
-        $stateProvider.state('login', {
-            url: '/login',
-            templateUrl: 'partials/management/loginlogout/login',
-            controller: function($state) {
-                
+        $stateProvider.state('admin', {
+            url: '/admin',
+            templateUrl: 'partials/adminBase',
+            controller: function($rootScope, $state, AuthenticationSvc) {
+
+                if (!AuthenticationSvc.isLoggedIn()) {
+                    $state.go('login');
+                } else {
+                    if ($state.current.name === 'admin') {
+                        $state.go('admin.dashboard.home');
+                    }
+                }
             }
         });
 
-        $stateProvider.state('dashboard', {
-            url: '/dashboard',
-            templateUrl: 'partials/management/dashboard',
-            controller: function($state) {
-                
-            }
-        });
-
-        $stateProvider.state('students', {
-            url: '/students',
-            templateUrl: 'partials/management/students',
-            controller: function($state) {
-                
-            }
-        });
-
-        $stateProvider.state('programs', {
-            url: '/programs',
-            templateUrl: 'partials/management/programs',
-            controller: function($state) {
-                
-            }
-        });
-
-        $stateProvider.state('workshops', {
-            url: '/workshops',
-            templateUrl: 'partials/management/workshops',
-            controller: function($state) {
-                
-            }
-        });
-
-        $stateProvider.state('payments', {
-            url: '/payments',
-            templateUrl: 'partials/management/payments',
-            controller: function($state) {
-                
-            }
-        });
-
-        $stateProvider.state('attendance', {
-            url: '/attendance',
-            templateUrl: 'partials/management/attendance',
-            controller: function($state) {
-                
-            }
-        });
-
-        $stateProvider.state('reporting', {
-            url: '/reporting',
-            templateUrl: 'partials/management/reporting',
-            controller: function($state) {
-                
-            }
-        });
     }]);
 });
