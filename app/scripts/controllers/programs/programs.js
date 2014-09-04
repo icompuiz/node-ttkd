@@ -47,6 +47,12 @@ define(['../module'], function(controllers){
 		};
 		$scope.getPrograms();
 
+		$scope.removeProgram = function(program) {
+			Restangular.one('programs', program._id).remove().then(function() {
+				$scope.programs = _.without($scope.programs, program);
+			});
+		};
+
 		$scope.goToAddProgram = function() {
 			$state.go('admin.programs.create');
 		};

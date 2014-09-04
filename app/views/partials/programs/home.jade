@@ -19,7 +19,7 @@ table(style='width: 50%' class="table borderless")
 			div(ng-repeat='rankName in program.rankNames')
 				{{rankName}}
 		td
-			button(class='btn btn-small')
+			button(class='btn btn-small' ng-click='removeProgram(program)')
 				span(class='glyphicon glyphicon-remove')
 
 button(ng-click='goToAddProgram()')
