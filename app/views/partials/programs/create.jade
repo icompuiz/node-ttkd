@@ -1,31 +1,35 @@
 h1 Create Program
 
-
-
 form
-	div(class='input-group')
-		input(type='text', class='form-control', placeholder='Program name' ng-model="newProgram.name")
-		span(class='input-group-addon')
-			span(class='glyphicon glyphicon-ok input-valid')
-	h2 Classes
-	ul
-		li(ng-repeat='class in newProgram.classes')
-			{{class.name}}
-	div(class='input-group')
-		input(type='text', class='form-control col-lg-6', placeHolder='Class name' ng-model='newClass.name')
-		span(class='input-group-addon')
-			button(type='button' class='glyphicon glyphicon-plus' ng-click="addClass()")
-	h2 Ranks	
-	ul
-		li(ng-repeat='rank in newProgram.ranks')
-			{{rank.name}}
-	div(class='input-group')
-		input(type='text', class='form-control col-lg-6', placeHolder='Rank name' ng-model='newRank.name')
-		span(class='input-group-addon')
-			button(type='button' class='glyphicon glyphicon-plus' ng-click="addRank()")
+	.form-group
+		div(class='input-group')
+			input(type='text', class='form-control', placeholder='Program name' ng-model="newProgram.name")
+			span(class='input-group-addon')
+				span(class='glyphicon glyphicon-ok input-valid')
+	.form-group
+		h2 Classes
+		ul
+			li(ng-repeat='class in newProgram.classes')
+				{{class.name}}
+		div.pull-left(class='input-group', style="width: 90%; padding-right: 10px;")
+			input(type='text', class='form-control', placeHolder='Class name' ng-model='newClass.name')
+			span(class='input-group-addon')
+				span(class='glyphicon glyphicon-ok input-valid')
+		button.pull-left.btn.btn-default(type='button', ng-click="addClass()")
+			span.glyphicon.glyphicon-plus
 
+		div.clearfix
+	.form-group
+		h2 Ranks	
+		ul
+			li(ng-repeat='rank in newProgram.ranks')
+				{{rank.name}}
+		div(class='input-group')
+			input(type='text', class='form-control col-lg-6', placeHolder='Rank name' ng-model='newRank.name')
+			span(class='input-group-addon')
+				button(type='button' class='glyphicon glyphicon-plus' ng-click="addRank()")
 
-	input(type='submit', value='Create New Program', class='pull-right' ng-click="addProgram();goToProgramsHome()")
-	input(type='reset', value='Cancel', class='pull-right' ng-click='goToProgramsHome()')
-
-	div(class='clearfix')
+	.form-group
+		#specialelement.btn-group.class1.class2.pull-right
+			input.btn.btn-primary(type='submit', value='Create New Program', ng-click="addProgram();goToProgramsHome()")
+			input.btn.btn-warning(type='reset', value='Cancel', ng-click='goToProgramsHome()')

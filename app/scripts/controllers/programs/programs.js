@@ -1,15 +1,24 @@
 define(['../module'], function(controllers){
 	'use strict';
-	controllers.controller('ProgramsCtrl', ['$scope', '$state', 'Restangular', function($scope, $state, Restangular) {
+	controllers.controller('ProgramsCtrl', ['$scope', '$state', 'Restangular','ProgramFactory', function($scope, $state, Restangular, ProgramFactory) {
 		var basePrograms = Restangular.all('programs');
 		var baseClasses = Restangular.all('classes');
 		var baseRanks = Restangular.all('ranks');
+
 
 		$scope.programs = {};
 		$scope.newProgram = {
 			classes: [],
 			ranks: []
 		};
+
+		if (!ProgramFactory.current) {
+			$scope.newProgram = ProgramFactory.create();
+		} else {
+			$scope.newProgram = ProgramFactory.current;
+		}
+
+
 		$scope.newClass = {};
 		$scope.newRank = {};
 
