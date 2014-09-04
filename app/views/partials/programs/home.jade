@@ -1,8 +1,26 @@
 h1 Programs
 
-ul
-	li(ng-repeat='program in programs')
-		{{program.name}}
+table(style='width: 50%' class="table borderless")
+	tr 
+		th
+			input(type='checkbox')
+		th Name
+		th Classes
+		th Ranks
+		th Actions
+	tr(ng-repeat='program in programs')
+		td
+			input(type='checkbox')
+		td {{program.name}}
+		td
+			div(ng-repeat='className in program.classNames') 
+				{{className}}
+		td
+			div(ng-repeat='rankName in program.rankNames')
+				{{rankName}}
+		td
+			button(class='btn btn-small')
+				span(class='glyphicon glyphicon-remove')
 
 button(ng-click='goToAddProgram()')
 	| Create new program
