@@ -14,7 +14,36 @@ define(['../module'], function(controllers){
 		$scope.newRank = {};
 
 		$scope.getPrograms = function() {
-			$scope.programs = basePrograms.getList().$object;
+			basePrograms.getList().then(function(programs) {
+				//Fetch and display the program's classes' names
+				baseClasses.getList().then(function(classes) {
+					var i;
+					var programClasses = classes;
+					for(i=0; i<programs.length; i++) {
+						programClasses = _.where(classes, {'program': programs[i]._id});
+						programs[i].classNames = [];
+						var j;
+	 					for(j=0; j<programClasses.length; j++) {
+							programs[i].classNames.push(programClasses[j].name);
+						}
+					}
+				});
+				//Fetch and display the program's ranks' names
+				//TODO parallel?
+				baseRanks.getList().then(function(ranks) {
+					var i;
+					var programRanks = ranks;
+					for(i=0; i<programs.length; i++) {
+						programRanks = _.where(ranks, {'program': programs[i]._id});
+						programs[i].rankNames = [];
+						var j;
+	 					for(j=0; j<programRanks.length; j++) {
+							programs[i].rankNames.push(programRanks[j].name);
+						}
+					}
+				});
+				$scope.programs = programs;
+			});
 		};
 		$scope.getPrograms();
 
@@ -35,47 +64,59 @@ define(['../module'], function(controllers){
 				var classIDs = [],
 					rankIDs = [];
 				//Add classes to db
-				async.parallel([
-					function(callback, err) {
-						//Add classes
-						var i = 0;
-						for (i=0; i<$scope.newProgram.classes.length; i++) {
-							var classToAdd = {
-								name: $scope.newProgram.classes.name,
-								program: programAdded._id
-							};
-							//POST each new class and add object ID to array
-							baseClasses.post(classToAdd).then(function(classAdded, err){
-								classIDs.push(classAdded._id);
+				(function(classIDs, rankIDs){
+					async.parallel([
+						function(callback, err) {
+							//Add classes
+							async.each($scope.newProgram.classes,
+								function(classItem, callback) {
+									var classToAdd = {
+										name: classItem.name,
+										program: programAdded._id
+									};
+									//POST each new class and add object ID to array
+									baseClasses.post(classToAdd).then(function(classAdded, err){
+										classIDs.push(classAdded._id);
+										callback();
+									});
+								},
+								function(err) {
+									callback();
+								}
+							);
+						},
+						function(callback, err) {
+							//Add classes
+							async.each($scope.newProgram.ranks,
+								function(rankItem, callback) {
+									var rankToAdd = {
+										name: rankItem.name,
+										program: programAdded._id
+									};
+									//POST each new class and add object ID to array
+									baseRanks.post(rankToAdd).then(function(rankAdded, err){
+										rankIDs.push(rankAdded._id);
+										callback();
+									});
+								},
+								function(err) {
+									callback();
+								}
+							);
+						}],
+						function(err) {
+							//Add class and rank references and PUT updated program
+							Restangular.one('programs', programAdded._id).get().then(function(p){
+								var programToUpdate = p;
+								programToUpdate.classes = classIDs;
+								programToUpdate.ranks = rankIDs;
+								programToUpdate.put();
 							});
-						}
-						callback();
-					},
-					function(callback, err) {
-						//add Ranks
-						var i = 0;
-						for(i=0; i<$scope.newProgram.ranks.length; i++) {
-							var rankToAdd = {
-								name: $scope.newProgram.ranks.name,
-								program: programAdded._id
-							};
-							//POST each new rank and add object ID to array
-							baseRanks.post(rankToAdd).then(function(rankAdded, err){
-								rankIDs.push(rankAdded._id);
-							});
-						}
-						callback();
-					}],
-					function(err) {
-						//Add class and rank references and PUT updated program
-						Restangular.one('programs', programAdded._id).get().then(function(p){
-							var programToUpdate = p;
-							programToUpdate.classes = classIDs;
-							programToUpdate.ranks = rankIDs;
-							programToUpdate.put();
-						});
-						$scope.newProgram = {};
-				});
+							$scope.newProgram = {};
+							$scope.newProgram.classes = {};
+							$scope.newProgram.ranks = {};
+					});
+				})(classIDs, rankIDs);
 			});
 		};
 
