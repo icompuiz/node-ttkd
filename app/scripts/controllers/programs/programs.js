@@ -12,6 +12,7 @@ define(['../module'], function(controllers){
 		};
 		$scope.newClass = {};
 		$scope.newRank = {};
+		$scope.allChecked = false;
 
 		$scope.getPrograms = function() {
 			basePrograms.getList().then(function(programs) {
@@ -134,6 +135,22 @@ define(['../module'], function(controllers){
 		$scope.addRank = function() {
 			$scope.newProgram.ranks.push($scope.newRank);
 			$scope.newRank = {};
+		};
+
+		$scope.checkAll = function() {
+			var i;
+			for(i=0; i<$scope.programs.length; i++){
+				$scope.programs[i].selected = $scope.allChecked;
+			}
+		};
+
+		$scope.removeSelected = function() {
+			var i;
+			for(i=0; i<$scope.programs.length; i++) {
+				if($scope.programs[i].selected){
+					$scope.removeProgram($scope.programs[i]);
+				}
+			}
 		};
 	}]);
 });	
