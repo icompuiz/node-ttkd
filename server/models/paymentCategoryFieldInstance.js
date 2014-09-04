@@ -10,6 +10,10 @@ var paymentCategoryFieldInstanceSchema = new Schema({
 		ref: 'PaymentEntry',
 		type: ObjectId
 	}
+	categoryField: {
+		ref: 'PaymentCategoryField',
+		type: ObjectId
+	}
 });
 
 var PaymentCategoryFieldInstance = mongoose.model('PaymentCategoryFieldInstance', paymentCategoryFieldInstanceSchema);
