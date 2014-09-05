@@ -1,5 +1,6 @@
 define(['./module'], function(services) {
 		'use strict';
+
 		services.service('AuthenticationSvc', ['$http', '$rootScope', '$log', '$q',
 				function($http, $rootScope, $log, $q) {
 

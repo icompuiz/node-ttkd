@@ -1,0 +1,110 @@
+h1 Create Program
+br
+
+<<<<<<< HEAD
+.col-md-8.col-sm-8
+	form.form-group
+		.input-group
+			input(type='text', class='form-control', placeholder='Program name' ng-model="newProgram.name")
+			span(class='input-group-addon')
+				span(class='glyphicon glyphicon-ok input-valid')
+
+		h2 Classes
+		table.table
+			tr
+				th Name
+				th Meeting time
+				th Students
+				th
+			tr(ng-repeat='class in newProgram.classes')
+				td 
+					{{class.name}}
+				td
+					a(href='#') M 5:00PM-6:30PM
+				td
+					a(href='#') Students
+				td
+					button.btn.btn-danger.glyphicon.glyphicon-remove.pull-right(type='button' ng-click='removeClassFromProgram(class)')
+			tr
+				td
+					input.form-control(type='text', placeholder='Class name' ng-model='newClass.name')
+				td
+					input.btn.btn-default(type='button', value='Add meeting time')
+				td
+					input.btn.btn-default(type='button', value='Add students')
+				td
+					button.btn.btn-success.glyphicon.glyphicon-plus.pull-right(type='button' ng-click='addClassToProgram(newClass)')
+
+		//.input-group(style='width:90%;')
+		//	input(type='text', class='form-control', placeHolder='Class name' ng-model='newClass.name')
+		//	.input-group-addon
+		//		span(class='glyphicon glyphicon-ok input-valid')
+		//button.btn.btn-default.glyphicon.glyphicon-plus(type='button' ng-click="addClass()")
+
+		h2 Ranks
+		table.table
+			tr
+				th Name
+				th Order 
+				th Sub-ranks
+				th
+			tr(ng-repeat='rank in newProgram.ranks')
+				td 
+					{{rank.name}}
+				td
+					{{rank.order}}
+				td
+					|SUB-RANKS
+				td
+					button.btn.btn-danger.glyphicon.glyphicon-remove.pull-right(type='button' ng-click='removeRankFromProgram(rank)')
+			tr
+				td
+					input.form-control(type='text', placeholder='Rank name' ng-model='newRank.name')
+				td
+					input.form-control(type='text', placeHolder='Rank order' ng-model='newRank.order')
+				td
+					input.btn.btn-default(type='button', value='Add sub-ranks')
+				td
+					button.btn.btn-success.glyphicon.glyphicon-plus.pull-right(type='button' ng-click='addRankToProgram(newClass)')
+
+
+		input.btn.btn-primary.pull-right(type='submit', value='Create New Program', ng-click="addProgram();goToProgramsHome()")
+		input.btn.btn-warning.pull-right(type='reset', value='Cancel', ng-click='goToProgramsHome()')
+
+		div(class='clearfix')
+.col-md-8.col-sm-8
+=======
+form
+	.form-group
+		div(class='input-group')
+			input(type='text', class='form-control', placeholder='Program name' ng-model="newProgram.name")
+			span(class='input-group-addon')
+				span(class='glyphicon glyphicon-ok input-valid')
+	.form-group
+		h2 Classes
+		ul
+			li(ng-repeat='class in newProgram.classes')
+				{{class.name}}
+		div.pull-left(class='input-group', style="width: 90%; padding-right: 10px;")
+			input(type='text', class='form-control', placeHolder='Class name' ng-model='newClass.name')
+			span(class='input-group-addon')
+				span(class='glyphicon glyphicon-ok input-valid')
+		button.pull-left.btn.btn-default(type='button', ng-click="addClass()")
+			span.glyphicon.glyphicon-plus
+
+		div.clearfix
+	.form-group
+		h2 Ranks	
+		ul
+			li(ng-repeat='rank in newProgram.ranks')
+				{{rank.name}}
+		div(class='input-group')
+			input(type='text', class='form-control col-lg-6', placeHolder='Rank name' ng-model='newRank.name')
+			span(class='input-group-addon')
+				button(type='button' class='glyphicon glyphicon-plus' ng-click="addRank()")
+
+	.form-group
+		#specialelement.btn-group.class1.class2.pull-right
+			input.btn.btn-primary(type='submit', value='Create New Program', ng-click="addProgram();goToProgramsHome()")
+			input.btn.btn-warning(type='reset', value='Cancel', ng-click='goToProgramsHome()')
+>>>>>>> b97f1ef246a7aa516124d02107f8981fe14d39b6
