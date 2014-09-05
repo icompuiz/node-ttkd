@@ -1,27 +1,30 @@
 h1 Programs
-button(ng-click='goToAddProgram()')
-	| Create new program
-button(ng-click='removeSelected()')
-	| Remove selected
-table(style='width: 50%' class="table borderless")
-	tr 
-		th
-			input(type='checkbox' ng-model='allChecked' ng-change='checkAll()')
-		th Name
-		th Classes
-		th Ranks
-		th Actions
-	tr(ng-repeat='program in programs')
-		td
-			input(type='checkbox' ng-model='program.selected')
-		td {{program.name}}
-		td
-			div(ng-repeat='className in program.classNames') 
-				{{className}}
-		td
-			div(ng-repeat='rankName in program.rankNames')
-				{{rankName}}
-		td
-			button(class='btn btn-small' ng-click='removeProgram(program)')
-				span(class='glyphicon glyphicon-remove')
+.col-md-8.col-sm-8
+	button.btn.btn-primary(ng-click='goToAddProgram()')
+		| Create new program
+	button.btn.btn-default(ng-click='removeSelected()')
+		| Remove selected
+	table(class="table borderless")
+		tr 
+			th
+				input(type='checkbox' ng-model='allChecked' ng-change='checkAll()')
+			th Name
+			th Classes
+			th Ranks
+			th Actions
+		tr(ng-repeat='program in programs')
+			td
+				input(type='checkbox' ng-model='program.selected')
+			td {{program.name}}
+			td
+				div(ng-repeat='className in program.classNames') 
+					{{className}}
+			td
+				div(ng-repeat='rankName in program.rankNames')
+					{{rankName}}
+			td
+				button.btn.btn-small.btn-danger(ng-click='removeProgram(program)')
+					span.glyphicon.glyphicon-remove
+				button.btn.btn-small.btn-default
+					span.glyphicon.glyphicon-edit
 

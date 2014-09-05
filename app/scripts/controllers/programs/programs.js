@@ -49,9 +49,41 @@ define(['../module'], function(controllers){
 		$scope.getPrograms();
 
 		$scope.removeProgram = function(program) {
-			Restangular.one('programs', program._id).remove().then(function() {
-				$scope.programs = _.without($scope.programs, program);
-			});
+			async.parallel([
+				function(callback, err) {
+					//Remove program's classes
+					async.each(program.classes,
+						function(classToRemove, callback) {
+							//Remove classes
+							Restangular.one('classes', classToRemove._id).remove().then(function() {
+								callback();
+							});
+						},
+						function(err) {
+							callback();
+						}
+					);
+				},
+				function(callback, err) {
+					//Remove program's ranks
+					async.each(program.ranks,
+						function(rankToRemove, callback) {
+							//Remove classes
+							Restangular.one('ranks', rankToRemove._id).remove().then(function() {
+								callback();
+							});
+						},
+						function(err) {
+							callback();
+						}
+					);
+				}, 
+				function(err) {
+					//Remove program
+					Restangular.one('programs', program._id).remove().then(function() {
+					$scope.programs = _.without($scope.programs, program);
+				});
+			}]);
 		};
 
 		$scope.goToAddProgram = function() {
@@ -127,12 +159,12 @@ define(['../module'], function(controllers){
 			});
 		};
 
-		$scope.addClass = function() {
+		$scope.addClassToProgram = function() {
 			$scope.newProgram.classes.push($scope.newClass);
 			$scope.newClass = {};
 		};
 
-		$scope.addRank = function() {
+		$scope.addRankToProgram = function() {
 			$scope.newProgram.ranks.push($scope.newRank);
 			$scope.newRank = {};
 		};
@@ -151,6 +183,20 @@ define(['../module'], function(controllers){
 					$scope.removeProgram($scope.programs[i]);
 				}
 			}
+		};
+
+		$scope.removeClassFromProgram = function(classToRemove) {
+			$scope.newProgram.classes = _.without($scope.newProgram.classes, classToRemove);
+		};
+
+		$scope.removeRankFromProgram = function(rankToRemove) {
+			$scope.newProgram.ranks = _.without($scope.newProgram.ranks, rankToRemove);
+		}
+
+		$scope.removeClass = function(classToRemove) {
+			Restangular.one('classes', classToRemove._id).remove().then(function() {
+				$scope.classes = _.without($scope.classes, classToRemove);
+			});
 		};
 	}]);
 });	
