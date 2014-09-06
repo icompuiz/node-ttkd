@@ -26,6 +26,22 @@ define(['../module'], function(controllers) {
 				}
 			}
 
+			$scope.getStepOrder = function(key) {
+				return wizard_steps_order.indexOf(key);
+			}
+
+			$scope.displayPreviousBtn = function() {
+				return ($scope.getStepOrder($scope.current_step.id) - 1 >= 0);
+			}
+
+			$scope.displayContinueBtn = function() {
+				return ($scope.getStepOrder($scope.current_step.id) + 1 < wizard_steps_order.length);
+			}
+
+			$scope.displaySubmitBtn = function() {
+				return ($scope.getStepOrder($scope.current_step.id) + 1 == wizard_steps_order.length);
+			}
+
 			$scope.getStepName = function(key) {
 				return wizard_steps[key].name;
 			}
@@ -37,6 +53,7 @@ define(['../module'], function(controllers) {
 			function setCurrentStep(key){
 				$scope.current_step = wizard_steps[$scope.getStep(key)];
 				enableStep($scope.current_step.id);
+				$state.go($scope.current_step.id);
 			}
 
 			function enableStep(key) {
@@ -53,7 +70,6 @@ define(['../module'], function(controllers) {
 
 			// Set the current step in the wizard
 			setCurrentStep($state.current.name);
-			$state.go($scope.current_step.id);
 
 			// Help and validation text
 			$scope.first_name_help = {type: 'info', value: 'Enter the student\'s first name.'};
@@ -80,14 +96,21 @@ define(['../module'], function(controllers) {
 			$scope.initDate = new Date('2014-01-01');
 			$scope.format = 'MMMM dd, yyyy';
 
+			$scope.previous = function() {
+				var current_step_index = $scope.getStepOrder($scope.current_step.id);
 
+				if(current_step_index - 1 >= 0) {
+					setCurrentStep(wizard_steps_order[current_step_index - 1]);
+				} else {
+					//submit to service
+				}
+			};
 
 			$scope.submit = function() {
-				var current_step_index = wizard_steps_order.indexOf($scope.current_step.id);
+				var current_step_index = $scope.getStepOrder($scope.current_step.id);
 
 				if(current_step_index + 1 < wizard_steps_order.length) {
 					setCurrentStep(wizard_steps_order[current_step_index + 1]);
-					$state.go($scope.current_step.id);
 				} else {
 					//submit to service
 				}
@@ -96,7 +119,7 @@ define(['../module'], function(controllers) {
 
 			$scope.goToStep = function(key){
 				if(wizard_steps[key].enabled) {
-					$state.go(key);
+					setCurrentStep(key);
 				}
 			};
 
