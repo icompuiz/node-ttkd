@@ -3,8 +3,12 @@ h1 Register Student - Enter {{current_step.name}}
 div.row
 	div.col-md-3
 		ul.nav.nav-pills.nav-stacked
-			li(ng-repeat="step in wizard_steps", ng-class="{'active':current_step === step, 'disabled':step.enabled != true}")
-				a(href='{{step.id}}') {{step.name}}
+			li(ng-repeat="step in wizard_steps", ng-class="{'active':current_step.id === step, 'disabled':isStepEnabled(step) != true}")
+				a(ng-click='goToStep(step)') {{getStepName(step)}}
 
 	div.col-md-9
 		div.wizard_body.panel(ui-view="create-student-wzd-body")
+
+		div.form_controls.pull-right
+			button.btn.btn-danger(type='reset') Reset
+			button.btn.btn-primary(type='button', ng-click='submit()') Next

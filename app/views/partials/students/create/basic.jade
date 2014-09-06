@@ -1,4 +1,4 @@
-form(ng-submit='submit()')
+form
 	div.input-group
 		input.form-control(type='text', placeholder='First name')
 		span.input-group-addon
@@ -19,9 +19,5 @@ form(ng-submit='submit()')
 		span.input-group-btn
 			button.btn.btn-default(type='button', ng-click="open($event)")
 				i.glyphicon.glyphicon-calendar
-
-	div.form_controls.pull-right
-		button.btn.btn-danger(type='reset') Reset
-		button.btn.btn-primary(type='submit') Next
 
 	div(class='clearfix')

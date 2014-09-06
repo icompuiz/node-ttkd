@@ -39,7 +39,7 @@ define(['../module'], function (states) {
         });
 
         $stateProvider.state('admin.students.create.basic', {
-            url: '/students/create/basic',
+            url: '/basic',
             views: {
                 'create-student-wzd-body': {
                     templateUrl: 'partials/students/create/basic',
@@ -49,7 +49,7 @@ define(['../module'], function (states) {
         });
 
         $stateProvider.state('admin.students.create.class', {
-            url: '/students/create/class',
+            url: '/class',
             views: {
                 'create-student-wzd-body': {
                     templateUrl: 'partials/students/create/class',
@@ -59,7 +59,7 @@ define(['../module'], function (states) {
         });
 
         $stateProvider.state('admin.students.create.photo', {
-            url: '/students/create/photo',
+            url: '/photo',
             views: {
                 'create-student-wzd-body': {
                     templateUrl: 'partials/students/create/photo',
@@ -69,7 +69,7 @@ define(['../module'], function (states) {
         });
 
         $stateProvider.state('admin.students.create.signature', {
-            url: '/students/create/signature',
+            url: '/signature',
             views: {
                 'create-student-wzd-body': {
                     templateUrl: 'partials/students/create/signature',
