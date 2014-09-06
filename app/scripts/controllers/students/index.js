@@ -2,5 +2,6 @@
  * Attach all state definitions
  **/
 define([
-	'./students'
+	'./students',
+	'./create'
 ], function () {});
