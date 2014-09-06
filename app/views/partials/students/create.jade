@@ -1,9 +1,9 @@
-h1 Register Student - Enter {{current_step.name}}
+h1 Register Student - Enter {{currentStep.name}}
 
 div.row
 	div.col-md-3
 		ul.nav.nav-pills.nav-stacked.wizard-steps
-			li(ng-repeat="step in wizard_steps", ng-class="{'active':current_step.id === step, 'disabled':isStepEnabled(step) != true}")
+			li(ng-repeat="step in wizardSteps", ng-class="{'active':currentStep.id === step, 'disabled':isStepEnabled(step) != true}")
 				a(ng-click='goToStep(step)', href="/admin/students/create") {{getStepName(step)}}
 
 	div.col-md-9
