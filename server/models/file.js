@@ -29,7 +29,7 @@ var copyFile = function(file, doneCopyingFile) {
                 'content_type': file.type
             };
 
-            var gridStore = GridStore($mongoose.connection.db, new ObjectId(), file.name, 'w', options);
+            var gridStore = new GridStore($mongoose.connection.db, new ObjectId(), file.name, 'w', options);
             gridStore.writeFile(file.path, function(err, storedFile) {
                 if (err) {
                     console.log('model::file::copyFile::gsWriteFile::error');
@@ -61,7 +61,7 @@ var download = function(fileId, sendStream) {
     console.log('model::file::download::statics::onFileStreamReady::enter', fileId);
 
 
-    var gridStore = GridStore($mongoose.connection.db, fileId, 'r', {
+    var gridStore = new GridStore($mongoose.connection.db, fileId, 'r', {
         root: prefix
     });
 
@@ -91,7 +91,7 @@ var deleteFile = function(fileId, doneDeletingFile) {
 
     }
 
-    var gridStore = GridStore($mongoose.connection.db, fileId, 'r', {
+    var gridStore = new GridStore($mongoose.connection.db, fileId, 'r', {
         root: prefix
     });
 

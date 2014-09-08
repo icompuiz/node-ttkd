@@ -1,5 +1,6 @@
+'use strict';
+
 var $mongoose = require('mongoose'),
-    extend = require('mongoose-schema-extend'),
     ContentTypeProperty = require('./contentTypeProperty'),
     Model = require('./_model');
 
