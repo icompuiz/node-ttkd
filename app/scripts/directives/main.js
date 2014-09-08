@@ -7,4 +7,4 @@ define(['./module'], function (directives) {
     'use strict';
 
     return directives.config([function() {}]);
-});
+  });

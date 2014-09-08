@@ -9,20 +9,16 @@ define(['./module'], function (controllers) {
 		$scope.submit = function() {
 
 			AuthenticationSvc.login({
-							username: $scope.username,
-							password: $scope.password
-						}).then(function() {
+				  username: $scope.username,
+				  password: $scope.password
+			  }).then(function() {
+				  $state.go('admin.dashboard.home');
 
-				$state.go('admin.dashboard.home');
+			  }, function(error) {
 
-			}, function(error) {
-
-				$scope.statusMessage = error.data.replace('Unauthorized: ', '');
-
-			});
-
+				  $scope.statusMessage = error.data.replace('Unauthorized: ', '');
+			  });
 		};
-
 		if (AuthenticationSvc.isLoggedIn()) {
 			$state.go('admin.dashboard.home');
 		}
