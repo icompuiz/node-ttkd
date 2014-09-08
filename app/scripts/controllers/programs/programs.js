@@ -7,15 +7,15 @@ define(['../module'], function(controllers){
 
 
 		$scope.programs = {};
-		$scope.newProgram = {
+		$scope.model = {
 			classes: [],
 			ranks: []
 		};
 
 		if (!ProgramFactory.current) {
-			$scope.newProgram = ProgramFactory.create();
+			$scope.model = ProgramFactory.init($scope.model);
 		} else {
-			$scope.newProgram = ProgramFactory.current;
+			$scope.model = ProgramFactory.current;
 		}
 
 
@@ -73,7 +73,7 @@ define(['../module'], function(controllers){
 
 		$scope.addProgram = function() {
 			var programToAdd = {
-				name: $scope.newProgram.name
+				name: $scope.model.name
 			};
 			//POST new program
 			basePrograms.post(programToAdd).then(function(programAdded) {
@@ -84,7 +84,7 @@ define(['../module'], function(controllers){
 					async.parallel([
 						function(callback, err) {
 							//Add classes
-							async.each($scope.newProgram.classes,
+							async.each($scope.model.classes,
 								function(classItem, callback) {
 									var classToAdd = {
 										name: classItem.name,
@@ -103,7 +103,7 @@ define(['../module'], function(controllers){
 						},
 						function(callback, err) {
 							//Add classes
-							async.each($scope.newProgram.ranks,
+							async.each($scope.model.ranks,
 								function(rankItem, callback) {
 									var rankToAdd = {
 										name: rankItem.name,
@@ -128,21 +128,21 @@ define(['../module'], function(controllers){
 								programToUpdate.ranks = rankIDs;
 								programToUpdate.put();
 							});
-							$scope.newProgram = {};
-							$scope.newProgram.classes = {};
-							$scope.newProgram.ranks = {};
+							$scope.model = {};
+							$scope.model.classes = {};
+							$scope.model.ranks = {};
 					});
 				})(classIDs, rankIDs);
 			});
 		};
 
 		$scope.addClass = function() {
-			$scope.newProgram.classes.push($scope.newClass);
+			$scope.model.classes.push($scope.newClass);
 			$scope.newClass = {};
 		};
 
 		$scope.addRank = function() {
-			$scope.newProgram.ranks.push($scope.newRank);
+			$scope.model.ranks.push($scope.newRank);
 			$scope.newRank = {};
 		};
 

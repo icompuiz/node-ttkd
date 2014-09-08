@@ -1,4 +1,4 @@
 /**
  * Attach all state definitions
  **/
-define(['./main', './auth', './student'], function () {});
+define(['./main', './auth', './models/index'], function () {});

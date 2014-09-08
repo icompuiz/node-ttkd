@@ -3,13 +3,13 @@ h1 Create Program
 form
 	.form-group
 		div(class='input-group')
-			input(type='text', class='form-control', placeholder='Program name' ng-model="newProgram.name")
+			input(type='text', class='form-control', placeholder='Program name' ng-model="model.name")
 			span(class='input-group-addon')
 				span(class='glyphicon glyphicon-ok input-valid')
 	.form-group
 		h2 Classes
 		ul
-			li(ng-repeat='class in newProgram.classes')
+			li(ng-repeat='class in model.classes')
 				{{class.name}}
 		div.pull-left(class='input-group', style="width: 90%; padding-right: 10px;")
 			input(type='text', class='form-control', placeHolder='Class name' ng-model='newClass.name')
@@ -22,7 +22,7 @@ form
 	.form-group
 		h2 Ranks	
 		ul
-			li(ng-repeat='rank in newProgram.ranks')
+			li(ng-repeat='rank in model.ranks')
 				{{rank.name}}
 		div(class='input-group')
 			input(type='text', class='form-control col-lg-6', placeHolder='Rank name' ng-model='newRank.name')

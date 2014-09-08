@@ -24,14 +24,28 @@ define(['../module'], function(controllers) {
 
 			// Create student object
 
+			$scope.model = {
+				firstName: 'Elijah',
+				lastName: 'Pope',
+				emailAddress: 'epope@ttkd.com',
+				birthday: new Date('July 22, 1991'),
+				address: {
+					street: '123 Gumdrop Ln. Apt 53',
+					city: 'Rochester',
+					state: 'NY',
+					zip: '14623'
+				},
+				phone: {
+					home: '5852471236',
+					cell: '5857452698'
+				},
+			};
 
-
-
-
-
-
-
-
+			if (!StudentSvc.current) {
+				$scope.model = StudentSvc.init($scope.model);
+			} else {
+				$scope.model = StudentSvc.current;
+			}
 
 			$scope.getStep = function(key) {
 				if(key in wizardSteps) {
@@ -99,17 +113,18 @@ define(['../module'], function(controllers) {
 
 			// Date of birth calendar
 			$scope.today = function() {
-					$scope.dt = new Date();
+					$scope.model.birthday = new Date();
 			};
 			//$scope.today();
 			$scope.clear = function() {
-					$scope.dt = null;
+					$scope.model.birthday = null;
 			};
 			$scope.open = function($event) {
 					$event.preventDefault();
 					$event.stopPropagation();
 					$scope.opened = true;
 			};
+
 			$scope.dateOptions = {
 					formatYear: 'yy',
 					startingDay: 1
@@ -127,16 +142,17 @@ define(['../module'], function(controllers) {
 				}
 			};
 
+			function onSaveSuccess() {
+				console.log('Student Saved Successfully');
+			}
+
 			$scope.submit = function() {
 				var currentStepIndex = $scope.getStepOrder($scope.currentStep.id);
 
 				if(currentStepIndex + 1 < wizardStepsOrder.length) {
 					setCurrentStep(wizardStepsOrder[currentStepIndex + 1]);
 				} else {
-					//submit to service
-
-					var student = {firstName: 'test'};
-					StudentSvc.createStudent(student);
+					StudentSvc.create(true).then(onSaveSuccess);
 				}
 
 			};

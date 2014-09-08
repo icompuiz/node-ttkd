@@ -11,15 +11,17 @@ define('app', [
     './controllers/index',
     './directives/index',
     './services/index',
+    './factories/index',
     './states/index'
 ], function(ng) {
     'use strict';
 
     return ng.module('ttkd', [
-        'ttkd.controllers',
         'restangular',
+        'ttkd.controllers',
         'ttkd.directives',
         'ttkd.services',
+        'ttkd.factories',
         'ttkd.states',
         'ui.bootstrap',
         'ui.bootstrap.tpls',
