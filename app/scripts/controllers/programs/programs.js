@@ -2,27 +2,12 @@ define(['../module'], function(controllers){
 	'use strict';
 	controllers.controller('ProgramsCtrl', ['$scope', '$state', 'Restangular', 'ProgramSvc', 'ClassSvc', 'RankSvc', 
 		function($scope, $state, Restangular, ProgramSvc, ClassSvc, RankSvc) {
-			$scope.newClass = {};
-			$scope.newRank = {};
 			$scope.allChecked = false;
-			$scope.newProgram = {};
-			$scope.editing = false;
-			$scope.viewing = false;
+			$scope.currentProgram = {};
 
-			if (ProgramSvc.viewing && ProgramSvc.current) {
-				$scope.viewing = ProgramSvc.current;
+			if (ProgramSvc.current) {
+				$scope.currentProgram = ProgramSvc.current;
 			} 
-			if (ProgramSvc.editing && ProgramSvc.current) {
-				$scope.editing = ProgramSvc.current;
-			} 
-			if (ProgramSvc.creating && ProgramSvc.current) {
-				$scope.newProgram = ProgramSvc.current;
-			} else if (ProgramSvc.creating && !ProgramSvc.current) {
-				$scope.newProgram = ProgramSvc.init({
-					classes: [],
-					ranks: []
-				});
-			}
 
 			$scope.getPrograms = function() {
 				ProgramSvc.list().then(function(programs) {
@@ -87,97 +72,13 @@ define(['../module'], function(controllers){
 				}]);
 			};
 
-			$scope.goToAddProgram = function() {
-				ProgramSvc.creating = true;
+			$scope.goToCreateProgram = function() {
 				$state.go('admin.programs.create');
 			};
 
 			$scope.goToProgramsHome = function() {
-				ProgramSvc.viewing = false;
-				ProgramSvc.editing = false;
 				ProgramSvc.reset();
 				$state.go('admin.programs.home');
-			};
-
-			$scope.addProgram = function() {
-				var programToAdd = {
-					name: $scope.newProgram.name
-				};
-				//POST new program
-				ProgramSvc.init(programToAdd);
-				ProgramSvc.create(true).then(function(programAdded) {
-					var classIDs = [],
-						rankIDs = [];
-					//Add classes to db
-					(function(classIDs, rankIDs){
-						async.parallel([
-							function(callback, err) {
-								//Add classes
-								async.each($scope.newProgram.classes,
-									function(classItem, callback) {
-										var classToAdd = {
-											name: classItem.name,
-											program: programAdded._id
-										};
-										//POST each new class and add object ID to array
-										ClassSvc.init(classToAdd);
-										ClassSvc.create(true).then(function(classAdded, err){
-											classIDs.push(classAdded._id);
-											callback();
-										});
-									},
-									function(err) {
-										callback();
-									}
-								);
-							},
-							function(callback, err) {
-								//Add classes
-								async.each($scope.newProgram.ranks,
-									function(rankItem, callback) {
-										var rankToAdd = {
-											name: rankItem.name,
-											rankOrder: rankItem.rankOrder,
-											program: programAdded._id
-										};
-										//POST each new class and add object ID to array
-										RankSvc.init(rankToAdd)
-										RankSvc.create().then(function(rankAdded, err){
-											rankIDs.push(rankAdded._id);
-											callback();
-										});
-									},
-									function(err) {
-										callback();
-									}
-								);
-							}],
-							function(err) {
-								//Add class and rank references and update program
-								ProgramSvc.read(programAdded._id, {}, true).get().then(function(p){
-									var updates = {
-										classes: classIDs,
-										ranks: rankIDs
-									};
-									ProgramSvc.update(updates).then(function(updated) {									
-										$scope.newProgram = {};
-										$scope.newProgram.classes = {};
-										$scope.newProgram.ranks = {};
-									});
-								});
-						});
-					})(classIDs, rankIDs);
-				});
-			};
-
-			$scope.addClassToProgram = function(program) {
-				program.classes.push($scope.newClass);
-				$scope.newClass = {};
-			};
-
-			$scope.addRankToProgram = function(program) {
-				program.ranks.push($scope.newRank);
-				$scope.newRank = {};
 			};
 
 			$scope.checkAll = function() {
@@ -196,33 +97,38 @@ define(['../module'], function(controllers){
 				}
 			};
 
-			$scope.removeClassFromProgram = function(classToRemove, program) {
-				program.classes = _.without(program.classes, classToRemove);
-			};
-
-			$scope.removeRankFromProgram = function(rankToRemove, program) {
-				program.ranks = _.without(program.ranks, rankToRemove);
-			};
-
-			$scope.editProgram = function(program) {
+			$scope.goToEditProgram = function(program) {
 				ProgramSvc.init(program);
-				ProgramSvc.editing = true;
 				$state.go('admin.programs.edit');
 			};
 
-			$scope.viewProgram = function(program) {
+			$scope.goToViewProgram = function(program) {
 				ProgramSvc.init(program);
-				ProgramSvc.viewing = true;
 				$state.go('admin.programs.view');
 			};
 
 			$scope.saveProgram = function(program) {
-				var programToSave = {
-					//TODO transfer properties and save changed object to database
-				}
+				var classIDs = [],
+					rankIDs = [];
 
-				ProgramSvc.editing = false;
-				ProgramSvc.reset();
-			}
+				(function(classIDs, rankIDs) {
+					async.each(program.classes,
+						function(classItem, callback) {
+							ClassSvc.init(classItem);
+							ClassSvc.save().then(function(result) {
+								classIDs.push(result._id);
+								callback();
+							});
+						},
+						function(err) {
+							program.classes = classIDs;
+							program.ranks = [];
+							ProgramSvc.save().then(function(result) {
+								console.log('post-save');
+							});
+							$state.go('admin.programs.home');
+						});
+				})(classIDs, rankIDs);
+			};
 	}]);
 });	

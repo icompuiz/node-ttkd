@@ -4,7 +4,7 @@ br
 .col-md-8.col-sm-8
 	form.form-group
 		.input-group
-			input(type='text', class='form-control', placeholder='Program name' ng-model="editing.name")
+			input(type='text', class='form-control', placeholder='Program name' ng-model="currentProgram.name")
 			span(class='input-group-addon')
 				span(class='glyphicon glyphicon-ok input-valid')
 
@@ -15,7 +15,7 @@ br
 				th.col-md-4.col-sm-4.col-lg-4.col-xs-4 Meeting time
 				th.col-md-4.col-sm-4.col-lg-4.col-xs-4 Students
 				th
-			tr(ng-repeat='class in editing.classes')
+			tr(ng-repeat='class in currentProgram.classes')
 				td 
 					{{class.name}}
 				td
@@ -23,7 +23,7 @@ br
 				td
 					a(href='#') Students
 				td
-					button.btn.btn-danger.glyphicon.glyphicon-remove.pull-right(type='button' ng-click='removeClassFromProgram(class, editing)')
+					button.btn.btn-danger.glyphicon.glyphicon-remove.pull-right(type='button' ng-click='removeClass(class)')
 			tr
 				td
 					input.form-control(type='text', placeholder='Class name' ng-model='newClass.name')
@@ -32,7 +32,7 @@ br
 				td
 					input.btn.btn-default(type='button', value='Add students')
 				td
-					button.btn.btn-success.glyphicon.glyphicon-plus.pull-right(type='button' ng-click='addClassToProgram(editing)')
+					button.btn.btn-success.glyphicon.glyphicon-plus.pull-right(type='button' ng-click='addClass()')
 
 		h2 Ranks
 		table.table
@@ -41,7 +41,7 @@ br
 				th.col-md-4.col-sm-4.col-lg-4.col-xs-4 Order 
 				th.col-md-4.col-sm-4.col-lg-4.col-xs-4 Sub-ranks
 				th
-			tr(ng-repeat='rank in editing.ranks')
+			tr(ng-repeat='rank in currentProgram.ranks')
 				td 
 					{{rank.name}}
 				td
@@ -49,7 +49,7 @@ br
 				td
 					a(href='#') SUB-RANKS
 				td
-					button.btn.btn-danger.glyphicon.glyphicon-remove.pull-right(type='button' ng-click='removeRankFromProgram(rank, editing)')
+					button.btn.btn-danger.glyphicon.glyphicon-remove.pull-right(type='button' ng-click='removeRank(rank)')
 			tr
 				td
 					input.form-control(type='text', placeholder='Rank name' ng-model='newRank.name')
@@ -58,11 +58,11 @@ br
 				td
 					input.btn.btn-default(type='button', value='Add sub-ranks')
 				td
-					button.btn.btn-success.glyphicon.glyphicon-plus.pull-right(type='button' ng-click='addRankToProgram(editing)')
+					button.btn.btn-success.glyphicon.glyphicon-plus.pull-right(type='button' ng-click='addRank()')
 
 
-		input.btn.btn-primary.pull-right(type='submit', value='Save Program', ng-click='saveProgram(editing)')
-		input.btn.btn-warning.pull-right(type='reset', value='Cancel', ng-click='goToProgramsHome()')
+		input.btn.btn-primary.pull-right(type='submit', value='Save Program', ng-click='saveProgram()')
+		input.btn.btn-warning.pull-right(type='reset', value='Cancel', ng-click='cancelEdit()')
 
 		div(class='clearfix')
 .col-md-8.col-sm-8

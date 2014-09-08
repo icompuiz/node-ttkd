@@ -66,9 +66,17 @@ define(['./module'], function (factories) {
 				return promise;
 			};
 
-			_this.update = function update(options) {
+			_this.update = function update(options, beforeSave) {
+				
+				beforeSave = beforeSave || angular.noop;
+
 				if (_this.current._id && _.isFunction(_this.current.put)) {
-					return _this.current.put(options);
+
+					var clone = _this.current.clone();
+
+					beforeSave(clone);
+
+					return clone.put(options);
 				}
 				return false;
 			};
@@ -86,13 +94,14 @@ define(['./module'], function (factories) {
 				return Endpoint.endpoint.getList(options);
 			};
 
-			_this.save = function save() {
+			_this.save = function save(beforeSave) {
+
 				var promise = false;
 				if (_this.current) {
 
 					if (_this.current._id) {
 						// put (update)
-						promise = _this.update();
+						promise = _this.update(null, beforeSave);
 					} else {
 						// post (new)
 						promise = _this.create();

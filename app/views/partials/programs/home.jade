@@ -1,6 +1,6 @@
 h1 Programs
 .col-md-8.col-sm-8
-	button.btn.btn-primary(ng-click='goToAddProgram()')
+	button.btn.btn-primary(ng-click='goToCreateProgram()')
 		| Create new program
 	button.btn.btn-default(ng-click='removeSelected()')
 		| Remove selected
@@ -23,9 +23,9 @@ h1 Programs
 				div(ng-repeat='rank in program.ranks')
 					{{rank.name}}
 			td
-				button.btn.btn-small.btn-info(ng-click='viewProgram(program)')
+				button.btn.btn-small.btn-info(ng-click='goToViewProgram(program)')
 					span.glyphicon.glyphicon-eye-open
-				button.btn.btn-small.btn-default(ng-click='editProgram(program)')
+				button.btn.btn-small.btn-default(ng-click='goToEditProgram(program)')
 					span.glyphicon.glyphicon-edit
 				button.btn.btn-small.btn-danger(ng-click='removeProgram(program)')
 					span.glyphicon.glyphicon-remove

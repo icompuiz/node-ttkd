@@ -33,7 +33,7 @@ define(['../module'], function (states) {
             views: {
                 'section-body': {
                     templateUrl: 'partials/programs/create',
-                    controller: 'ProgramsCtrl'
+                    controller: 'CreateProgramCtrl'
                 }
             }
         });
@@ -43,7 +43,7 @@ define(['../module'], function (states) {
             views: {
                 'section-body': {
                     templateUrl: 'partials/programs/edit',
-                    controller: 'ProgramsCtrl'
+                    controller: 'EditProgramCtrl'
                 }
             }
         });

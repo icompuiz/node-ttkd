@@ -1,4 +1,4 @@
-h1 {{viewing.name}}
+h1 {{currentProgram.name}}
 br
 
 .col-md-8.col-sm-8
@@ -8,7 +8,7 @@ br
 			th.col-md-4.col-sm-4.col-lg-4.col-xs-4 Name
 			th.col-md-4.col-sm-4.col-lg-4.col-xs-4 Meeting time
 			th.col-md-4.col-sm-4.col-lg-4.col-xs-4 Students
-		tr(ng-repeat='class in viewing.classes')
+		tr(ng-repeat='class in currentProgram.classes')
 			td 
 				{{class.name}}
 			td
@@ -22,7 +22,7 @@ br
 			th.col-md-4.col-sm-4.col-lg-4.col-xs-4 Name
 			th.col-md-4.col-sm-4.col-lg-4.col-xs-4 Order 
 			th.col-md-4.col-sm-4.col-lg-4.col-xs-4 Sub-ranks
-		tr(ng-repeat='rank in viewing.ranks')
+		tr(ng-repeat='rank in currentProgram.ranks')
 			td 
 				{{rank.name}}
 			td
