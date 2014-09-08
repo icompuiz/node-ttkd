@@ -3,7 +3,7 @@
 define(['./module'], function (factories) {
 	'use strict';
 
-	factories.factory('ModelFty', [function() {
+	factories.factory('ModelFactory', ['EndpointFactory', function(EndpointFactory) {
 
 		function Model(Endpoint) {
 			
@@ -107,7 +107,8 @@ define(['./module'], function (factories) {
 		}
 		
 		return {
-			create: function create(endpoint, defaults) {
+			create: function create(endpointName, defaults) {
+				var endpoint = EndpointFactory.create(endpointName);
 				return new Model(endpoint, defaults);
 			}
 		};

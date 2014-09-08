@@ -1,7 +1,7 @@
 define(['./module'], function (factories) {
 	'use strict';
 
-	factories.factory('EndpointFty', ['Restangular', function(Restangular) {
+	factories.factory('EndpointFactory', ['Restangular', function(Restangular) {
 
 		function Endpoint(endpointName) {
 
