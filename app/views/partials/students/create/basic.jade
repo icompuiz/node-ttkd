@@ -21,11 +21,6 @@ form
 				span.input-group-addon
 					span.glyphicon(popover="{{cityHelp.value}}", ng-class="{'glyphicon-info-sign': cityHelp.type=='info', 'glyphicon-remove': cityHelp.type=='error', 'glyphicon-ok': cityHelp.type=='valid'}", popover-trigger="mouseenter", popover-placement="left")
 		div.col-md-3
-			div.input-group
-				select.form-control(ng-model="model.address.state")
-					option(selected) NY
-				span.input-group-addon
-					span.glyphicon(popover="{{stateHelp.value}}", ng-class="{'glyphicon-info-sign': stateHelp.type=='info', 'glyphicon-remove': stateHelp.type=='error', 'glyphicon-ok': stateHelp.type=='valid'}", popover-trigger="mouseenter", popover-placement="left")
 			select.form-control
 				option(selected) NY
 		div.col-md-3
