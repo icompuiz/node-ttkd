@@ -26,6 +26,8 @@ form
 					option(selected) NY
 				span.input-group-addon
 					span.glyphicon(popover="{{stateHelp.value}}", ng-class="{'glyphicon-info-sign': stateHelp.type=='info', 'glyphicon-remove': stateHelp.type=='error', 'glyphicon-ok': stateHelp.type=='valid'}", popover-trigger="mouseenter", popover-placement="left")
+			select.form-control
+				option(selected) NY
 		div.col-md-3
 			div.input-group
 				input.form-control(type='text', placeholder='Zip code', ng-model="model.address.zip")

@@ -1,6 +1,6 @@
-var $mongoose = require('mongoose'),
-	Schema = $mongoose.Schema
-	$extend = require('mongoose-schema-extend');
+'use strict';
+
+var $mongoose = require('mongoose');
 
 var AccessControlEntry = require('./accessControlEntry.js');
 

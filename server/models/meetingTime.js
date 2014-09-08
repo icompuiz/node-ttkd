@@ -1,8 +1,7 @@
 'use strict';
 
 var mongoose = require('mongoose'),
-	Schema = mongoose.Schema,
-	ObjectId = mongoose.Schema.Types.ObjectId;
+	Schema = mongoose.Schema;
 
 var meetingTimeSchema = new Schema({
 	startDate: Date,
