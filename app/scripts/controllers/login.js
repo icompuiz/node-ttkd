@@ -1,15 +1,17 @@
+'use strict';
+
 define(['./module'], function (controllers) {
 
 	controllers.controller('LoginCtrl', ['$scope','$http', '$log', '$state','AuthenticationSvc', function($scope, $http, $log, $state, AuthenticationSvc) {
 
-		$scope.statusMessage = "";
+		$scope.statusMessage = '';
 
 		$scope.submit = function() {
 
 			AuthenticationSvc.login({
 							username: $scope.username,
 							password: $scope.password
-						}).then(function(data) {
+						}).then(function() {
 
 				$state.go('admin.dashboard.home');
 
@@ -19,7 +21,7 @@ define(['./module'], function (controllers) {
 
 			});
 
-		}
+		};
 
 		if (AuthenticationSvc.isLoggedIn()) {
 			$state.go('admin.dashboard.home');
