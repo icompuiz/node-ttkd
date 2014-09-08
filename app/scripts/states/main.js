@@ -6,22 +6,21 @@
 define(['./module'], function (states) {
     'use strict';
 
-    return states.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $urlRouterProvider) {
+    return states.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider) {
 
-        $stateProvider.state('admin', {
-            url: '/admin',
-            templateUrl: 'partials/adminBase',
-            controller: function($rootScope, $state, AuthenticationSvc) {
+      $stateProvider.state('admin', {
+        url: '/admin',
+        templateUrl: 'partials/adminBase',
+        controller: function($rootScope, $state, AuthenticationSvc) {
 
-                if (!AuthenticationSvc.isLoggedIn()) {
-                    $state.go('login');
-                } else {
-                    if ($state.current.name === 'admin') {
-                        $state.go('admin.dashboard.home');
-                    }
-                }
+            if (!AuthenticationSvc.isLoggedIn()) {
+              $state.go('login');
+            } else {
+              if ($state.current.name === 'admin') {
+                $state.go('admin.dashboard.home');
+              }
             }
-        });
-
+          }
+      });
     }]);
-});
+  });
