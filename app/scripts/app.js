@@ -10,6 +10,7 @@ define('app', [
     'restangular',
     './controllers/index',
     './directives/index',
+    './factories/index',
     './services/index',
     './states/index'
 ], function(ng) {
@@ -19,6 +20,7 @@ define('app', [
         'ttkd.controllers',
         'restangular',
         'ttkd.directives',
+        'ttkd.factories',
         'ttkd.services',
         'ttkd.states',
         'ui.bootstrap',

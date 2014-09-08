@@ -17,14 +17,16 @@ h1 Programs
 				input(type='checkbox' ng-model='program.selected')
 			td {{program.name}}
 			td
-				div(ng-repeat='className in program.classNames') 
-					{{className}}
+				div(ng-repeat='class in program.classes') 
+					{{class.name}}
 			td
-				div(ng-repeat='rankName in program.rankNames')
-					{{rankName}}
+				div(ng-repeat='rank in program.ranks')
+					{{rank.name}}
 			td
+				button.btn.btn-small.btn-info(ng-click='viewProgram(program)')
+					span.glyphicon.glyphicon-eye-open
+				button.btn.btn-small.btn-default(ng-click='editProgram(program)')
+					span.glyphicon.glyphicon-edit
 				button.btn.btn-small.btn-danger(ng-click='removeProgram(program)')
 					span.glyphicon.glyphicon-remove
-				button.btn.btn-small.btn-default
-					span.glyphicon.glyphicon-edit
 
