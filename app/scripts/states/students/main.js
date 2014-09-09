@@ -17,7 +17,7 @@ define(['../module'], function (states) {
             	}
             }
         });
-        
+
         $stateProvider.state('admin.students.home', {
             url: '/students',
             views: {
@@ -33,48 +33,57 @@ define(['../module'], function (states) {
             views: {
                 'section-body': {
                     templateUrl: 'partials/students/create',
-                    controller: 'StudentsCtrl'
+                    controller: 'CreateStudentCtrl'
                 }
             }
         });
 
-
         $stateProvider.state('admin.students.create.basic', {
-            url: '/students/create/basic',
+            url: '/basic',
             views: {
                 'create-student-wzd-body': {
-                    templateUrl: 'partials/students/create.basic',
+                    templateUrl: 'partials/students/create/basic',
                     controller: 'CreateStudentCtrl'
                 }
             }
         });
 
         $stateProvider.state('admin.students.create.class', {
-            url: '/students/create/class',
+            url: '/class',
             views: {
-                'section-body': {
-                    templateUrl: 'partials/students/create',
-                    controller: 'StudentsCtrl'
+                'create-student-wzd-body': {
+                    templateUrl: 'partials/students/create/class',
+                    controller: 'CreateStudentCtrl'
                 }
             }
         });
 
-        $stateProvider.state('admin.students.create.picture', {
-            url: '/students/create/picture',
+        $stateProvider.state('admin.students.create.photo', {
+            url: '/photo',
             views: {
-                'section-body': {
-                    templateUrl: 'partials/students/create',
-                    controller: 'StudentsCtrl'
+                'create-student-wzd-body': {
+                    templateUrl: 'partials/students/create/photo',
+                    controller: 'CreateStudentCtrl'
                 }
             }
         });
 
-        $stateProvider.state('admin.students.create.sign', {
-            url: '/students/create/signature',
+        $stateProvider.state('admin.students.create.signature', {
+            url: '/signature',
             views: {
-                'section-body': {
-                    templateUrl: 'partials/students/create',
-                    controller: 'StudentsCtrl'
+                'create-student-wzd-body': {
+                    templateUrl: 'partials/students/create/signature',
+                    controller: 'CreateStudentCtrl'
+                }
+            }
+        });
+
+        $stateProvider.state('admin.students.create.econtact', {
+            url: '/econtact',
+            views: {
+                'create-student-wzd-body': {
+                    templateUrl: 'partials/students/create/econtact',
+                    controller: 'CreateStudentCtrl'
                 }
             }
         });

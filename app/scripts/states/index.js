@@ -2,7 +2,7 @@
  * Attach all state definitions
  **/
 define([
-	'./main',	
+	'./main',
 	'./login/index',
 	'./attendance/index',
 	'./payments/index',

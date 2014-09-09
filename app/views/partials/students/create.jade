@@ -1,38 +1,18 @@
-h1 Create Student
+h1 Register Student - Enter {{currentStep.name}}
 
-tabset(vertical='false', justified='false')
-	tab(heading='Basic')
-		form
-			div(class='input-group')
-				input(type='text', class='form-control', placeholder='First name')
-				span(class='input-group-addon')
-					span(class='glyphicon glyphicon-ok input-valid')
+div.row
+	div.col-md-3
+		ul.nav.nav-pills.nav-stacked.wizard-steps
+			li(ng-repeat="step in wizardSteps", ng-class="{'active':currentStep.id === step, 'disabled':isStepEnabled(step) != true}")
+				a(ng-click='goToStep(step)', href="/admin/students/create") {{getStepName(step)}}
 
-			div(class='input-group')
-				input(type='text', class='form-control', placeholder='Last name')
-				span(class='input-group-addon')
-					span(class='glyphicon glyphicon-remove input-invalid', tooltip-placement='left', tooltip='{{lastnamehelp}}')
+	div.col-md-9
+		div.wizard_body.panel(ui-view="create-student-wzd-body")
 
-			div(class='input-group')
-				input(type='text', class='form-control', placeholder='Email address')
-				span(class='input-group-addon')
-					span(class='glyphicon glyphicon-info-sign input-help', tooltip-placement='left', tooltip='{{emailhelp}}')
+		div.form-controls.pull-left
+			button.btn.btn-danger(type='reset') Reset Registration Form
 
-			div(class='input-group')
-				input(type='text', placeholder='Enter date of birth', class='form-control', datepicker-popup="{{format}}", ng-model="dt", is-open="opened", datepicker-options="dateOptions", min-date="minDate", max-date="'2015-06-22'", date-disabled="disabled(date, mode)", ng-required="true", close-text="Close")
-				span(class='input-group-btn')
-					button(type='button', class='btn btn-default', ng-click="open($event)")
-						i(class="glyphicon glyphicon-calendar")
-
-
-			input(type='submit', value='Continue to Class Information', class='pull-right')
-			input(type='reset', value='Reset Basic Information', class='pull-right')
-
-			div(class='clearfix')
-
-	tab(heading='Class', disabled='true') Coming soon
-	tab(heading='Picture', disabled='true') Coming soon
-	tab(heading='Signature', disabled='true') Coming soon
-
-
-// - To handle navigation we will use UI router so each state is explicitly defined
+		div.form_controls.pull-right
+			button.btn.btn-default(type='button', ng-click='previous()', ng-show='displayPreviousBtn()') Previous
+			button.btn.btn-primary(type='button', ng-click='submit()', ng-show='displayContinueBtn()') Continue
+			button.btn.btn-success(type='button', ng-click='submit()', ng-show='displaySubmitBtn()') Submit Registration

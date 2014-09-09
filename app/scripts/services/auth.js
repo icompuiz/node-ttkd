@@ -9,8 +9,8 @@ define(['./module'], function(services) {
 								fullname: 'public',
 								assets: {
 										'/login': true
-								}
-						};
+								  }
+						    };
 
 						var auth = {
 								currentUser: publicUser,
@@ -18,16 +18,16 @@ define(['./module'], function(services) {
 										var isAllowed = auth.currentUser.assets[asset] || false;
 
 										return isAllowed;
-								},
+								  },
 								isLoggedIn: function() {
 
 										var isLoggedIn = false;
 										if (auth.currentUser.username !== publicUser.username) {
-												isLoggedIn = true;
+											isLoggedIn = true;
 										}
 										return isLoggedIn;
 
-								},
+								  },
 								login: function(credentials) {
 
 										var promise = $q.defer();
@@ -40,17 +40,17 @@ define(['./module'], function(services) {
 
 												promise.resolve(auth.currentUser);
 
-										}, function(error) {
+										  }, function(error) {
 
 												$log.log('Error While Logging In', error);
 
 												promise.reject(error);
 
-										});
+										  });
 
 										return promise.promise;
 
-								},
+								  },
 								logout: function() {
 
 										var promise = $q.defer();
@@ -59,12 +59,12 @@ define(['./module'], function(services) {
 												$log.log('Logged out', data);
 												auth.currentUser = publicUser;
 												promise.resolve(data);
-										});
+										  });
 
 										return promise.promise;
 
-								}
-						};
+								  }
+						  };
 
 
 						function updateCurrentUser() {
@@ -74,20 +74,17 @@ define(['./module'], function(services) {
 										async: false,
 										success: function(user) {
 												auth.currentUser = user;
-										},
+										  },
 										error: function() {
 												auth.currentUser = publicUser;
-										}
-								});
-						}
+										  }
+								  });
+						  }
 
 						updateCurrentUser();
 
 						$rootScope.$on('$stateChangeSuccess', updateCurrentUser);
-
 						return auth;
-
-				}
-		]);
-
-});
+				  }
+		  ]);
+  });

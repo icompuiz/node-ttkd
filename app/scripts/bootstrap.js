@@ -7,7 +7,7 @@ define([
     'angular',
     'angular-ui-router',
     'app'
-], function (require, ng) {
+  ], function (require, ng) {
     'use strict';
 
     /*
@@ -17,5 +17,5 @@ define([
 
     require(['domReady!'], function (document) {
         ng.bootstrap(document, ['ttkd']);
-    });
-});
+      });
+  });

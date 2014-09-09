@@ -13,5 +13,5 @@ define(['./module'], function(controllers){
 
 			//Default to the dashboard view
 			$state.go('dashboard');
-	}]);
-});	
+	  }]);
+});

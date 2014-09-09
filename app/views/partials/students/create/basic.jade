@@ -1,0 +1,53 @@
+form
+	div.input-group
+		input.form-control(type='text', placeholder='First name', ng-model="model.firstName")
+		span.input-group-addon
+			span.glyphicon(popover="{{firstNameHelp.value}}", ng-class="{'glyphicon-info-sign': firstNameHelp.type=='info', 'glyphicon-remove': firstNameHelp.type=='error', 'glyphicon-ok': firstNameHelp.type=='valid'}", popover-trigger="mouseenter", popover-placement="left")
+
+	div.input-group
+		input.form-control(type='text', placeholder='Last name', ng-model="model.lastName")
+		span.input-group-addon
+			span.glyphicon(popover="{{lastNameHelp.value}}", ng-class="{'glyphicon-info-sign': lastNameHelp.type=='info', 'glyphicon-remove': lastNameHelp.type=='error', 'glyphicon-ok': lastNameHelp.type=='valid'}", popover-trigger="mouseenter", popover-placement="left")
+
+	div.input-group
+		input.form-control(type='text', placeholder='Address', ng-model="model.address.street")
+		span.input-group-addon
+			span.glyphicon(popover="{{addressHelp.value}}", ng-class="{'glyphicon-info-sign': addressHelp.type=='info', 'glyphicon-remove': addressHelp.type=='error', 'glyphicon-ok': addressHelp.type=='valid'}", popover-trigger="mouseenter", popover-placement="left")
+
+	div.row.input-group
+		div.col-md-6
+			div.input-group
+				input.form-control(type='text', placeholder='City', ng-model="model.address.city")
+				span.input-group-addon
+					span.glyphicon(popover="{{cityHelp.value}}", ng-class="{'glyphicon-info-sign': cityHelp.type=='info', 'glyphicon-remove': cityHelp.type=='error', 'glyphicon-ok': cityHelp.type=='valid'}", popover-trigger="mouseenter", popover-placement="left")
+		div.col-md-3
+			select.form-control
+				option(selected) NY
+		div.col-md-3
+			div.input-group
+				input.form-control(type='text', placeholder='Zip code', ng-model="model.address.zip")
+				span.input-group-addon
+					span.glyphicon(popover="{{zipcodeHelp.value}}", ng-class="{'glyphicon-info-sign': zipcodeHelp.type=='info', 'glyphicon-remove': zipcodeHelp.type=='error', 'glyphicon-ok': zipcodeHelp.type=='valid'}", popover-trigger="mouseenter", popover-placement="left")
+
+	div.input-group
+		input.form-control(type='text', placeholder='Home phone number',ng-model="model.phone.home")
+		span.input-group-addon
+			span.glyphicon(popover="{{homephoneHelp.value}}", ng-class="{'glyphicon-info-sign': homephoneHelp.type=='info', 'glyphicon-remove': homephoneHelp.type=='error', 'glyphicon-ok': homephoneHelp.type=='valid'}", popover-trigger="mouseenter", popover-placement="left")
+
+	div.input-group
+		input.form-control(type='text', placeholder='Cell phone number',ng-model="model.phone.cell")
+		span.input-group-addon
+			span.glyphicon(popover="{{cellphoneHelp.value}}", ng-class="{'glyphicon-info-sign': cellphoneHelp.type=='info', 'glyphicon-remove': cellphoneHelp.type=='error', 'glyphicon-ok': cellphoneHelp.type=='valid'}", popover-trigger="mouseenter", popover-placement="left")
+
+	div.input-group
+		input.form-control(type='text', placeholder='Email address',ng-model="model.emailAddress")
+		span.input-group-addon
+			span.glyphicon(popover="{{emailHelp.value}}", ng-class="{'glyphicon-info-sign': emailHelp.type=='info', 'glyphicon-remove': emailHelp.type=='error', 'glyphicon-ok': emailHelp.type=='valid'}", popover-trigger="mouseenter", popover-placement="left")
+
+	div.input-group
+		input.form-control(type='text', placeholder='Enter date of birth', datepicker-popup="{{format}}", ng-model="model.birthday", is-open="opened", datepicker-options="dateOptions", min-date="minDate", date-disabled="disabled(date, mode)", ng-required="true", close-text="Close")
+		span.input-group-btn
+			button.btn.btn-default(type='button', ng-click="open($event)")
+				i.glyphicon.glyphicon-calendar
+
+	div(class='clearfix')

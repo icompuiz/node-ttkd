@@ -1,6 +1,7 @@
+'use strict';
+
 var $mongoose = require('mongoose'),
 	$async = require('async'),
-	$extend = require('mongoose-schema-extend'),
 	FileSystemItem = require('./fileSystemItem');
 
 var DirectorySchema = FileSystemItem.schema.extend({
@@ -21,7 +22,7 @@ DirectorySchema.pre('remove', function(preRemoveDone) {
 
 			file.remove(removeNextItem);
 
-		}, preRemoveDone)
+		}, preRemoveDone);
 	});
 });
 
