@@ -1,0 +1,8 @@
+/**
+ * Attach all state definitions
+ **/
+<<<<<<< HEAD
+define(['./programSvc', './classSvc', './rankSvc'], function () {});
+=======
+define(['./studentSvc', './programSvc'], function () {});
+>>>>>>> 8512625d1be8362f6d952bc8d26a28b39f3db6a8

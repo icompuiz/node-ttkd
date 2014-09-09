@@ -1,0 +1,30 @@
+define(['./module'], function (factories) {
+	'use strict';
+
+	factories.factory('EndpointFactory', ['Restangular', function(Restangular) {
+
+		function Endpoint(endpointName) {
+
+			this.endpoint = Restangular.service(endpointName);
+
+<<<<<<< HEAD
+		};
+
+		return {
+			create: function create(endpointName) {
+				return new Endpoint(endpointName)
+			}
+		}
+=======
+		}
+
+		return {
+			create: function create(endpointName) {
+				return new Endpoint(endpointName);
+			}
+		};
+>>>>>>> 8512625d1be8362f6d952bc8d26a28b39f3db6a8
+
+	}]);
+
+});
