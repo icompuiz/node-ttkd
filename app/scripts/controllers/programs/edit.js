@@ -66,110 +66,129 @@ define(['../module'], function(controllers){
 				var classIDs = [],
 					rankIDs = [];
 
+				//Send deletions to the model for classes that were removed from the program
+				function removeClassesFromModel(callback, err) {
+					async.each($scope.removedClasses,
+						function(classItem, callback) {
+							if (!classItem._id) {
+								callback();
+							} else {
+								ClassSvc.read(classItem._id, null, true).then(function(cls) {
+									ClassSvc.remove().then(function(removed) {
+										if (removed){
+											console.log('Class ' + removed.name + ' successfully deleted');
+										}
+										ClassSvc.reset();
+										callback();
+									});
+								});
+							}
+						},
+						function(err) {
+							callback();
+						});
+				}
+
+				//Send deletions to the model for ranks that were removed from the program
+				function removeRanksFromModel(callback, err) {
+					async.each($scope.removedRanks,
+						function(rankItem, callback) {
+							if (!rankItem._id) {
+								callback();
+							} else {
+								RankSvc.read(rankItem._id, null, true).then(function(rnk) {
+									RankSvc.remove().then(function(removed) {
+										if (removed){
+											console.log('Rank ' + removed.name + ' successfully deleted');
+										}
+										RankSvc.reset();
+										callback();
+									});
+								});
+							}
+						},
+						function(err) {
+							callback();
+						});
+				}
+
+				//Add or update classes
+				function addClassesToModel(callback, err) {
+					async.each($scope.currentProgram.classes,
+						function(classItem, callback) {
+							//Temporary... class service will eventually be 
+							//	initialized and will save from its "Create" form
+							ClassSvc.init(classItem);
+							function beforeSave(c) {
+								c.name = classItem.name;
+								c.meetingTimes = classItem.meetingTimes;
+								c.studentList = classItem.studentList;
+								c.program = $scope.currentProgram._id;
+							}
+
+							if (classItem._id) { //Update exiting class
+								ClassSvc.read(classItem._id, null, true).then(function(cls) {
+									ClassSvc.save().then(function(added) {
+										classIDs.push(added._id);
+										ClassSvc.reset();
+										callback();
+									});
+								});
+							} else { //Add new class
+								ClassSvc.save(beforeSave).then(function(added) {
+									classIDs.push(added._id);
+									ClassSvc.reset();
+									callback();
+								});
+							}
+						},
+						function(err) {
+							callback();
+						});
+				}
+
+				//Add or update ranks
+				function addRanksToModel(callback, err) {
+					async.each($scope.currentProgram.ranks,
+						function(rankItem, callback) {
+							//Temporary... rank service will eventually be 
+							//	initialized and will save from its "Create" form
+							RankSvc.init(rankItem);
+							function beforeSave(r) {
+								r.name = rankItem.name;
+								r.rankOrder = rankItem.rankOrder;
+								r.intermediaryRanks = rankItem.intermediaryRanks;
+								r.program = $scope.currentProgram._id;
+							}
+
+							if (rankItem._id) { //Update exiting rank
+								RankSvc.read(rankItem._id, null, true).then(function(rnk) {
+									RankSvc.save().then(function(added) {
+										rankIDs.push(added._id);
+										RankSvc.reset();
+										callback();
+									});
+								});
+							} else { //Add new rank
+								RankSvc.save(beforeSave).then(function(added) {
+									classIDs.push(added._id);
+									RankSvc.reset();
+									callback();
+								});
+							}
+						},
+						function(err) {
+							callback();
+						});
+				}
+
 				//Send deletions to the model
 				(function(classIDs, rankIDs) {
 					async.parallel([
-						function(callback, err) {
-							async.each($scope.removedClasses,
-								function(classItem, callback) {
-									ClassSvc.read(classItem._id, null, true).then(function(cls) {
-										ClassSvc.remove().then(function(removed) {
-											if (removed){
-												console.log('Class ' + removed.name + ' successfully deleted');
-											}
-											ClassSvc.reset();
-											callback();
-										});
-									});
-								},
-								function(err) {
-									callback();
-								});
-						},
-						function(callback, err) {
-							async.each($scope.removedRanks,
-								function(rankItem, callback) {
-									RankSvc.read(rankItem._id, null, true).then(function(rnk) {
-										RankSvc.remove().then(function(removed) {
-											if (removed){
-												console.log('Rank ' + removed.name + ' successfully deleted');
-											}
-											RankSvc.reset();
-											callback();
-										});
-									});
-								},
-								function(err) {
-									callback();
-								});
-						},
-						//Send class additions to the model
-						function(callback, err) {
-							async.each($scope.currentProgram.classes,
-								function(classItem, callback) {
-									//Temporary... class service will eventually be 
-									//	initialized and will save from its "Create" form
-									ClassSvc.init(classItem);
-									function beforeSave(c) {
-										c.name = classItem.name;
-										c.meetingTimes = classItem.meetingTimes;
-										c.studentList = classItem.studentList;
-										c.program = $scope.currentProgram._id;
-									}
-
-									if (classItem._id) { //Update exiting class
-										ClassSvc.read(classItem._id, null, true).then(function(cls) {
-											ClassSvc.save().then(function(added) {
-												classIDs.push(added._id);
-												ClassSvc.reset();
-												callback();
-											});
-										});
-									} else { //Add new class
-										ClassSvc.save(beforeSave).then(function(added) {
-											classIDs.push(added._id);
-											ClassSvc.reset();
-											callback();
-										});
-									}
-								},
-								function(err) {
-									callback();
-							});
-						},
-						function(callback, err) {
-							async.each($scope.currentProgram.ranks,
-								function(rankItem, callback) {
-									//Temporary... rank service will eventually be 
-									//	initialized and will save from its "Create" form
-									RankSvc.init(rankItem);
-									function beforeSave(r) {
-										r.name = rankItem.name;
-										r.rankOrder = rankItem.rankOrder;
-										r.intermediaryRanks = rankItem.intermediaryRanks;
-										r.program = $scope.currentProgram._id;
-									}
-
-									if (rankItem._id) { //Update exiting class
-										RankSvc.read(rankItem._id, null, true).then(function(rnk) {
-											RankSvc.save().then(function(added) {
-												rankIDs.push(added._id);
-												RankSvc.reset();
-												callback();
-											});
-										});
-									} else { //Add new class
-										RankSvc.save(beforeSave).then(function(added) {
-											classIDs.push(added._id);
-											RankSvc.reset();
-											callback();
-										});
-									}
-								},
-								function(err) {
-									callback();
-							});
-						}],
+						removeClassesFromModel,
+						removeRanksFromModel,
+						addClassesToModel,
+						addRanksToModel],
 						function(err) {
 
 							function beforeSave(program) {
