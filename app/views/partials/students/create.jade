@@ -7,7 +7,7 @@ div.row
 				a(ng-click='goToStep(step)', href="/admin/students/create") {{getStepName(step)}}
 
 	div.col-md-9
-		form(name="createStudent", ng-submit="submit()")
+		form(name="createStudent", ng-submit="submit()", autocomplete="off")
 			div.wizard_body.panel(ui-view="create-student-wzd-body")
 
 			div.form-controls.pull-left
