@@ -18,7 +18,7 @@ define(['../module'], function(controllers) {
 				'admin.students.create.signature'
 			];
 
-			var defaultStep = 'admin.students.create.signature';
+			var defaultStep = 'admin.students.create.basic';
 
 			$scope.relations = [
 				'Mother', 'Mom', 'Dad', 'Father', 'Grandfather', 'Grandmother',
