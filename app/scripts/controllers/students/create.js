@@ -123,14 +123,6 @@ define(['../module'], function(controllers) {
 				}
 			};
 
-
-
-
-
-
-
-
-
 		}
 	]);
 

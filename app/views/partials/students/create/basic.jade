@@ -1,23 +1,27 @@
 form
-	div.input-group
-		input.form-control(type='text', placeholder='First name')
-		span.input-group-addon
-			span.glyphicon(tooltip-placement='left', tooltip='{{first_name_help.value}}', ng-class="{'glyphicon-info-sign': first_name_help.type=='info', 'glyphicon-remove': first_name_help.type=='error', 'glyphicon-ok': first_name_help.type=='valid'}")
+	.form-group
+		div.input-group
+			input.form-control(type='text', placeholder='First name')
+			span.input-group-addon
+				span.glyphicon(tooltip-placement='left', tooltip='{{first_name_help.value}}', ng-class="{'glyphicon-info-sign': first_name_help.type=='info', 'glyphicon-remove': first_name_help.type=='error', 'glyphicon-ok': first_name_help.type=='valid'}")
 
-	div.input-group
-		input.form-control(type='text', placeholder='Last name')
-		span.input-group-addon
-			span.glyphicon(tooltip-placement='left', tooltip='{{last_name_help.value}}', ng-class="{'glyphicon-info-sign': last_name_help.type=='info', 'glyphicon-remove': last_name_help.type=='error', 'glyphicon-ok': last_name_help.type=='valid'}")
+	.form-group
+		div.input-group
+			input.form-control(type='text', placeholder='Last name')
+			span.input-group-addon
+				span.glyphicon(tooltip-placement='left', tooltip='{{last_name_help.value}}', ng-class="{'glyphicon-info-sign': last_name_help.type=='info', 'glyphicon-remove': last_name_help.type=='error', 'glyphicon-ok': last_name_help.type=='valid'}")
 
-	div.input-group
-		input.form-control(type='text', placeholder='Email address')
-		span.input-group-addon
-			span.glyphicon(tooltip-placement='left', tooltip='{{email_help.value}}', ng-class="{'glyphicon-info-sign': email_help.type=='info', 'glyphicon-remove': email_help.type=='error', 'glyphicon-ok': email_help.type=='valid'}")
+	.form-group
+		div.input-group
+			input.form-control(type='text', placeholder='Email address')
+			span.input-group-addon
+				span.glyphicon(tooltip-placement='left', tooltip='{{email_help.value}}', ng-class="{'glyphicon-info-sign': email_help.type=='info', 'glyphicon-remove': email_help.type=='error', 'glyphicon-ok': email_help.type=='valid'}")
 
-	div.input-group
-		input.form-control(type='text', placeholder='Enter date of birth', datepicker-popup="{{format}}", ng-model="dt", is-open="opened", datepicker-options="dateOptions", min-date="minDate", date-disabled="disabled(date, mode)", ng-required="true", close-text="Close")
-		span.input-group-btn
-			button.btn.btn-default(type='button', ng-click="open($event)")
-				i.glyphicon.glyphicon-calendar
+	.form-group
+		div.input-group
+			input.form-control(type='text', placeholder='Enter date of birth', datepicker-popup="{{format}}", ng-model="dt", is-open="opened", datepicker-options="dateOptions", min-date="minDate", date-disabled="disabled(date, mode)", ng-required="true", close-text="Close")
+			span.input-group-btn
+				button.btn.btn-default(type='button', ng-click="open($event)")
+					i.glyphicon.glyphicon-calendar
 
 	div(class='clearfix')
