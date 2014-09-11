@@ -1,38 +1,50 @@
-form
-	h2 Primary Emergency Contact
-	div.input-group
-		input.form-control(type='text', placeholder='Full name', ng-model="model.fullName1")
-		span.input-group-addon
-			span.glyphicon(popover="{{econtactFullname1Help.value}}", ng-class="{'glyphicon-info-sign': econtactFullname1Help.type=='info', 'glyphicon-remove': econtactFullname1Help.type=='error', 'glyphicon-ok': econtactFullname1Help.type=='valid'}", popover-trigger="mouseenter", popover-placement="left")
 
-	div.row.input-group
-		div.col-md-6
-			div.input-group
-				input.form-control(type='tel', placeholder='Phone number', ng-model="model.phoneNumber1", ui-mask="{{'(999) 999-9999'}}")
-				span.input-group-addon
-					span.glyphicon(popover="{{econtactPhonenumber1Help.value}}", ng-class="{'glyphicon-info-sign': econtactPhonenumber1Help.type=='info', 'glyphicon-remove': econtactPhonenumber1Help.type=='error', 'glyphicon-ok': econtactPhonenumber1Help.type=='valid'}", popover-trigger="mouseenter", popover-placement="left")
+h2 Primary Emergency Contact
+div.input-group
+	input.form-control(type='text', name="fullName1" placeholder='Full name', ng-model="model.fullName1", required, ng-maxlength='128', ng-minlength='4')
+	span.input-group-addon
+		span.glyphicon.glyphicon-info-sign(popover="Enter the primary emergency contact's full name.", ng-show="createStudent.fullName1.$invalid && createStudent.fullName1.$pristine", popover-trigger="mouseenter", popover-placement="left")
+		span.glyphicon.glyphicon-remove(popover="Primary emergency contact's full name must be between 4 and 128 characters.", ng-show="createStudent.fullName1.$invalid && !createStudent.fullName1.$pristine", popover-trigger="mouseenter", popover-placement="left")
+		span.glyphicon.glyphicon-ok(ng-show="createStudent.fullName1.$valid")
 
-		div.col-md-6
-			div.input-group
-				input.form-control(type='text', placeholder='Relationship', ng-model="model.relationship1")
-				span.input-group-addon
-					span.glyphicon(popover="{{econtactRelationship1Help.value}}", ng-class="{'glyphicon-info-sign': econtactRelationship1Help.type=='info', 'glyphicon-remove': econtactRelationship1Help.type=='error', 'glyphicon-ok': econtactRelationship1Help.type=='valid'}", popover-trigger="mouseenter", popover-placement="left")
+div.row.input-group
+	div.col-md-6
+		div.input-group
+			input.form-control(type='tel', name="phoneNumber1" placeholder='Phone number', ng-model="model.phoneNumber1", ui-mask="{{'(999) 999-9999'}}", required)
+			span.input-group-addon
+				span.glyphicon.glyphicon-info-sign(popover="Enter the primary emergency contact's phone number.", ng-show="createStudent.phoneNumber1.$invalid && createStudent.phoneNumber1.$pristine", popover-trigger="mouseenter", popover-placement="left")
+				span.glyphicon.glyphicon-remove(popover="Primary emergency contact's phone number must be a valid 10 digit number. E.g. 555-555-5555", ng-show="createStudent.phoneNumber1.$invalid && !createStudent.phoneNumber1.$pristine", popover-trigger="mouseenter", popover-placement="left")
+				span.glyphicon.glyphicon-ok(ng-show="createStudent.phoneNumber1.$valid")
 
-	h2 Secondary Emergency Contact
-	div.input-group
-		input.form-control(type='text', placeholder='Full name', ng-model="model.fullName2")
-		span.input-group-addon
-			span.glyphicon(popover="{{econtactFullname2Help.value}}", ng-class="{'glyphicon-info-sign': econtactFullname2Help.type=='info', 'glyphicon-remove': econtactFullname2Help.type=='error', 'glyphicon-ok': econtactFullname2Help.type=='valid'}", popover-trigger="mouseenter", popover-placement="left")
+	div.col-md-6
+		div.input-group
+			input.form-control(type='text', name="relationship1" placeholder='Relationship', ng-model="model.relationship1", typeahead="relation for relation in relations | filter:$viewValue | limitTo:5", required)
+			span.input-group-addon
+				span.glyphicon.glyphicon-info-sign(popover="Enter the primary emergency contact's relation to the student.", ng-show="createStudent.relationship1.$invalid && createStudent.relationship1.$pristine", popover-trigger="mouseenter", popover-placement="left")
+				span.glyphicon.glyphicon-remove(popover="Primary emergency contact must have some relation to the student.", ng-show="createStudent.relationship1.$invalid && !createStudent.relationship1.$pristine", popover-trigger="mouseenter", popover-placement="left")
+				span.glyphicon.glyphicon-ok(ng-show="createStudent.relationship1.$valid")
 
-	div.row.input-group
-		div.col-md-6
-			div.input-group
-				input.form-control(type='tel', placeholder='Phone number', ng-model="model.phoneNumber2", ui-mask="{{'(999) 999-9999'}}")
-				span.input-group-addon
-					span.glyphicon(popover="{{econtactPhonenumber2Help.value}}", ng-class="{'glyphicon-info-sign': econtactPhonenumber2Help.type=='info', 'glyphicon-remove': econtactPhonenumber2Help.type=='error', 'glyphicon-ok': econtactPhonenumber2Help.type=='valid'}", popover-trigger="mouseenter", popover-placement="left")
+h2 Secondary Emergency Contact
+div.input-group
+	input.form-control(type='text', name="fullName2" placeholder='Full name', ng-model="model.fullName2", required, ng-maxlength='128', ng-minlength='4')
+	span.input-group-addon
+		span.glyphicon.glyphicon-info-sign(popover="Enter the secondary emergency contact's full name.", ng-show="createStudent.fullName2.$invalid && createStudent.fullName2.$pristine", popover-trigger="mouseenter", popover-placement="left")
+		span.glyphicon.glyphicon-remove(popover="Secondary emergency contact's full name must be between 4 and 128 characters.", ng-show="createStudent.fullName2.$invalid && !createStudent.fullName2.$pristine", popover-trigger="mouseenter", popover-placement="left")
+		span.glyphicon.glyphicon-ok(ng-show="createStudent.fullName2.$valid")
 
-		div.col-md-6
-			div.input-group
-				input.form-control(type='text', placeholder='Relationship', ng-model="model.relationship2")
-				span.input-group-addon
-					span.glyphicon(popover="{{econtactRelationship2Help.value}}", ng-class="{'glyphicon-info-sign': econtactRelationship2Help.type=='info', 'glyphicon-remove': econtactRelationship2Help.type=='error', 'glyphicon-ok': econtactRelationship2Help.type=='valid'}", popover-trigger="mouseenter", popover-placement="left")
+div.row.input-group
+	div.col-md-6
+		div.input-group
+			input.form-control(type='tel', name="phoneNumber2" placeholder='Phone number', ng-model="model.phoneNumber2", ui-mask="{{'(999) 999-9999'}}", required)
+			span.input-group-addon
+				span.glyphicon.glyphicon-info-sign(popover="Enter the secondary emergency contact's phone number.", ng-show="createStudent.phoneNumber2.$invalid && createStudent.phoneNumber2.$pristine", popover-trigger="mouseenter", popover-placement="left")
+				span.glyphicon.glyphicon-remove(popover="Secondary emergency contact's phone number must be a valid 10 digit number. E.g. 555-555-5555", ng-show="createStudent.phoneNumber2.$invalid && !createStudent.phoneNumber2.$pristine", popover-trigger="mouseenter", popover-placement="left")
+				span.glyphicon.glyphicon-ok(ng-show="createStudent.phoneNumber2.$valid")
+
+	div.col-md-6
+		div.input-group
+			input.form-control(type='text', name="relationship2" placeholder='Relationship', ng-model="model.relationship2", typeahead="relation for relation in relations | filter:$viewValue | limitTo:5", required)
+			span.input-group-addon
+				span.glyphicon.glyphicon-info-sign(popover="Enter the secondary emergency contact's relation to the student.", ng-show="createStudent.relationship2.$invalid && createStudent.relationship2.$pristine", popover-trigger="mouseenter", popover-placement="left")
+				span.glyphicon.glyphicon-remove(popover="Secondary emergency contact must have some relation to the student.", ng-show="createStudent.relationship2.$invalid && !createStudent.relationship2.$pristine", popover-trigger="mouseenter", popover-placement="left")
+				span.glyphicon.glyphicon-ok(ng-show="createStudent.relationship2.$valid")

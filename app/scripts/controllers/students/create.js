@@ -3,13 +3,12 @@ define(['../module'], function(controllers) {
 
 	controllers.controller('CreateStudentCtrl', ['$scope', '$http', '$log', '$state', 'StudentSvc',
 		function($scope, $http, $log, $state, StudentSvc) {
-
 			var wizardSteps = {};
 			wizardSteps['admin.students.create.basic'] = { id: 'admin.students.create.basic', name: 'Basic Information', enabled: false };
 			wizardSteps['admin.students.create.econtact'] = { id: 'admin.students.create.econtact', name: 'Emergency Contact', enabled: false };
 			wizardSteps['admin.students.create.class'] = { id: 'admin.students.create.class', name: 'Class Information', enabled: false };
 			wizardSteps['admin.students.create.photo'] = { id: 'admin.students.create.photo', name: 'Student Picture', enabled: false };
-			wizardSteps['admin.students.create.signature'] = { id: 'admin.students.create.signature', name: 'Waiver Release', enabled: false };
+			wizardSteps['admin.students.create.signature'] = { id: 'admin.students.create.signature', name: 'Waiver Signature', enabled: false };
 
 			var wizardStepsOrder = [
 				'admin.students.create.basic',
@@ -19,33 +18,24 @@ define(['../module'], function(controllers) {
 				'admin.students.create.signature'
 			];
 
-			var defaultStep = 'admin.students.create.basic';
+			var defaultStep = 'admin.students.create.signature';
 
+			$scope.relations = [
+				'Mother', 'Mom', 'Dad', 'Father', 'Grandfather', 'Grandmother',
+				'Brother', 'Sister'
+			];
 
 			// Create student object
-
-			$scope.model = {
-				firstName: 'Elijah',
-				lastName: 'Pope',
-				emailAddress: 'epope@ttkd.com',
-				birthday: new Date('July 22, 1991'),
-				address: {
-					street: '123 Gumdrop Ln. Apt 53',
-					city: 'Rochester',
-					state: 'NY',
-					zip: '14623'
-				},
-				phone: {
-					home: '5852471236',
-					cell: '5857452698'
-				},
-			};
-
 			if (!StudentSvc.current) {
 				$scope.model = StudentSvc.init($scope.model);
 			} else {
 				$scope.model = StudentSvc.current;
 			}
+
+
+
+
+
 
 			$scope.getStep = function(key) {
 				if(key in wizardSteps) {
@@ -71,6 +61,9 @@ define(['../module'], function(controllers) {
 				return ($scope.getStepOrder($scope.currentStep.id) + 1 === wizardStepsOrder.length);
 			};
 
+			$scope.submitBtnContent = 'Submit Registration';
+			$scope.submitBtnDisabled = false;
+
 			$scope.getStepName = function(key) {
 				return wizardSteps[key].name;
 			};
@@ -82,6 +75,12 @@ define(['../module'], function(controllers) {
 			function setCurrentStep(key){
 				$scope.currentStep = wizardSteps[$scope.getStep(key)];
 				enableStep($scope.currentStep.id);
+
+				var currentIndex = $scope.getStepOrder($scope.currentStep.id);
+				for(var i=(currentIndex + 1); i<wizardStepsOrder.length; i++) {
+					disableStep(wizardStepsOrder[i]);
+				}
+
 				$state.go($scope.currentStep.id);
 			}
 
@@ -99,17 +98,6 @@ define(['../module'], function(controllers) {
 
 			// Set the current step in the wizard
 			setCurrentStep($state.current.name);
-
-			// Help and validation text
-			$scope.firstNameHelp = {type: 'info', value: 'Enter the student\'s first name.'};
-			$scope.lastNameHelp = {type: 'info', value: 'Enter the student\'s last name.'};
-			$scope.emailHelp = {type: 'error', value: 'That email address is invalid. A valid email address is in the form of: e.g. user@website.com'};
-			$scope.addressHelp = {type: 'info', value: 'Enter the address where the student resides.'};
-			$scope.cityHelp = {type: 'info', value: 'Enter the city where the student resides.'};
-			$scope.stateHelp = {type: 'info', value: 'Enter the state where the student resides.'};
-			$scope.zipcodeHelp = {type: 'info', value: 'Enter the zip code where the student resides.'};
-			$scope.homephoneHelp = {type: 'info', value: 'Enter the zip code where the student resides.'};
-			$scope.cellphoneHelp = {type: 'info', value: 'Enter the zip code where the student resides.'};
 
 			// Date of birth calendar
 			$scope.today = function() {
@@ -144,14 +132,19 @@ define(['../module'], function(controllers) {
 
 			function onSaveSuccess() {
 				console.log('Student Saved Successfully');
+				alert('Student saved successfully... check api');
 			}
 
 			$scope.submit = function() {
+				// check for ng form validity
+
 				var currentStepIndex = $scope.getStepOrder($scope.currentStep.id);
 
 				if(currentStepIndex + 1 < wizardStepsOrder.length) {
 					setCurrentStep(wizardStepsOrder[currentStepIndex + 1]);
 				} else {
+					$scope.submitBtnContent = 'Creating Student...';
+					$scope.submitBtnDisabled = true;
 					StudentSvc.create(true).then(onSaveSuccess);
 				}
 
@@ -162,12 +155,6 @@ define(['../module'], function(controllers) {
 					setCurrentStep(key);
 				}
 			};
-
-
-
-
-
-
 
 
 
