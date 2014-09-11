@@ -7,4 +7,4 @@ define(['./module'], function (factories) {
     'use strict';
 
     return factories.config([function() {}]);
-});
+  });
