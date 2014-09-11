@@ -33,6 +33,26 @@ define(['../module'], function (states) {
             views: {
                 'section-body': {
                     templateUrl: 'partials/programs/create',
+                    controller: 'CreateProgramCtrl'
+                }
+            }
+        });
+
+        $stateProvider.state('admin.programs.edit', {
+            url: '/programs/edit',
+            views: {
+                'section-body': {
+                    templateUrl: 'partials/programs/edit',
+                    controller: 'EditProgramCtrl'
+                }
+            }
+        });
+
+        $stateProvider.state('admin.programs.view', {
+            url: '/programs/view',
+            views: {
+                'section-body': {
+                    templateUrl: 'partials/programs/view',
                     controller: 'ProgramsCtrl'
                 }
             }

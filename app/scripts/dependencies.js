@@ -17,38 +17,38 @@ requirejs.config({
         'angular-bootstrap':'../bower_components/angular-bootstrap/ui-bootstrap',
         'restangular':'../bower_components/restangular/dist/restangular.min',
         'angular-bootstrap-tmpls': '../bower_components/angular-bootstrap/ui-bootstrap-tpls'
-    },
+      },
 
     /**
      * for libs that either do not support AMD out of the box, or
      * require some fine tuning to dependency mgt'
      */
-    shim: {
+      shim: {
         'angular':{
             exports: 'angular'
-        },
-        'restangular': {
+          },
+          'restangular': {
             deps:['angular', '_'],
-        },
-        'angular-ui-router':{
+          },
+          'angular-ui-router':{
             deps:['angular']
-        },
-        'handlebars':{
+          },
+          'handlebars':{
             exports:'Handlebars'
-        },
-        '_':{
+          },
+          '_':{
             exports:'_'
-        },
-        'angular-bootstrap-tmpls':{
+          },
+          'angular-bootstrap-tmpls':{
             deps: ['angular']
-        },
-        'angular-bootstrap':{
+          },
+          'angular-bootstrap':{
             deps:['angular', '$', 'angular-bootstrap-tmpls']
-        }
-    },
+          }
+        },
 
-    deps: [
+        deps: [
         // kick start application... see bootstrap.js
-        './bootstrap'
-    ]
-});
+            './bootstrap'
+          ]
+        });

@@ -1,18 +1,19 @@
-h1 Register Student - Enter {{current_step.name}}
+h1 Register Student - Enter {{currentStep.name}}
 
 div.row
 	div.col-md-3
 		ul.nav.nav-pills.nav-stacked.wizard-steps
-			li(ng-repeat="step in wizard_steps", ng-class="{'active':current_step.id === step, 'disabled':isStepEnabled(step) != true}")
+			li(ng-repeat="step in wizardSteps", ng-class="{'active':currentStep.id === step, 'disabled':isStepEnabled(step) != true}")
 				a(ng-click='goToStep(step)', href="/admin/students/create") {{getStepName(step)}}
 
 	div.col-md-9
-		div.wizard_body.panel(ui-view="create-student-wzd-body")
+		form(name="createStudent", ng-submit="submit()")
+			div.wizard_body.panel(ui-view="create-student-wzd-body")
 
-		div.form-controls.pull-left
-			button.btn.btn-danger(type='reset') Reset Registration Form
+			div.form-controls.pull-left
+				button.btn.btn-danger(type='reset') Reset Registration Form
 
-		div.form_controls.pull-right
-			button.btn.btn-default(type='button', ng-click='previous()', ng-show='displayPreviousBtn()') Previous
-			button.btn.btn-primary(type='button', ng-click='submit()', ng-show='displayContinueBtn()') Continue
-			button.btn.btn-success(type='button', ng-click='submit()', ng-show='displaySubmitBtn()') Submit Registration
+			div.form_controls.pull-right
+				button.btn.btn-default(type='button', ng-click='previous()', ng-show='displayPreviousBtn()') Previous
+				button.btn.btn-primary(type='submit', ng-show='displayContinueBtn()', ng-disabled='createStudent.$invalid') Continue
+				button.btn.btn-success(type='submit', ng-show='displaySubmitBtn()', ng-disabled='createStudent.$invalid || submitBtnDisabled') {{submitBtnContent}}

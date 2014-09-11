@@ -3,8 +3,8 @@
  * The routes you see here will be anchors '#/' unless specifically configured otherwise.
  */
 
-define(['./module'], function (directives) {
+define(['./module'], function (factories) {
     'use strict';
 
-    return directives.config([function() {}]);
+    return factories.config([function() {}]);
   });

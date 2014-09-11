@@ -3,7 +3,6 @@
 var _ = require('lodash'),
 	$mongoose = require('mongoose'),
 	$async = require('async'),
-	$config = require('../configuration/initialize').config,
 	Schema = $mongoose.Schema,
 	$passportLocalMongoose = require('passport-local-mongoose');
 
@@ -23,7 +22,7 @@ userSchema.methods.addToGroups = function(groups, done) {
 	}
 
 	if (!_.isArray(groups)) {
-		var err = new Err('acceptable types for groups are String or Array');
+		var err = new Error('acceptable types for groups are String or Array');
 		console.log('UserModel::addToGroups::error', groups, err.message);
 		return done(err);
 	}
@@ -47,13 +46,13 @@ userSchema.methods.addToGroups = function(groups, done) {
 			if (err) {
 				console.log('UserModel::addToGroups::findOneAndUpdate::error', groupName, err);
 
-				return processNextGroup(err)
+				return processNextGroup(err);
 			}
 
 			if (!group) {
-				console.log('UserModel::addToGroups::findOneAndUpdate::error::', groupName, "Not found");
+				console.log('UserModel::addToGroups::findOneAndUpdate::error::', groupName, 'Not found');
 
-				return processNextGroup(groupName + " not found");
+				return processNextGroup(groupName + ' not found');
 			}
 
 			console.log('UserModel::addToGroups::findOneAndUpdate::sucess', group.name);

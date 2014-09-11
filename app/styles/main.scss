@@ -151,11 +151,26 @@ form .input-group:not(:last-child) {
 }
 
 .form_controls button {
-    margin: 0 .5em;
+    margin: 0 0 0 1em;
 }
 .form_controls button:first-child {
     margin-left: 0;
 }
-.form_controls button:last-child {
+
+/*.form_controls button:last-child {
     margin-right: 0;
+}*/
+
+.wizard_body .select-photo {
+    text-align: center;
+    width: 300px;
+    margin-left: auto;
+    margin-right: auto;
+}
+.wizard_body .select-photo i.glyphicon-camera {
+    font-size: 250px;
+    line-height: 290px;
+}
+.wizard-body .select-photo a.thumbnail {
+    margin-bottom: 0;
 }

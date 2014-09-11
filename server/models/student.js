@@ -15,7 +15,16 @@ var studentSchema = new Schema({
 	birthday: {
 		type: Date
 	},
-	address: String,
+	address: {
+		street: String,
+		city: String,
+		state: String,
+		zip: String
+	},
+	phone: {
+		home: String,
+		cell: String
+	},
 	Ranks: [{
 		ref: 'Rank',
 		type: ObjectId

@@ -1,0 +1,36 @@
+h1 {{currentProgram.name}}
+br
+
+.col-md-8.col-sm-8
+	h2 Classes
+	table.table
+		tr
+			th.col-md-4.col-sm-4.col-lg-4.col-xs-4 Name
+			th.col-md-4.col-sm-4.col-lg-4.col-xs-4 Meeting time
+			th.col-md-4.col-sm-4.col-lg-4.col-xs-4 Students
+		tr(ng-repeat='class in currentProgram.classes')
+			td 
+				{{class.name}}
+			td
+				| M 5:00PM-6:30PM
+			td
+				a(href='#') Students
+
+	h2 Ranks
+	table.table
+		tr
+			th.col-md-4.col-sm-4.col-lg-4.col-xs-4 Name
+			th.col-md-4.col-sm-4.col-lg-4.col-xs-4 Order 
+			th.col-md-4.col-sm-4.col-lg-4.col-xs-4 Sub-ranks
+		tr(ng-repeat='rank in currentProgram.ranks')
+			td 
+				{{rank.name}}
+			td
+				{{rank.rankOrder}}
+			td
+				| SUB-RANKS
+	.col-md-11.col-sm-11
+		input.btn.btn-warning.pull-right(type='reset', value='Back', ng-click='goToProgramsHome()')
+
+	div(class='clearfix')
+.col-md-8.col-sm-8

@@ -2,5 +2,7 @@
  * Attach all state definitions
  **/
 define([
-	'./programs'
+	'./programs',
+	'./create',
+	'./edit'
 ], function () {});

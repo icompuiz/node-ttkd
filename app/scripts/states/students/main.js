@@ -77,6 +77,16 @@ define(['../module'], function (states) {
                 }
             }
         });
+
+        $stateProvider.state('admin.students.create.econtact', {
+            url: '/econtact',
+            views: {
+                'create-student-wzd-body': {
+                    templateUrl: 'partials/students/create/econtact',
+                    controller: 'CreateStudentCtrl'
+                }
+            }
+        });
     }]);
 
 });
