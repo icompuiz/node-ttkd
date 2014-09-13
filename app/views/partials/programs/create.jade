@@ -6,21 +6,18 @@ br
 		.input-group
 			input(type='text', class='form-control', placeholder='Program name' ng-model="newProgram.name")
 			span(class='input-group-addon')
-				span(class='glyphicon glyphicon-ok input-valid')
-
+				span(ng-show='!isEmpty(newProgram.name)', class='glyphicon glyphicon-ok input-valid')
+				span(ng-show='isEmpty(newProgram.name)', class='glyphicon glyphicon-remove input-invalid')
 
 		h2 Classes
 		table.table
 			tr
-				th.col-md-4.col-sm-4.col-lg-4.col-xs-4 Name
-				th.col-md-4.col-sm-4.col-lg-4.col-xs-4 Meeting time
-				th.col-md-4.col-sm-4.col-lg-4.col-xs-4 Students
+				th.col-md-6.col-sm-6.col-lg-6.col-xs-6 Name
+				th.col-md-6.col-sm-6.col-lg-6.col-xs-6 Students
 				th
 			tr(ng-repeat='class in newProgram.classes')
 				td 
 					{{class.name}}
-				td
-					a(href='#') M 5:00PM-6:30PM
 				td
 					a(href='#') Students
 				td
@@ -29,11 +26,9 @@ br
 				td
 					input.form-control(type='text', placeholder='Class name' ng-model='newClass.name')
 				td
-					input.btn.btn-default(type='button', value='Add time')
-				td
 					input.btn.btn-default(type='button', value='Add students')
 				td
-					button.btn.btn-success.glyphicon.glyphicon-plus.pull-right(type='button' ng-click='addClassToProgram(newProgram)')
+					button.btn.btn-success.glyphicon.glyphicon-plus.pull-right(ng-disabled='!isClassValid()' type='button' ng-click='addClassToProgram(newProgram)')
 
 		h2 Ranks
 		table.table
@@ -59,11 +54,11 @@ br
 				td
 					input.btn.btn-default(type='button', value='Add sub-ranks')
 				td
-					button.btn.btn-success.glyphicon.glyphicon-plus.pull-right(type='button' ng-click='addRankToProgram(newProgram)')
+					button.btn.btn-success.glyphicon.glyphicon-plus.pull-right(ng-disabled='!isRankValid()' type='button' ng-click='addRankToProgram(newProgram)')
 
 
 		input.btn.btn-primary.pull-right(type='submit', value='Create Program', ng-click="createProgram();goToProgramsHome()")
-		input.btn.btn-warning.pull-right(type='reset', value='Cancel', ng-click='goToProgramsHome()')
+		input.btn.btn-warning.pull-right(type='reset', value='Cancel', ng-click='cancelCreate()')
 
 		div(class='clearfix')
 .col-md-8.col-sm-8

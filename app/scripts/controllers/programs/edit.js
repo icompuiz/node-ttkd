@@ -4,10 +4,11 @@ define(['../module'], function(controllers){
 		function($scope, $state, Restangular, ProgramSvc, ClassSvc, RankSvc) {
 			$scope.currentProgram = {};
 			$scope.newClass = {};
+			$scope.newRank = {};
 			$scope.removedRanks = [];
 			$scope.removedClasses = [];
 
-			if (ProgramSvc.current) {
+			if (ProgramSvc.current && ProgramSvc.editing) {
 				$scope.currentProgram = ProgramSvc.current;
 
 				if (!ProgramSvc.removedClasses) {
@@ -205,6 +206,35 @@ define(['../module'], function(controllers){
 						}
 					);
 				})(classIDs, rankIDs);
+			};
+
+/********************** Form Validation **********************************/
+
+			$scope.isEmpty = function(str) {
+				return (!str || 0 === str.length);
+			};
+
+			$scope.isClassValid = function() {
+				var classNames = _.map($scope.currentProgram.classes, function(c) { return c.name; });
+				return !$scope.isEmpty($scope.newClass.name) && !_.contains(classNames, $scope.newClass.name);
+			};
+
+			$scope.isRankValid = function() {
+				var rankNames = _.map($scope.currentProgram.ranks, function(r) { return r.name; });
+				var rankOrders = _.map($scope.currentProgram.ranks, function(r) { return r.rankOrder; });
+				var valid = true;
+
+				//Validate rank name
+				if ($scope.isEmpty($scope.newRank.name) || _.contains(rankNames, $scope.newRank.name)) {
+					valid = false;
+				}
+
+				//validate rank Order
+				if ($scope.isEmpty($scope.newRank.rankOrder) || _.contains(rankOrders, parseInt($scope.newRank.rankOrder))) {
+					valid = false;
+				}
+
+				return valid;
 			};
 	}]);
 });	

@@ -53,7 +53,7 @@ define(['../module'], function (states) {
             views: {
                 'section-body': {
                     templateUrl: 'partials/programs/view',
-                    controller: 'ProgramsCtrl'
+                    controller: 'ViewProgramCtrl'
                 }
             }
         });

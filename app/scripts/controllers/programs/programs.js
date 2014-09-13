@@ -3,11 +3,6 @@ define(['../module'], function(controllers){
 	controllers.controller('ProgramsCtrl', ['$scope', '$state', 'Restangular', 'ProgramSvc', 'ClassSvc', 'RankSvc', 
 		function($scope, $state, Restangular, ProgramSvc, ClassSvc, RankSvc) {
 			$scope.allChecked = false;
-			$scope.currentProgram = {};
-
-			if (ProgramSvc.current) {
-				$scope.currentProgram = ProgramSvc.current;
-			} 
 
 			$scope.getPrograms = function() {
 				ProgramSvc.list().then(function(programs) {
@@ -30,63 +25,65 @@ define(['../module'], function(controllers){
 			};
 			$scope.getPrograms();
 
-			$scope.removeProgram = function(program) {
-				async.parallel([
-					function(callback, err) {
-						//Remove program's classes
-						async.each(program.classes,
-							function(classToRemove, callback) {
-								ClassSvc.init(classToRemove);
+			$scope.removeProgram = function(program) { 
+
+				function removeClassesFromProgram(callback, err) {
+					//Remove program's classes
+					async.each(program.classes,
+						function(classToRemove, callback) {
+							ClassSvc.read(classToRemove._id, null, true).then(function(c) {
 								ClassSvc.remove().then(function() {
-									callback();
 									ClassSvc.reset();
-								});
-							},
-							function(err) {
-								callback();
-							}
-						);
-					},
-					function(callback, err) {
-						//Remove program's ranks
-						async.each(program.ranks,
-							function(rankToRemove, callback) {
-								RankSvc.init(rankToRemove);
-								RankSvc.remove().then(function() {
 									callback();
-									RankSvc.reset();
 								});
-							},
-							function(err) {
-								callback();
-							}
-						);
-					}, 
-					function(err) {
-						//Remove program
-						ProgramSvc.init(program);
-						ProgramSvc.remove().then(function() {
-							$scope.programs = _.without($scope.programs, program);
-							ProgramSvc.reset();
-					});
-				}]);
-			};
-
-			$scope.goToCreateProgram = function() {
-				$state.go('admin.programs.create');
-			};
-
-			$scope.goToProgramsHome = function() {
-				ProgramSvc.reset();
-				$state.go('admin.programs.home');
-			};
-
-			$scope.checkAll = function() {
-				var i;
-				for(i=0; i<$scope.programs.length; i++){
-					$scope.programs[i].selected = $scope.allChecked;
+							});
+						},
+						function(err) {
+							callback();
+						}
+					);
 				}
+
+				function removeRanksFromProgram(callback, err) {
+					//Remove program's ranks
+					async.each(program.ranks,
+						function(rankToRemove, callback) {
+							RankSvc.read(rankToRemove._id, null, true).then(function(r) {
+								RankSvc.remove().then(function() {
+									RankSvc.reset();
+									callback();
+								});
+							});
+						},
+						function(err) {
+							callback();
+						}
+					);
+				}
+
+				function removeProgramData(program) {
+
+					async.parallel([
+						removeClassesFromProgram,
+						removeRanksFromProgram, 
+						function(err) {
+							//Remove program
+							ProgramSvc.read(program._id, null, true).then(function(p) {
+								ProgramSvc.remove().then(function() {
+									$scope.programs = _.without($scope.programs, program);
+									ProgramSvc.reset();
+								});
+							});
+					}]);
+				}
+
+				var r = confirm('Are you sure you want to delete this program? This will remove all associated	classes and ranks.');
+				if (r) {
+					removeProgramData(program);
+				}
+
 			};
+
 
 			$scope.removeSelected = function() {
 				var i;
@@ -97,38 +94,30 @@ define(['../module'], function(controllers){
 				}
 			};
 
+			$scope.checkAll = function() {
+				var i;
+				for(i=0; i<$scope.programs.length; i++){
+					$scope.programs[i].selected = $scope.allChecked;
+				}
+			};
+
+			$scope.goToCreateProgram = function() {
+				ProgramSvc.reset();
+				ProgramSvc.startCreating();
+				$state.go('admin.programs.create');
+			};
+
 			$scope.goToEditProgram = function(program) {
+				ProgramSvc.startEditing();
 				ProgramSvc.init(program);
 				$state.go('admin.programs.edit');
 			};
 
 			$scope.goToViewProgram = function(program) {
+				ProgramSvc.startViewing();
 				ProgramSvc.init(program);
 				$state.go('admin.programs.view');
 			};
 
-			$scope.saveProgram = function(program) {
-				var classIDs = [],
-					rankIDs = [];
-
-				(function(classIDs, rankIDs) {
-					async.each(program.classes,
-						function(classItem, callback) {
-							ClassSvc.init(classItem);
-							ClassSvc.save().then(function(result) {
-								classIDs.push(result._id);
-								callback();
-							});
-						},
-						function(err) {
-							program.classes = classIDs;
-							program.ranks = [];
-							ProgramSvc.save().then(function(result) {
-								console.log('post-save');
-							});
-							$state.go('admin.programs.home');
-						});
-				})(classIDs, rankIDs);
-			};
 	}]);
 });	

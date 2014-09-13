@@ -4,5 +4,6 @@
 define([
 	'./programs',
 	'./create',
-	'./edit'
+	'./edit',
+	'./view'
 ], function () {});
