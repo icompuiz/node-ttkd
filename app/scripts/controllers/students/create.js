@@ -155,9 +155,6 @@ define(['../module'], function(controllers) {
 					setCurrentStep(key);
 				}
 			};
-
-
-
 		}
 	]);
 

@@ -1,32 +1,40 @@
-div.input-group
-	input.form-control(type='text', name='firstName', placeholder='First name', ng-model="model.firstName", required, ng-minlength='2', ng-maxlength='64')
-	span.input-group-addon
-		span.glyphicon.glyphicon-info-sign(popover="Enter the student's first name only.", ng-show="createStudent.firstName.$invalid && createStudent.firstName.$pristine", popover-trigger="mouseenter", popover-placement="left")
-		span.glyphicon.glyphicon-remove(popover="Student's first name must be between 2 and 64 characters long.", ng-show="createStudent.firstName.$invalid && !createStudent.firstName.$pristine", popover-trigger="mouseenter", popover-placement="left")
-		span.glyphicon.glyphicon-ok(ng-show="createStudent.firstName.$valid")
+div.form-group
+	div.input-group
+		input.form-control(type='text', name='firstName', placeholder='First name', ng-model="model.firstName", required, ng-minlength='2', ng-maxlength='64')
+		span.input-group-addon
+			span.glyphicon.glyphicon-info-sign(ng-show="createStudent.firstName.$invalid && createStudent.firstName.$pristine")
+			span.glyphicon.glyphicon-remove(ng-show="createStudent.firstName.$invalid && !createStudent.firstName.$pristine")
+			span.glyphicon.glyphicon-ok(ng-show="createStudent.firstName.$valid")
+	p.text-muted.error(ng-show="createStudent.firstName.$invalid && !createStudent.firstName.$pristine") Student's first name must be between 2 and 64 characters long.
 
-div.input-group
-	input.form-control(type='text', name='lastName', placeholder='Last name', ng-model="model.lastName", required, ng-minlength='2', ng-maxlength='64')
-	span.input-group-addon
-		span.glyphicon.glyphicon-info-sign(popover="Enter the student's last name only.", ng-show="createStudent.lastName.$invalid && createStudent.lastName.$pristine", popover-trigger="mouseenter", popover-placement="left")
-		span.glyphicon.glyphicon-remove(popover="Student's last name must be between 2 and 64 characters long.", ng-show="createStudent.lastName.$invalid && !createStudent.lastName.$pristine", popover-trigger="mouseenter", popover-placement="left")
-		span.glyphicon.glyphicon-ok(ng-show="createStudent.lastName.$valid")
+div.form-group
+	div.input-group
+		input.form-control(type='text', name='lastName', placeholder='Last name', ng-model="model.lastName", required, ng-minlength='2', ng-maxlength='64')
+		span.input-group-addon
+			span.glyphicon.glyphicon-info-sign(ng-show="createStudent.lastName.$invalid && createStudent.lastName.$pristine")
+			span.glyphicon.glyphicon-remove(ng-show="createStudent.lastName.$invalid && !createStudent.lastName.$pristine")
+			span.glyphicon.glyphicon-ok(ng-show="createStudent.lastName.$valid")
+	p.text-muted.error(ng-show="createStudent.lastName.$invalid && !createStudent.lastName.$pristine") Student's last name must be between 2 and 64 characters long.
 
-div.input-group
-	input.form-control(type='text', name='address', placeholder='Address', ng-model="model.address.street", required, ng-minlength='2', ng-maxlength='128')
-	span.input-group-addon
-		span.glyphicon.glyphicon-info-sign(popover="Enter the student's residential address (include number and street).", ng-show="createStudent.address.$invalid && createStudent.address.$pristine", popover-trigger="mouseenter", popover-placement="left")
-		span.glyphicon.glyphicon-remove(popover="Student's address must be between 2 and 128 characters long.", ng-show="createStudent.address.$invalid && !createStudent.address.$pristine", popover-trigger="mouseenter", popover-placement="left")
-		span.glyphicon.glyphicon-ok(ng-show="createStudent.address.$valid")
+div.form-group
+	div.input-group
+		input.form-control(type='text', name='address', placeholder='Address', ng-model="model.address.street", required, ng-minlength='2', ng-maxlength='128')
+		span.input-group-addon
+			span.glyphicon.glyphicon-info-sign(ng-show="createStudent.address.$invalid && createStudent.address.$pristine")
+			span.glyphicon.glyphicon-remove(ng-show="createStudent.address.$invalid && !createStudent.address.$pristine")
+			span.glyphicon.glyphicon-ok(ng-show="createStudent.address.$valid")
+	p.text-muted.error(ng-show="createStudent.address.$invalid && !createStudent.address.$pristine") Student's address must be between 2 and 128 characters long and include both the number and street.
 
-div.row.input-group
+div.form-group.row
 	div.col-md-6
 		div.input-group
 			input.form-control(type='text', name="city", placeholder='City', ng-model="model.address.city", required, ng-minlength='2', ng-maxlength='64')
 			span.input-group-addon
-				span.glyphicon.glyphicon-info-sign(popover="Enter the student's city.", ng-show="createStudent.city.$invalid && createStudent.city.$pristine", popover-trigger="mouseenter", popover-placement="left")
-				span.glyphicon.glyphicon-remove(popover="Student's city must be between 2 and 64 characters long.", ng-show="createStudent.city.$invalid && !createStudent.city.$pristine", popover-trigger="mouseenter", popover-placement="left")
+				span.glyphicon.glyphicon-info-sign(ng-show="createStudent.city.$invalid && createStudent.city.$pristine")
+				span.glyphicon.glyphicon-remove(ng-show="createStudent.city.$invalid && !createStudent.city.$pristine")
 				span.glyphicon.glyphicon-ok(ng-show="createStudent.city.$valid")
+		p.text-muted.error(ng-show="createStudent.city.$invalid && !createStudent.city.$pristine") Student's city must be between 2 and 64 characters long.
+
 	div.col-md-3
 		select.form-control
 			option(selected) NY
@@ -34,35 +42,43 @@ div.row.input-group
 		div.input-group
 			input.form-control(type='number', name="zipcode", placeholder='Zip code', ng-model="model.address.zip", required, ng-minlength='5', ng-maxlength='5')
 			span.input-group-addon
-				span.glyphicon.glyphicon-info-sign(popover="Enter the student's zip code.", ng-show="createStudent.zipcode.$invalid && createStudent.zipcode.$pristine", popover-trigger="mouseenter", popover-placement="left")
-				span.glyphicon.glyphicon-remove(popover="Student's zip code must be 5 numbers long.", ng-show="createStudent.zipcode.$invalid && !createStudent.zipcode.$pristine", popover-trigger="mouseenter", popover-placement="left")
+				span.glyphicon.glyphicon-info-sign(ng-show="createStudent.zipcode.$invalid && createStudent.zipcode.$pristine")
+				span.glyphicon.glyphicon-remove(ng-show="createStudent.zipcode.$invalid && !createStudent.zipcode.$pristine")
 				span.glyphicon.glyphicon-ok(ng-show="createStudent.zipcode.$valid")
+		p.text-muted.error(ng-show="createStudent.zipcode.$invalid && !createStudent.zipcode.$pristine") Student's zip code must be exactly 5 characters long.
 
-div.input-group
-	input.form-control(type='text', name="homePhoneNumber", placeholder='Home phone number', ng-model="model.phone.home", ng-pattern='/^[0-9]{3}-[0-9]{3}-[0-9]{4}$/', required)
-	span.input-group-addon
-		span.glyphicon.glyphicon-info-sign(popover="Enter the student's home phone number.", ng-show="createStudent.homePhoneNumber.$invalid && createStudent.homePhoneNumber.$pristine", popover-trigger="mouseenter", popover-placement="left")
-		span.glyphicon.glyphicon-remove(popover="Student's home phone number must be a valid 10 digit number. E.g. 555-555-5555", ng-show="createStudent.homePhoneNumber.$invalid && !createStudent.homePhoneNumber.$pristine", popover-trigger="mouseenter", popover-placement="left")
-		span.glyphicon.glyphicon-ok(ng-show="createStudent.homePhoneNumber.$valid")
+div.form-group
+	div.input-group
+		input.form-control(type='text', name="homePhoneNumber", placeholder='Home phone number', ng-model="model.phone.home", ng-pattern='/^[0-9]{3}-[0-9]{3}-[0-9]{4}$/')
+		span.input-group-addon
+			span.glyphicon.glyphicon-info-sign(ng-show="createStudent.homePhoneNumber.$invalid && createStudent.homePhoneNumber.$pristine")
+			span.glyphicon.glyphicon-remove(ng-show="createStudent.homePhoneNumber.$invalid && !createStudent.homePhoneNumber.$pristine")
+			span.glyphicon.glyphicon-ok(ng-show="createStudent.homePhoneNumber.$valid")
+	p.text-muted.error(ng-show="createStudent.homePhoneNumber.$invalid && !createStudent.homePhoneNumber.$pristine") Student's home phone number must be a valid 10 digit number. E.g. 555-555-5555
 
-div.input-group
-	input.form-control(type='text', name="cellPhoneNumber", placeholder='Cell phone number',ng-model="model.phone.cell", ng-pattern='/^[0-9]{3}-[0-9]{3}-[0-9]{4}$/', required)
-	span.input-group-addon
-		span.glyphicon.glyphicon-info-sign(popover="Enter the student's cell phone number.", ng-show="createStudent.cellPhoneNumber.$invalid && createStudent.cellPhoneNumber.$pristine", popover-trigger="mouseenter", popover-placement="left")
-		span.glyphicon.glyphicon-remove(popover="Student's cell phone number must be a valid 10 digit number. E.g. 555-555-5555", ng-show="createStudent.cellPhoneNumber.$invalid && !createStudent.cellPhoneNumber.$pristine", popover-trigger="mouseenter", popover-placement="left")
-		span.glyphicon.glyphicon-ok(ng-show="createStudent.cellPhoneNumber.$valid")
+div.form-group
+	div.input-group
+		input.form-control(type='tel', name="cellPhoneNumber", placeholder='Cell phone number',ng-model="model.phone.cell", ng-pattern='/^[0-9]{3}-[0-9]{3}-[0-9]{4}$/')
+		span.input-group-addon
+			span.glyphicon.glyphicon-info-sign(ng-show="createStudent.cellPhoneNumber.$invalid && createStudent.cellPhoneNumber.$pristine")
+			span.glyphicon.glyphicon-remove(ng-show="createStudent.cellPhoneNumber.$invalid && !createStudent.cellPhoneNumber.$pristine")
+			span.glyphicon.glyphicon-ok(ng-show="createStudent.cellPhoneNumber.$valid")
+	p.text-muted.error(ng-show="createStudent.cellPhoneNumber.$invalid && !createStudent.cellPhoneNumber.$pristine") Student's cell phone number must be a valid 10 digit number. E.g. 555-555-5555
 
-div.input-group
-	input.form-control(type='email', name="emailAddress", placeholder='Email address',ng-model="model.emailAddress", required)
-	span.input-group-addon
-		span.glyphicon.glyphicon-info-sign(popover="Enter the student's email address.", ng-show="createStudent.emailAddress.$invalid && createStudent.emailAddress.$pristine", popover-trigger="mouseenter", popover-placement="left")
-		span.glyphicon.glyphicon-remove(popover="Student's email address must be a valid email address.", ng-show="createStudent.emailAddress.$invalid && !createStudent.emailAddress.$pristine", popover-trigger="mouseenter", popover-placement="left")
-		span.glyphicon.glyphicon-ok(ng-show="createStudent.emailAddress.$valid")
+div.form-group
+	div.input-group
+		input.form-control(type='email', name="emailAddress", placeholder='Email address',ng-model="model.emailAddress", required)
+		span.input-group-addon
+			span.glyphicon.glyphicon-info-sign(ng-show="createStudent.emailAddress.$invalid && createStudent.emailAddress.$pristine")
+			span.glyphicon.glyphicon-remove(ng-show="createStudent.emailAddress.$invalid && !createStudent.emailAddress.$pristine")
+			span.glyphicon.glyphicon-ok(ng-show="createStudent.emailAddress.$valid")
+	p.text-muted.error(ng-show="createStudent.emailAddress.$invalid && !createStudent.emailAddress.$pristine") Student's email address must be a valid email address.
 
-div.input-group
-	input.form-control(type='text', placeholder='Enter date of birth', datepicker-popup="{{format}}", ng-model="model.birthday", is-open="opened", datepicker-options="dateOptions", min-date="minDate", date-disabled="disabled(date, mode)", ng-required="true", close-text="Close")
-	span.input-group-btn
-		button.btn.btn-default(type='button', ng-click="open($event)")
-			i.glyphicon.glyphicon-calendar
+div.form-group
+	div.input-group
+		input.form-control(type='text', placeholder='Enter date of birth', datepicker-popup="{{format}}", ng-model="model.birthday", is-open="opened", datepicker-options="dateOptions", min-date="minDate", date-disabled="disabled(date, mode)", ng-required="true", close-text="Close")
+		span.input-group-btn
+			button.btn.btn-default(type='button', ng-click="open($event)")
+				i.glyphicon.glyphicon-calendar
 
 div(class='clearfix')
