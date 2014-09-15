@@ -26,6 +26,8 @@ form.form-group
 		tr
 			td
 				button.btn.btn-success.glyphicon.glyphicon-plus(type='button' ng-click='goToCreateClass()')
+			td
+			td
 	h2 Ranks
 	table.table
 		tr
@@ -47,7 +49,9 @@ form.form-group
 		tr
 			td
 				button.btn.btn-success.glyphicon.glyphicon-plus(type='button' ng-click='goToCreateRank()')
-
+			td
+			td
+			td
 
 	input.btn.btn-primary.pull-right(ng-disabled='!canSaveProgram()' type='submit', value='Create Program', ng-click='createProgram()')
 	input.btn.btn-warning.pull-right(type='reset', value='Cancel', ng-click='cancelCreate()')
