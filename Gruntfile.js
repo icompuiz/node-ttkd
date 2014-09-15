@@ -167,247 +167,247 @@ module.exports = function(grunt) {
 				}]
 			},
 			heroku: {
-					files: [{
-							dot: true,
-							src: [
-									'heroku/*',
-									'!heroku/.git*',
-									'!heroku/Procfile'
-							]
-					}]
-			},
-			server: '.tmp'
-		},
+				files: [{
+						dot: true,
+						src: [
+							'heroku/*',
+							'!heroku/.git*',
+							'!heroku/Procfile'
+						]
+				  }]
+			  },
+			  server: '.tmp'
+		  },
 
 		// Add vendor prefixed styles
-		autoprefixer: {
-			options: {
-				browsers: ['last 1 version']
-			},
-			dist: {
-				files: [{
-					expand: true,
-					cwd: '.tmp/styles/',
-					src: '{,*/}*.css',
-					dest: '.tmp/styles/'
-				}]
-			}
-		},
+		  autoprefixer: {
+			  options: {
+				  browsers: ['last 1 version']
+			  },
+			  dist: {
+				  files: [{
+					  expand: true,
+					  cwd: '.tmp/styles/',
+					  src: '{,*/}*.css',
+					  dest: '.tmp/styles/'
+				  }]
+			  }
+		  },
 
 		// Automatically inject Bower components into the app
-		bowerInstall: {
-			app: {
-				src: ['<%= yeoman.app %>/index.html'],
-				ignorePath: '<%= yeoman.app %>/'
-			},
-			sass: {
-				src: ['<%= yeoman.app %>/styles/{,*/}*.{scss,sass}'],
-				ignorePath: '<%= yeoman.app %>/bower_components/'
-			}
-		},
+		  bowerInstall: {
+			  app: {
+				  src: ['<%= yeoman.app %>/index.html'],
+				  ignorePath: '<%= yeoman.app %>/'
+			  },
+			  sass: {
+				  src: ['<%= yeoman.app %>/styles/{,*/}*.{scss,sass}'],
+				  ignorePath: '<%= yeoman.app %>/bower_components/'
+			  }
+		  },
 
 		// Compiles Sass to CSS and generates necessary files if requested
-		compass: {
-			options: {
-				sassDir: '<%= yeoman.app %>/styles',
-				cssDir: '.tmp/styles',
-				generatedImagesDir: '.tmp/images/generated',
-				imagesDir: '<%= yeoman.app %>/images',
-				javascriptsDir: '<%= yeoman.app %>/scripts',
-				fontsDir: '<%= yeoman.app %>/styles/fonts',
-				importPath: '<%= yeoman.app %>/bower_components',
-				httpImagesPath: '/images',
-				httpGeneratedImagesPath: '/images/generated',
-				httpFontsPath: '/styles/fonts',
-				relativeAssets: false,
-				assetCacheBuster: false,
-				raw: 'Sass::Script::Number.precision = 10\n'
-			},
-			dist: {
-				options: {
-					generatedImagesDir: '<%= yeoman.dist %>/images/generated'
-				}
-			},
-			server: {
-				options: {
-					debugInfo: true
-				}
-			}
-		},
+		  compass: {
+			  options: {
+				  sassDir: '<%= yeoman.app %>/styles',
+				  cssDir: '.tmp/styles',
+				  generatedImagesDir: '.tmp/images/generated',
+				  imagesDir: '<%= yeoman.app %>/images',
+				  javascriptsDir: '<%= yeoman.app %>/scripts',
+				  fontsDir: '<%= yeoman.app %>/styles/fonts',
+				  importPath: '<%= yeoman.app %>/bower_components',
+				  httpImagesPath: '/images',
+				  httpGeneratedImagesPath: '/images/generated',
+				  httpFontsPath: '/styles/fonts',
+				  relativeAssets: false,
+				  assetCacheBuster: false,
+				  raw: 'Sass::Script::Number.precision = 10\n'
+			  },
+			  dist: {
+				  options: {
+					  generatedImagesDir: '<%= yeoman.dist %>/images/generated'
+				  }
+			  },
+			  server: {
+				  options: {
+					  debugInfo: true
+				  }
+			  }
+		  },
 
 		// Renames files for browser caching purposes
-		rev: {
-			dist: {
-				files: {
-					src: [
-						'<%= yeoman.dist %>/scripts/{,*/}*.js',
-						'<%= yeoman.dist %>/styles/{,*/}*.css',
-						'<%= yeoman.dist %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}',
-						'<%= yeoman.dist %>/styles/fonts/*'
-					]
-				}
-			}
-		},
+		  rev: {
+			  dist: {
+				  files: {
+					  src: [
+						  '<%= yeoman.dist %>/scripts/{,*/}*.js',
+						  '<%= yeoman.dist %>/styles/{,*/}*.css',
+						  '<%= yeoman.dist %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}',
+						  '<%= yeoman.dist %>/styles/fonts/*'
+					  ]
+				  }
+			  }
+		  },
 
 		// Reads HTML for usemin blocks to enable smart builds that automatically
 		// concat, minify and revision files. Creates configurations in memory so
 		// additional tasks can operate on them
-		useminPrepare: {
-			html: '<%= yeoman.app %>/index.html',
-			options: {
-				dest: '<%= yeoman.dist %>',
-				flow: {
-					html: {
-						steps: {
-							js: ['concat', 'uglifyjs'],
-							css: ['cssmin']
-						},
-						post: {}
-					}
-				}
-			}
-		},
+		  useminPrepare: {
+			  html: '<%= yeoman.app %>/index.html',
+			  options: {
+				  dest: '<%= yeoman.dist %>',
+				  flow: {
+					  html: {
+						  steps: {
+							  js: ['concat', 'uglifyjs'],
+							  css: ['cssmin']
+						  },
+						  post: {}
+					  }
+				  }
+			  }
+		  },
 
 		// Performs rewrites based on rev and the useminPrepare configuration
-		usemin: {
-			html: ['<%= yeoman.dist %>/{,*/}*.html'],
-			css: ['<%= yeoman.dist %>/styles/{,*/}*.css'],
-			options: {
-				assetsDirs: ['<%= yeoman.dist %>']
-			}
-		},
+		  usemin: {
+			  html: ['<%= yeoman.dist %>/{,*/}*.html'],
+			  css: ['<%= yeoman.dist %>/styles/{,*/}*.css'],
+			  options: {
+				  assetsDirs: ['<%= yeoman.dist %>']
+			  }
+		  },
 
 		// The following *-min tasks produce minified files in the dist folder
-		cssmin: {
-			options: {
-				root: '<%= yeoman.app %>'
-			}
-		},
+		  cssmin: {
+			  options: {
+				  root: '<%= yeoman.app %>'
+			  }
+		  },
 
-		imagemin: {
-			dist: {
-				files: [{
-					expand: true,
-					cwd: '<%= yeoman.app %>/images',
-					src: '{,*/}*.{png,jpg,jpeg,gif}',
-					dest: '<%= yeoman.dist %>/images'
-				}]
-			}
-		},
+		  imagemin: {
+			  dist: {
+				  files: [{
+					  expand: true,
+					  cwd: '<%= yeoman.app %>/images',
+					  src: '{,*/}*.{png,jpg,jpeg,gif}',
+					  dest: '<%= yeoman.dist %>/images'
+				  }]
+			  }
+		  },
 
-		svgmin: {
-			dist: {
-				files: [{
-					expand: true,
-					cwd: '<%= yeoman.app %>/images',
-					src: '{,*/}*.svg',
-					dest: '<%= yeoman.dist %>/images'
-				}]
-			}
-		},
+		  svgmin: {
+			  dist: {
+				  files: [{
+					  expand: true,
+					  cwd: '<%= yeoman.app %>/images',
+					  src: '{,*/}*.svg',
+					  dest: '<%= yeoman.dist %>/images'
+				  }]
+			  }
+		  },
 
-		htmlmin: {
-			dist: {
-				options: {
-					collapseWhitespace: true,
-					collapseBooleanAttributes: true,
-					removeCommentsFromCDATA: true,
-					removeOptionalTags: true
-				},
-				files: [{
-					expand: true,
-					cwd: '<%= yeoman.dist %>',
-					src: ['*.html', 'views/{,*/}*.html'],
-					dest: '<%= yeoman.dist %>'
-				}]
-			}
-		},
+		  htmlmin: {
+			  dist: {
+				  options: {
+					  collapseWhitespace: true,
+					  collapseBooleanAttributes: true,
+					  removeCommentsFromCDATA: true,
+					  removeOptionalTags: true
+				  },
+				  files: [{
+					  expand: true,
+					  cwd: '<%= yeoman.dist %>',
+					  src: ['*.html', 'views/{,*/}*.html'],
+					  dest: '<%= yeoman.dist %>'
+				  }]
+			  }
+		  },
 
 		// ngmin tries to make the code safe for minification automatically by
 		// using the Angular long form for dependency injection. It doesn't work on
 		// things like resolve or inject so those have to be done manually.
-		ngmin: {
-			dist: {
-				files: [{
-					expand: true,
-					cwd: '.tmp/concat/scripts',
-					src: '*.js',
-					dest: '.tmp/concat/scripts'
-				}]
-			}
-		},
+		  ngmin: {
+			  dist: {
+				  files: [{
+					  expand: true,
+					  cwd: '.tmp/concat/scripts',
+					  src: '*.js',
+					  dest: '.tmp/concat/scripts'
+				  }]
+			  }
+		  },
 
 		// Replace Google CDN references
-		cdnify: {
-			dist: {
-				html: ['<%= yeoman.dist %>/*.html']
-			}
-		},
+		  cdnify: {
+			  dist: {
+				  html: ['<%= yeoman.dist %>/*.html']
+			  }
+		  },
 
 		// Copies remaining files to places other tasks can use
-		copy: {
-			dist: {
-				files: [{
-					expand: true,
-					dot: true,
-					cwd: '<%= yeoman.app %>',
-					dest: '<%= yeoman.dist %>',
-					src: [
-						'*.{ico,png,txt}',
-						'.htaccess',
-						'*.html',
-						'views/{,*/}*.html',
-						'images/{,*/}*.{webp}',
-						'fonts/*'
-					]
-				}, {
-					expand: true,
-					cwd: '.tmp/images',
-					dest: '<%= yeoman.dist %>/images',
-					src: ['generated/*']
-				}]
-			},
-			heroku: {
-				files: [{
-						expand: true,
-						dot: true,
-						dest: 'heroku',
-						src: [
-								'<%= yeoman.dist %>/**',
-								'<%= yeoman.views %>/**'
-						]
-				}, {
-						expand: true,
-						dest: 'heroku',
-						src: [
+		  copy: {
+			  dist: {
+				  files: [{
+					  expand: true,
+					  dot: true,
+					  cwd: '<%= yeoman.app %>',
+					  dest: '<%= yeoman.dist %>',
+					  src: [
+						  '*.{ico,png,txt}',
+						  '.htaccess',
+						  '*.html',
+						  'views/{,*/}*.html',
+						  'images/{,*/}*.{webp}',
+						  'fonts/*'
+					  ]
+				  }, {
+					  expand: true,
+					  cwd: '.tmp/images',
+					  dest: '<%= yeoman.dist %>/images',
+					  src: ['generated/*']
+				  }]
+			  },
+			  heroku: {
+				  files: [{
+				    expand: true,
+					  dot: true,
+					  dest: 'heroku',
+					  src: [
+							  '<%= yeoman.dist %>/**',
+							  '<%= yeoman.views %>/**'
+						  ]
+					  }, {
+						  expand: true,
+						  dest: 'heroku',
+						  src: [
 								'package.json',
 								'server.js',
 								'server/**/*'
-						]
-				}]
-		},
-			styles: {
-				expand: true,
-				cwd: '<%= yeoman.app %>/styles',
-				dest: '.tmp/styles/',
-				src: '{,*/}*.css'
-			}
-		},
+						  ]
+				    }]
+			    },
+			    styles: {
+					  expand: true,
+					  cwd: '<%= yeoman.app %>/styles',
+					  dest: '.tmp/styles/',
+					  src: '{,*/}*.css'
+				  }
+			  },
 
 		// Run some tasks in parallel to speed up the build process
-		concurrent: {
-			server: [
-				'compass:server'
-			],
-			test: [
-				'compass'
-			],
-			dist: [
-				'compass:dist',
-				'imagemin',
-				'svgmin'
-			]
-		},
+			  concurrent: {
+				  server: [
+					  'compass:server'
+					],
+				  test: [
+					  'compass'
+					],
+				  dist: [
+					  'compass:dist',
+					  'imagemin',
+					  'svgmin'
+					]
+			  },
 
 		// By default, your `index.html`'s <!-- Usemin block --> will take care of
 		// minification. These next options are pre-configured if you do not wish
@@ -422,27 +422,27 @@ module.exports = function(grunt) {
 		//     }
 		//   }
 		// },
-		uglify: {
-			dist: {
-				files: {
-					'<%= yeoman.dist %>/scripts/scripts.js': [
-						'<%= yeoman.dist %>/scripts/scripts.js'
-					]
-				}
-			}
-		},
-		concat: {
-			dist: {}
-		},
+			  uglify: {
+				  dist: {
+					  files: {
+						  '<%= yeoman.dist %>/scripts/scripts.js': [
+						    '<%= yeoman.dist %>/scripts/scripts.js'
+						  ]
+					  }
+				  }
+			  },
+			  concat: {
+				  dist: {}
+			  },
 
 		// Test settings
-		karma: {
-			unit: {
-				configFile: 'karma.conf.js',
-				singleRun: true
-			}
-		}
-	});
+			  karma: {
+				  unit: {
+					  configFile: 'karma.conf.js',
+					  singleRun: true
+				  }
+			  }
+		  });
 
 
 	grunt.registerTask('serve', function(target) {
@@ -504,10 +504,10 @@ module.exports = function(grunt) {
 	]);
 
 	grunt.registerTask('heroku', [
-				'build',
-				'clean:heroku',
-				'copy:heroku'
-		]);
+		'build',
+		'clean:heroku',
+		'copy:heroku'
+	]);
 
 	grunt.registerTask('default', [
 		'newer:jshint',
