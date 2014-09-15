@@ -26,9 +26,21 @@ define(['../module'], function(controllers) {
 
             $scope.getPagedDataAsync = function (pageSize, page, searchText) {
                 setTimeout(function () {
-                    var data;
-                    data = StudentSvc.list();
-                    $scope.setPagingData(data,page,pageSize);
+                    var data = {};
+
+                    StudentSvc.list().then(function(students){
+                        // add students to new array for ng-grid outputting
+                        _(students).forEach(function(student){
+                            data.push({
+                                'Student_name': student.firstName 
+                            })
+                        });
+
+
+
+                        $scope.setPagingData(data,page,pageSize);
+                    });
+                    
 /*
                     if (searchText) {
                         var ft = searchText.toLowerCase();
