@@ -23,7 +23,7 @@ define(['../module'], function(controllers){
 			};
 
 			$scope.removeClass = function(classToRemove) { 
-				var c = confirm('Are you sure you want to delete ' + classToRemove.name + '? You will not be able to undo this operation');
+				var c = confirm('Are you sure you want to delete ' + classToRemove.name + '?');
 
 				if (c) {
 					$scope.newProgram.classes = _.without($scope.newProgram.classes, classToRemove);
@@ -31,7 +31,7 @@ define(['../module'], function(controllers){
 			};
 
 			$scope.removeClass = function(rankToRemove) { 
-				var c = confirm('Are you sure you want to delete ' + rankToRemove.name + '? You will not be able to undo this operation');
+				var c = confirm('Are you sure you want to delete ' + rankToRemove.name + '? You will not be able to undo this operatio');
 
 				if (c) {
 					$scope.newProgram.ranks = _.without($scope.newProgram.ranks, rankToRemove);
