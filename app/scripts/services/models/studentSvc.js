@@ -2,7 +2,7 @@
 define(['../module'], function (services) {
 	'use strict';
 
-	services.service('StudentSvc', ['EndpointFactory','ModelFactory', function(EndpointFactory,ModelFactory) {
+	services.service('StudentSvc', ['ModelFactory', function(ModelFactory) {
 
 		// privates
 		var StudentModel = ModelFactory.create('students');
