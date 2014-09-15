@@ -16,7 +16,8 @@ requirejs.config({
         '$': '../bower_components/jquery/dist/jquery',
         'angular-bootstrap':'../bower_components/angular-bootstrap/ui-bootstrap',
         'restangular':'../bower_components/restangular/dist/restangular.min',
-        'angular-bootstrap-tmpls': '../bower_components/angular-bootstrap/ui-bootstrap-tpls'
+        'angular-bootstrap-tmpls': '../bower_components/angular-bootstrap/ui-bootstrap-tpls',
+        'ngGrid': '../bower_components/ng-grid/ng-grid-2.0.13.min'
       },
 
     /**
@@ -44,6 +45,9 @@ requirejs.config({
           },
           'angular-bootstrap':{
             deps:['angular', '$', 'angular-bootstrap-tmpls']
+          },
+          'ngGrid':{
+            deps: ['angular', '$']
           }
         },
 
