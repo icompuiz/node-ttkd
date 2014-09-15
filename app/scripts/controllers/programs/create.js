@@ -22,12 +22,20 @@ define(['../module'], function(controllers){
 				$state.go('admin.programs.home');
 			};
 
-			$scope.removeClassFromProgram = function(classToRemove, program) {
-				program.classes = _.without(program.classes, classToRemove);
+			$scope.removeClass = function(classToRemove) { 
+				var c = confirm('Are you sure you want to delete ' + classToRemove.name + '? You will not be able to undo this operation');
+
+				if (c) {
+					$scope.newProgram.classes = _.without($scope.newProgram.classes, classToRemove);
+				}
 			};
 
-			$scope.removeRankFromProgram = function(rankToRemove, program) {
-				program.ranks = _.without(program.ranks, rankToRemove);
+			$scope.removeClass = function(rankToRemove) { 
+				var c = confirm('Are you sure you want to delete ' + rankToRemove.name + '? You will not be able to undo this operation');
+
+				if (c) {
+					$scope.newProgram.ranks = _.without($scope.newProgram.ranks, rankToRemove);
+				}
 			};
 
 			$scope.addClassToProgram = function(program) {
@@ -38,6 +46,18 @@ define(['../module'], function(controllers){
 			$scope.addRankToProgram = function(program) {
 				program.ranks.push($scope.newRank);
 				$scope.newRank = {};
+			};
+
+			$scope.goToCreateClass = function() {
+				ClassSvc.reset();
+				ClassSvc.startCreating();
+				$state.go('admin.programs.createclass');
+			};
+
+			$scope.goToEditClass = function(clss) {
+				ClassSvc.init(clss);
+				ClassSvc.startEditing();
+				$state.go('admin.programs.editclass');
 			};
 
 			$scope.createProgram = function() {
@@ -64,10 +84,7 @@ define(['../module'], function(controllers){
 										classes: classIDs,
 										ranks: rankIDs
 									};
-									ProgramSvc.update(updates).then(function(updated) {									
-										$scope.newProgram = {};
-										$scope.newProgram.classes = [];
-										$scope.newProgram.ranks = [];
+									ProgramSvc.update(updates).then(function(updated) {		
 										ProgramSvc.reset();
 										$state.go('admin.programs.home');
 									});
@@ -120,33 +137,15 @@ define(['../module'], function(controllers){
 				}
 			};
 
+
 /********************** Form Validation **********************************/
 
 			$scope.isEmpty = function(str) {
 				return (!str || 0 === str.length);
 			};
 
-			$scope.isClassValid = function() {
-				var classNames = _.map($scope.newProgram.classes, function(c) { return c.name; });
-				return !$scope.isEmpty($scope.newClass.name) && !_.contains(classNames, $scope.newClass.name);
-			};
-
-			$scope.isRankValid = function() {
-				var rankNames = _.map($scope.newProgram.ranks, function(r) { return r.name; });
-				var rankOrders = _.map($scope.newProgram.ranks, function(r) { return r.rankOrder; });
-				var valid = true;
-
-				//Validate rank name
-				if ($scope.isEmpty($scope.newRank.name) || _.contains(rankNames, $scope.newRank.name)) {
-					valid = false;
-				}
-
-				//validate rank Order
-				if ($scope.isEmpty($scope.newRank.rankOrder) || _.contains(rankOrders, parseInt($scope.newRank.rankOrder))) {
-					valid = false;
-				}
-
-				return valid;
+			$scope.canSaveProgram = function() {
+				return !$scope.isEmpty($scope.newProgram.name);
 			};
 
 	}]);

@@ -42,6 +42,18 @@ define(['../module'], function(controllers){
 				$scope.newClass = {};
 			};
 
+			$scope.goToCreateClass = function() {
+				ClassSvc.reset();
+				ClassSvc.startCreating();
+				$state.go('admin.programs.createclass');
+			};
+
+			$scope.goToEditClass = function(clss) {
+				ClassSvc.init(clss);
+				ClassSvc.startEditing();
+				$state.go('admin.programs.editclass');
+			};
+
 			$scope.addRank = function() {
 				var rankToAdd = {
 					name: $scope.newRank.name,
@@ -54,8 +66,12 @@ define(['../module'], function(controllers){
 			};
 
 			$scope.removeClass = function(classToRemove) { 
-				$scope.currentProgram.classes = _.without($scope.currentProgram.classes, classToRemove);
-				$scope.removedClasses.push(classToRemove);
+				var c = confirm('Are you sure you want to delete ' + classToRemove.name + '? You will not be able to undo this operation');
+
+				if (c) {
+					$scope.currentProgram.classes = _.without($scope.currentProgram.classes, classToRemove);
+					$scope.removedClasses.push(classToRemove);
+				}
 			};
 
 			$scope.removeRank = function(rankToRemove) { 
@@ -127,21 +143,9 @@ define(['../module'], function(controllers){
 								c.program = $scope.currentProgram._id;
 							}
 
-							if (classItem._id) { //Update exiting class
-								ClassSvc.read(classItem._id, null, true).then(function(cls) {
-									ClassSvc.save().then(function(added) {
-										classIDs.push(added._id);
-										ClassSvc.reset();
-										callback();
-									});
-								});
-							} else { //Add new class
-								ClassSvc.save(beforeSave).then(function(added) {
-									classIDs.push(added._id);
-									ClassSvc.reset();
-									callback();
-								});
-							}
+							ClassSvc.save(beforeSave).then(function(saved) {
+								callback();
+							});
 						},
 						function(err) {
 							callback();
@@ -162,21 +166,9 @@ define(['../module'], function(controllers){
 								r.program = $scope.currentProgram._id;
 							}
 
-							if (rankItem._id) { //Update exiting rank
-								RankSvc.read(rankItem._id, null, true).then(function(rnk) {
-									RankSvc.save().then(function(added) {
-										rankIDs.push(added._id);
-										RankSvc.reset();
-										callback();
-									});
-								});
-							} else { //Add new rank
-								RankSvc.save(beforeSave).then(function(added) {
-									classIDs.push(added._id);
-									RankSvc.reset();
-									callback();
-								});
-							}
+							RankSvc.save(beforeSave).then(function(saved) {
+								callback()
+							});
 						},
 						function(err) {
 							callback();
@@ -186,10 +178,10 @@ define(['../module'], function(controllers){
 				//Send deletions to the model
 				(function(classIDs, rankIDs) {
 					async.parallel([
+						//addRanksToModel,
+						addClassesToModel,
 						removeClassesFromModel,
 						removeRanksFromModel,
-						addClassesToModel,
-						addRanksToModel],
 						function(err) {
 
 							function beforeSave(program) {
@@ -203,38 +195,19 @@ define(['../module'], function(controllers){
 								ProgramSvc.reset();
 								$state.go('admin.programs.home');
 							});
+							
 						}
-					);
+					]);
 				})(classIDs, rankIDs);
 			};
 
 /********************** Form Validation **********************************/
+			function isEmpty(str) {
+				return (!str || 0 === str.length);				
+			}
 
-			$scope.isEmpty = function(str) {
-				return (!str || 0 === str.length);
-			};
-
-			$scope.isClassValid = function() {
-				var classNames = _.map($scope.currentProgram.classes, function(c) { return c.name; });
-				return !$scope.isEmpty($scope.newClass.name) && !_.contains(classNames, $scope.newClass.name);
-			};
-
-			$scope.isRankValid = function() {
-				var rankNames = _.map($scope.currentProgram.ranks, function(r) { return r.name; });
-				var rankOrders = _.map($scope.currentProgram.ranks, function(r) { return r.rankOrder; });
-				var valid = true;
-
-				//Validate rank name
-				if ($scope.isEmpty($scope.newRank.name) || _.contains(rankNames, $scope.newRank.name)) {
-					valid = false;
-				}
-
-				//validate rank Order
-				if ($scope.isEmpty($scope.newRank.rankOrder) || _.contains(rankOrders, parseInt($scope.newRank.rankOrder))) {
-					valid = false;
-				}
-
-				return valid;
+			$scope.canSaveProgram = function() {
+				return !isEmpty($scope.currentProgram.name);
 			};
 	}]);
 });	

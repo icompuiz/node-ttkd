@@ -1,32 +1,31 @@
 h1 Programs
-.col-md-8.col-sm-8
-	button.btn.btn-primary(ng-click='goToCreateProgram()')
-		| Create new program
-	button.btn.btn-default(ng-click='removeSelected()')
-		| Remove selected
-	table(class="table borderless")
-		tr 
-			th
-				input(type='checkbox' ng-model='allChecked' ng-change='checkAll()')
-			th Name
-			th Classes
-			th Ranks
-			th Actions
-		tr(ng-repeat='program in programs')
-			td
-				input(type='checkbox' ng-model='program.selected')
-			td {{program.name}}
-			td
-				div(ng-repeat='class in program.classes') 
-					{{class.name}}
-			td
-				div(ng-repeat='rank in program.ranks')
-					{{rank.name}}
-			td
-				button.btn.btn-small.btn-info(ng-click='goToViewProgram(program)')
-					span.glyphicon.glyphicon-eye-open
-				button.btn.btn-small.btn-default(ng-click='goToEditProgram(program)')
-					span.glyphicon.glyphicon-edit
-				button.btn.btn-small.btn-danger(ng-click='removeProgram(program)')
-					span.glyphicon.glyphicon-remove
+button.btn.btn-primary(ng-click='goToCreateProgram()')
+	| Create new program
+button.btn.btn-default(ng-click='removeSelected()')
+	| Remove selected
+table(class="table borderless")
+	tr 
+		th
+			input(type='checkbox' ng-model='allChecked' ng-change='checkAll()')
+		th Name
+		th Classes
+		th Ranks
+		th Actions
+	tr(ng-repeat='program in programs')
+		td
+			input(type='checkbox' ng-model='program.selected')
+		td {{program.name}}
+		td
+			div(ng-repeat='class in program.classes') 
+				{{class.name}}
+		td
+			div(ng-repeat='rank in program.ranks')
+				{{rank.name}}
+		td
+			button.btn.btn-small.btn-info(ng-click='goToViewProgram(program)')
+				span.glyphicon.glyphicon-eye-open
+			button.btn.btn-small.btn-default(ng-click='goToEditProgram(program)')
+				span.glyphicon.glyphicon-edit
+			button.btn.btn-small.btn-danger(ng-click='removeProgram(program)')
+				span.glyphicon.glyphicon-remove
 

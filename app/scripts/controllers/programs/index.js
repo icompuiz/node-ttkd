@@ -5,5 +5,8 @@ define([
 	'./programs',
 	'./create',
 	'./edit',
-	'./view'
+	'./view',
+	'./classes/create',
+	'./classes/view',
+	'./classes/edit'
 ], function () {});

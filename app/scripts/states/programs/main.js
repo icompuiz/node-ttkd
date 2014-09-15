@@ -57,6 +57,36 @@ define(['../module'], function (states) {
                 }
             }
         });
+
+        $stateProvider.state('admin.programs.createclass', {
+            url: '/programs/classes/create',
+            views: {
+                'section-body': {
+                    templateUrl: 'partials/programs/classes/create',
+                    controller: 'CreateClassCtrl'
+                }
+            }
+        });
+
+        $stateProvider.state('admin.programs.viewclass', {
+            url: '/programs/classes/view',
+            views: {
+                'section-body': {
+                    templateUrl: 'partials/programs/classes/view',
+                    controller: 'ViewClassCtrl'
+                }
+            }
+        });
+
+        $stateProvider.state('admin.programs.editclass', {
+            url: '/programs/classes/edit',
+            views: {
+                'section-body': {
+                    templateUrl: 'partials/programs/classes/edit',
+                    controller: 'EditClassCtrl'
+                }
+            }
+        });
     }]);
 
 });

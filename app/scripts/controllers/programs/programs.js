@@ -77,7 +77,7 @@ define(['../module'], function(controllers){
 					}]);
 				}
 
-				var r = confirm('Are you sure you want to delete this program? This will remove all associated	classes and ranks.');
+				var r = confirm('Are you sure you want to delete this program? This will remove all associated classes and ranks.');
 				if (r) {
 					removeProgramData(program);
 				}

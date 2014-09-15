@@ -1,0 +1,16 @@
+h1 Edit Class
+br
+
+form.form-group
+	h2 Name
+	.input-group
+		input(type='text', class='form-control', placeholder='Class name', value='{{currentClass.name}}', ng-model="currentClass.name")
+		span(class='input-group-addon')
+			span(ng-show='!isEmpty(currentClass.name)', class='glyphicon glyphicon-ok input-valid')
+			span(ng-show='isEmpty(currentClass.name)', class='glyphicon glyphicon-remove input-invalid')
+	h2 Students
+
+	input.btn.btn-primary.pull-right(type='submit', value='Save Class', ng-click="saveClass()")
+	input.btn.btn-warning.pull-right(type='reset', value='Cancel', ng-click='cancelEdit()')
+
+	div(class='clearfix')
