@@ -1,8 +1,9 @@
 define(['../module'], function(controllers) {
 	'use strict';
 
-	controllers.controller('CreateStudentCtrl', ['$scope', '$http', '$log', '$state', 'StudentSvc',
-		function($scope, $http, $log, $state, StudentSvc) {
+	controllers.controller('CreateStudentPhotoCtrl', ['$scope', '$log', '$state', 'StudentSvc',
+		function($scope, $log, $state, StudentSvc) {
+
 			var wizardSteps = {};
 			wizardSteps['admin.students.create.basic'] = { id: 'admin.students.create.basic', name: 'Basic Information', enabled: false };
 			wizardSteps['admin.students.create.econtact'] = { id: 'admin.students.create.econtact', name: 'Emergency Contact', enabled: false };

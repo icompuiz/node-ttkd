@@ -1,8 +1,77 @@
 define(['../module'], function(controllers) {
 	'use strict';
 
-	controllers.controller('CreateStudentCtrl', ['$scope', '$http', '$log', '$state', 'StudentSvc',
-		function($scope, $http, $log, $state, StudentSvc) {
+	controllers.controller('CreateStudentBasicCtrl', ['$scope', '$log', '$state', 'StudentSvc',
+		function($scope, $log, $state, StudentSvc) {
+			// Date of birth calendar
+			$scope.today = function() {
+					$scope.model.birthday = new Date();
+			};
+			//$scope.today();
+			$scope.clear = function() {
+					$scope.model.birthday = null;
+			};
+			$scope.open = function($event) {
+					$event.preventDefault();
+					$event.stopPropagation();
+					$scope.opened = true;
+			};
+
+			$scope.dateOptions = {
+					formatYear: 'yy',
+					startingDay: 1
+			};
+			$scope.initDate = new Date('2014-01-01');
+			$scope.format = 'MMMM dd, yyyy';
+
+
+
+
+
+
+
+			function validateData() {
+				return validateFirstName() && validateLastName();
+			}
+
+			function validateFirstName() {
+				var firstName = $scope.model.firstName;
+
+				if(firstName.length < 2 || firstName.length > 64) {
+					$scope.errors.basic.firstName = 'First name must be between 2 and 64 characters long.';
+					return false;
+				}
+			}
+
+			function validateLastName() {
+				var lastName = $scope.model.lastName;
+
+				if(lastName.length < 2 || lastName.length > 64) {
+					$scope.errors.basic.lastName = 'Last name must be between 2 and 64 characters long.';
+					return false;
+				}
+			}
+
+			function validateAddress() {
+				var street = $scope.model.address.street;
+				var city = $scope.model.address.city;
+				var state = $scope.model.address.state;
+
+				if(street.length < 2 || lastName.length > 128) {
+					$scope.errors.basic.address.street = 'Street address must be between 2 and 128 characters long.';
+					return false;
+				}
+			}
+
+
+
+
+
+
+
+
+
+
 			var wizardSteps = {};
 			wizardSteps['admin.students.create.basic'] = { id: 'admin.students.create.basic', name: 'Basic Information', enabled: false };
 			wizardSteps['admin.students.create.econtact'] = { id: 'admin.students.create.econtact', name: 'Emergency Contact', enabled: false };
@@ -138,6 +207,12 @@ define(['../module'], function(controllers) {
 					$scope.goToStep(defaultStep);
 				}
 			};
+
+
+
+
+
+
 		}
 	]);
 
