@@ -3,5 +3,11 @@
  **/
 define([
 	'./students',
-	'./create'
+	'./create',
+	'./list',
+	'./create/basic',
+	'./create/class',
+	'./create/econtact',
+	'./create/photo',
+	'./create/signature'
 ], function () {});
