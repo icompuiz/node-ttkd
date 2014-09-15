@@ -28,6 +28,16 @@ define(['../module'], function (states) {
             }
         });
 
+        $stateProvider.state('admin.students.list', {
+            url: '/students/list',
+            views: {
+                'section-body': {
+                    templateUrl: 'partials/students/list',
+                    controller: 'ListStudentCtrl'
+                }
+            }
+        });
+
         $stateProvider.state('admin.students.create', {
             url: '/students/create',
             views: {

@@ -1,4 +1,4 @@
-define(['../module'], function(controllers) {
+define(['../../module'], function(controllers) {
 	'use strict';
 
 	controllers.controller('CreateStudentBasicCtrl', ['$scope', '$log', '$state', 'StudentSvc',
