@@ -7,6 +7,7 @@ define('app', [
     'angular-ui-router',
     'angular-bootstrap',
     // 'text!',
+    'ngGrid',
     'restangular',
     './controllers/index',
     './directives/index',
@@ -18,6 +19,7 @@ define('app', [
     'use strict';
 
     return ng.module('ttkd', [
+        'ngGrid',
         'restangular',
         'ttkd.controllers',
         'ttkd.directives',
