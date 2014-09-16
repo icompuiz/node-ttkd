@@ -16,7 +16,7 @@ define(['../../module'], function(controllers){
 
 				ClassSvc.reset();
 
-				$state.go('admin.programs.view');
+				$state.go('admin.programs.view', { programId: program._id });
 			};
 
 	}]);

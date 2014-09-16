@@ -10,7 +10,7 @@ form.form-group
 			span(ng-show='isEmpty(newClass.name)', class='glyphicon glyphicon-remove input-invalid')
 	h2 Students
 
-	input.btn.btn-primary.pull-right(type='submit', value='Create Class', ng-click="createClass()")
+	input.btn.btn-primary.pull-right(ng-disabled='!canCreateClass()', type='submit', value='Create Class', ng-click="createClass()")
 	input.btn.btn-warning.pull-right(type='reset', value='Cancel', ng-click='cancelCreate()')
 
 	div(class='clearfix')

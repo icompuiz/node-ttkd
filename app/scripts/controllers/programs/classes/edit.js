@@ -5,7 +5,6 @@ define(['../../module'], function(controllers){
 			$scope.currentClass = {};
 			var currentProgram = {};
 
-
 			if (ClassSvc.current && ClassSvc.editing) {
 				$scope.currentClass = ClassSvc.current;
 				//Store the original class so we can find and save changes after editing
@@ -42,16 +41,16 @@ define(['../../module'], function(controllers){
 				}
 
 				//Make sure the class name is not a duplicate within the program
-				var classNames = _.map(currentProgram.classes, function(c) { return c.name });
+				var classNames = _.map(currentProgram.classes, function(c) { return c.name; });
 				if (_.contains(classNames, $scope.currentClass.name)) {
-					alert("Class name must be unique!");
+					alert('Class name must be unique!');
 					return;
 				}
 
 				//Find the original class in the program and replace it with the edited clas
 				var i = _.findIndex(currentProgram.classes, function(c) {
 					return areSameClass(c, ClassSvc.orig);
-				})
+				});
 				if (i >= 0) {
 					currentProgram.classes[i] = $scope.currentClass;
 				} else {
@@ -71,6 +70,17 @@ define(['../../module'], function(controllers){
 				ClassSvc.orig = null;
 
 				goToPrevState();
+			};
+
+
+/********************** Form Validation **********************************/
+
+			$scope.isEmpty = function(str) {
+				return (!str || 0 === str.length);
+			};
+
+			$scope.canSaveClass = function() {
+				return !$scope.isEmpty($scope.currentClass.name);
 			};
 
 	}]);

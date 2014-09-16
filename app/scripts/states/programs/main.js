@@ -49,7 +49,7 @@ define(['../module'], function (states) {
         });
 
         $stateProvider.state('admin.programs.view', {
-            url: '/programs/view',
+            url: '/programs/view/:id',
             views: {
                 'section-body': {
                     templateUrl: 'partials/programs/view',

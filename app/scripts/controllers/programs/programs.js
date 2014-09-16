@@ -116,7 +116,7 @@ define(['../module'], function(controllers){
 			$scope.goToViewProgram = function(program) {
 				ProgramSvc.startViewing();
 				ProgramSvc.init(program);
-				$state.go('admin.programs.view');
+				$state.go('admin.programs.view', { id: program._id });
 			};
 
 	}]);

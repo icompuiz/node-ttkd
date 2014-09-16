@@ -31,17 +31,6 @@ define(['../module'], function(controllers){
 				$state.go('admin.programs.home');
 			};
 
-			$scope.addClass = function() {
-				var classToAdd = {
-					name: $scope.newClass.name,
-					meetingTimes: $scope.newClass.meetingTimes,
-					studentList: $scope.newClass.studentList,
-					program: $scope.currentProgram._id
-				};
-				$scope.currentProgram.classes.push(classToAdd);
-				$scope.newClass = {};
-			};
-
 			$scope.goToCreateClass = function() {
 				ClassSvc.reset();
 				ClassSvc.startCreating();
@@ -52,17 +41,6 @@ define(['../module'], function(controllers){
 				ClassSvc.init(clss);
 				ClassSvc.startEditing();
 				$state.go('admin.programs.editclass');
-			};
-
-			$scope.addRank = function() {
-				var rankToAdd = {
-					name: $scope.newRank.name,
-					rankOrder: $scope.newRank.rankOrder,
-					intermediaryRanks: $scope.newRank.intermediaryRanks,
-					program: $scope.currentProgram._id
-				};
-				$scope.currentProgram.ranks.push(rankToAdd);
-				$scope.newRank = {};
 			};
 
 			$scope.removeClass = function(classToRemove) { 
@@ -87,6 +65,30 @@ define(['../module'], function(controllers){
 				var classIDs = [],
 					rankIDs = [];
 
+				//Add or update classes
+				function addClassesToModel(callback, err) {
+					async.each($scope.currentProgram.classes,
+						function(classItem, callback) {
+
+							function beforeSave(c) {
+								c.name = classItem.name;
+								c.meetingTimes = classItem.meetingTimes;
+								c.studentList = classItem.studentList;
+								c.program = $scope.currentProgram._id;
+							}
+
+							ClassSvc.init(classItem);
+							ClassSvc.save(beforeSave).then(function(c) {
+								classIDs.push(c._id);
+								callback();
+							});
+												
+						},
+						function(err) {
+							callback();
+						});
+				}
+
 				//Send deletions to the model for classes that were removed from the program
 				function removeClassesFromModel(callback, err) {
 					async.each($scope.removedClasses,
@@ -96,9 +98,7 @@ define(['../module'], function(controllers){
 							} else {
 								ClassSvc.read(classItem._id, null, true).then(function(cls) {
 									ClassSvc.remove().then(function(removed) {
-										if (removed){
-											console.log('Class ' + removed.name + ' successfully deleted');
-										}
+										classIDs = _.without(classIDs, cls._id);
 										ClassSvc.reset();
 										callback();
 									});
@@ -133,29 +133,6 @@ define(['../module'], function(controllers){
 						});
 				}
 
-				//Add or update classes
-				function addClassesToModel(callback, err) {
-					async.each($scope.currentProgram.classes,
-						function(classItem, callback) {
-							//Temporary... class service will eventually be 
-							//	initialized and will save from its "Create" form
-							ClassSvc.init(classItem);
-							function beforeSave(c) {
-								c.name = classItem.name;
-								c.meetingTimes = classItem.meetingTimes;
-								c.studentList = classItem.studentList;
-								c.program = $scope.currentProgram._id;
-							}
-
-							ClassSvc.save(beforeSave).then(function(saved) {
-								callback();
-							});
-						},
-						function(err) {
-							callback();
-						});
-				}
-
 				//Add or update ranks
 				function addRanksToModel(callback, err) {
 					async.each($scope.currentProgram.ranks,
@@ -171,7 +148,7 @@ define(['../module'], function(controllers){
 							}
 
 							RankSvc.save(beforeSave).then(function(saved) {
-								callback()
+								callback();
 							});
 						},
 						function(err) {
@@ -179,13 +156,11 @@ define(['../module'], function(controllers){
 						});
 				}
 
-				//Send deletions to the model
 				(function(classIDs, rankIDs) {
 					async.parallel([
-						//addRanksToModel,
 						addClassesToModel,
 						removeClassesFromModel,
-						removeRanksFromModel,
+						removeRanksFromModel],
 						function(err) {
 
 							function beforeSave(program) {
@@ -201,7 +176,7 @@ define(['../module'], function(controllers){
 							});
 							
 						}
-					]);
+					);
 				})(classIDs, rankIDs);
 			};
 

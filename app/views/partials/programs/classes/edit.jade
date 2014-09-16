@@ -10,7 +10,7 @@ form.form-group
 			span(ng-show='isEmpty(currentClass.name)', class='glyphicon glyphicon-remove input-invalid')
 	h2 Students
 
-	input.btn.btn-primary.pull-right(type='submit', value='Save Class', ng-click="saveClass()")
+	input.btn.btn-primary.pull-right(ng-disabled='!canSaveClass()', type='submit', value='Save Class', ng-click="saveClass()")
 	input.btn.btn-warning.pull-right(type='reset', value='Cancel', ng-click='cancelEdit()')
 
 	div(class='clearfix')

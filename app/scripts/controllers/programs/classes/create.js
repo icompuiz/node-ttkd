@@ -39,7 +39,7 @@ define(['../../module'], function(controllers){
 				//Make sure the class name is not a duplicate within the program
 				var classNames = _.map(program.classes, function(c) { return c.name });
 				if (_.contains(classNames, $scope.newClass.name)) {
-					alert("Class name must be unique!");
+					alert('Class name must be unique!');
 					return;
 				}
 
@@ -56,6 +56,10 @@ define(['../../module'], function(controllers){
 
 			$scope.isEmpty = function(str) {
 				return (!str || 0 === str.length);
+			};
+
+			$scope.canCreateClass = function() {
+				return !$scope.isEmpty($scope.newClass.name);
 			};
 
 	}]);

@@ -31,7 +31,7 @@ define(['../module'], function(controllers){
 			};
 
 			$scope.removeClass = function(rankToRemove) { 
-				var c = confirm('Are you sure you want to delete ' + rankToRemove.name + '? You will not be able to undo this operatio');
+				var c = confirm('Are you sure you want to delete ' + rankToRemove.name + '?');
 
 				if (c) {
 					$scope.newProgram.ranks = _.without($scope.newProgram.ranks, rankToRemove);
@@ -84,7 +84,13 @@ define(['../module'], function(controllers){
 										classes: classIDs,
 										ranks: rankIDs
 									};
-									ProgramSvc.update(updates).then(function(updated) {		
+
+									function beforeSave(c) {
+										c.classes = classIDs;
+										c.ranks = rankIDs;
+									}
+
+									ProgramSvc.save(beforeSave).then(function(saved) {		
 										ProgramSvc.reset();
 										$state.go('admin.programs.home');
 									});
