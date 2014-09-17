@@ -1,4 +1,4 @@
-h1 Register Student - Enter {{currentStep.name}}
+h1 Register Student - Enter {{wizard.current.name}}
 
 div.row
 	div.col-md-3
@@ -15,10 +15,10 @@ div.row
 
 				div(ng-show='showResetConfirm')
 					p.text-muted Are you sure you wish to reset form?
-					button.btn.btn-danger(type='reset', ng-click='confirmReset(true)') Yes
+					button.btn.btn-danger(type='button', ng-click='confirmReset(true)') Yes
 					button.btn.btn-success(type='button', ng-click='confirmReset(false)') No
 
 			div.form_controls.pull-right
-				button.btn.btn-default(type='button', ng-click='wizard.goBack()', ng-show='wizard.peekPreviousIndex()') Previous
+				button.btn.btn-default(type='button', ng-click='wizard.goBack()', ng-show='wizard.peekPreviousIndex() >= 0') Previous
 				button.btn.btn-primary(type='submit', ng-show='!wizard.current.isFinalStep', ng-disabled='createStudent.$invalid') Continue
 				button.btn.btn-success(type='submit', ng-show='wizard.current.isFinalStep', ng-disabled='createStudent.$invalid || submitBtnDisabled') {{submitBtnContent}}

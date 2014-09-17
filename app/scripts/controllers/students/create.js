@@ -19,11 +19,15 @@ define(['../module'], function(controllers) {
 			// };
 
 			// Create student object
-			if (!StudentSvc.current) {
-				$scope.model = StudentSvc.init($scope.model);
-			} else {
-				$scope.model = StudentSvc.current;
+			function initStudentObject() {
+				if (!StudentSvc.current) {
+					$scope.model = StudentSvc.init({});
+				} else {
+					$scope.model = StudentSvc.current;
+				}
 			}
+
+			initStudentObject();
 
 			// Create wizard object
 			$scope.wizard = WizardService.get('admin.students.create');
@@ -56,7 +60,7 @@ define(['../module'], function(controllers) {
 
 			$scope.submit = function() {
 				// check for ng form validity
-
+				$log.log($scope.model);
 
 				if (!$scope.wizard.current.isFinalStep) {
 					$scope.wizard.goFoward();
@@ -77,7 +81,9 @@ define(['../module'], function(controllers) {
 
 				if (resetConfirmed) {
 					StudentSvc.reset();
+					initStudentObject();
 					$scope.wizard.reset();
+					$scope.createStudent.$setPristine();
 				}
 			};
 		}

@@ -1,4 +1,4 @@
 /**
  * Attach all state definitions
  **/
-define(['./main', './applicationMenuItem'], function () {});
+define(['./main', './applicationMenuItem', './phoneNumberFormat'], function () {});

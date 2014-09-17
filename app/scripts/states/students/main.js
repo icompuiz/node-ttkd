@@ -53,7 +53,7 @@ define(['../module'], function (states) {
             views: {
                 'create-student-wzd-body': {
                     templateUrl: 'partials/students/create/basic',
-                    controller: 'CreateStudentCtrl'
+                    controller: 'CreateStudentBasicCtrl'
                 }
             }
         });
@@ -63,7 +63,7 @@ define(['../module'], function (states) {
             views: {
                 'create-student-wzd-body': {
                     templateUrl: 'partials/students/create/class',
-                    controller: 'CreateStudentCtrl'
+                    controller: 'CreateStudentClassCtrl'
                 }
             }
         });
@@ -73,7 +73,7 @@ define(['../module'], function (states) {
             views: {
                 'create-student-wzd-body': {
                     templateUrl: 'partials/students/create/photo',
-                    controller: 'CreateStudentCtrl'
+                    controller: 'CreateStudentPhotoCtrl'
                 }
             }
         });
@@ -83,7 +83,7 @@ define(['../module'], function (states) {
             views: {
                 'create-student-wzd-body': {
                     templateUrl: 'partials/students/create/signature',
-                    controller: 'CreateStudentCtrl'
+                    controller: 'CreateStudentSignatureCtrl'
                 }
             }
         });
@@ -93,7 +93,7 @@ define(['../module'], function (states) {
             views: {
                 'create-student-wzd-body': {
                     templateUrl: 'partials/students/create/econtact',
-                    controller: 'CreateStudentCtrl'
+                    controller: 'CreateStudentEContactCtrl'
                 }
             }
         });

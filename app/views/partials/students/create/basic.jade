@@ -49,7 +49,7 @@ div.form-group.row
 
 div.form-group
 	div.input-group
-		input.form-control(type='text', name="homePhoneNumber", placeholder='Home phone number: 555-555-5555', ng-model="model.phone.home", ng-pattern='/^[0-9]{3}-[0-9]{3}-[0-9]{4}$/')
+		input.form-control(type='tel', name="homePhoneNumber", phone-number-input, placeholder='Home phone number (optional)', ng-model="model.phone.home", ng-pattern='/^[0-9]{10}$/', maxlength='12')
 		span.input-group-addon
 			span.glyphicon.glyphicon-asterisk(ng-show="createStudent.homePhoneNumber.$invalid && createStudent.homePhoneNumber.$pristine")
 			span.glyphicon.glyphicon-remove(ng-show="createStudent.homePhoneNumber.$invalid && !createStudent.homePhoneNumber.$pristine")
@@ -58,7 +58,7 @@ div.form-group
 
 div.form-group
 	div.input-group
-		input.form-control(type='tel', name="cellPhoneNumber", placeholder='Cell phone number: 555-555-5555',ng-model="model.phone.cell", ng-pattern='/^[0-9]{3}-[0-9]{3}-[0-9]{4}$/')
+		input.form-control(type='tel', name="cellPhoneNumber", phone-number-input, placeholder='Cell phone number (optional)',ng-model="model.phone.cell", ng-pattern='/^[0-9]{10}$/', maxlength='12')
 		span.input-group-addon
 			//span.glyphicon.glyphicon-asterisk(ng-show="createStudent.cellPhoneNumber.$invalid && createStudent.cellPhoneNumber.$pristine")
 			span.glyphicon.glyphicon-remove(ng-show="createStudent.cellPhoneNumber.$invalid && !createStudent.cellPhoneNumber.$pristine")
@@ -76,7 +76,7 @@ div.form-group
 
 div.form-group
 	div.input-group
-		input.form-control(type='text', placeholder='Enter date of birth', datepicker-popup="{{format}}", ng-model="model.birthday", is-open="opened", datepicker-options="dateOptions", min-date="minDate", date-disabled="disabled(date, mode)", ng-required="true", close-text="Close")
+		input.form-control(type='text', ng-focus="open($event)", placeholder='Enter date of birth', datepicker-popup="{{format}}", ng-model="model.birthday", is-open="opened", datepicker-options="dateOptions", min-date="minDate", date-disabled="disabled(date, mode)", ng-required="true", close-text="Close")
 		span.input-group-btn
 			button.btn.btn-default(type='button', ng-click="open($event)")
 				i.glyphicon.glyphicon-calendar
