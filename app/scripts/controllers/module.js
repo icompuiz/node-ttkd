@@ -7,5 +7,5 @@
  **/
 define(['angular'], function (ng) {
 	'use strict';
-	return ng.module('ttkd.controllers', ['ttkd.factories']);
+	return ng.module('ttkd.controllers', ['ttkd.factories', 'ttkd.services']);
 });

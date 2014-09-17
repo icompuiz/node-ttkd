@@ -24,12 +24,6 @@ define(['../../module'], function(controllers) {
 			$scope.initDate = new Date('2014-01-01');
 			$scope.format = 'MMMM dd, yyyy';
 
-
-
-
-
-
-
 			function validateData() {
 				return validateFirstName() && validateLastName();
 			}

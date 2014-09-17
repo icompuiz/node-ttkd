@@ -97,6 +97,26 @@ define(['../module'], function (states) {
                 }
             }
         });
+
+
+    }]).run(['WizardService', function Run(WizardService) {
+        var wizardSteps = {};
+        wizardSteps['admin.students.create.basic'] = { id: 'admin.students.create.basic', name: 'Basic Information', enabled: false };
+        wizardSteps['admin.students.create.econtact'] = { id: 'admin.students.create.econtact', name: 'Emergency Contact', enabled: false };
+        wizardSteps['admin.students.create.class'] = { id: 'admin.students.create.class', name: 'Class Information', enabled: false };
+        wizardSteps['admin.students.create.photo'] = { id: 'admin.students.create.photo', name: 'Student Picture', enabled: false };
+        wizardSteps['admin.students.create.signature'] = { id: 'admin.students.create.signature', name: 'Waiver Signature', enabled: false, isFinalStep: true };
+
+        var wizardStepsOrder = [
+            wizardSteps['admin.students.create.basic'],
+            wizardSteps['admin.students.create.econtact'],
+            wizardSteps['admin.students.create.class'],
+            wizardSteps['admin.students.create.photo'],
+            wizardSteps['admin.students.create.signature']
+        ];
+
+        WizardService.register('admin.students.create', wizardStepsOrder);
+
     }]);
 
 });

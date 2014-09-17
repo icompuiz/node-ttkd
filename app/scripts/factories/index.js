@@ -1,4 +1,4 @@
 /**
  * Attach all state definitions
  **/
-define(['./main', './endpoint', './model'], function () {});
+define(['./main', './endpoint', './model', './wizard'], function () {});

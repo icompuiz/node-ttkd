@@ -1,30 +1,12 @@
 define(['../../module'], function(controllers) {
 	'use strict';
 
-	controllers.controller('CreateStudentEContactCtrl', ['$scope', '$log', '$state', 'StudentSvc',
-		function($scope, $log, $state, StudentSvc) {
+	controllers.controller('CreateStudentEContactCtrl', ['$scope', '$log', '$state', 'StudentSvc','WizardService',
+		function($scope, $log, $state, StudentSvc, WizardService) {
 			$scope.relations = [
 				'Mother', 'Mom', 'Dad', 'Father', 'Grandfather', 'Grandmother',
 				'Brother', 'Sister'
 			];
-
-
-			var wizardSteps = {};
-			wizardSteps['admin.students.create.basic'] = { id: 'admin.students.create.basic', name: 'Basic Information', enabled: false };
-			wizardSteps['admin.students.create.econtact'] = { id: 'admin.students.create.econtact', name: 'Emergency Contact', enabled: false };
-			wizardSteps['admin.students.create.class'] = { id: 'admin.students.create.class', name: 'Class Information', enabled: false };
-			wizardSteps['admin.students.create.photo'] = { id: 'admin.students.create.photo', name: 'Student Picture', enabled: false };
-			wizardSteps['admin.students.create.signature'] = { id: 'admin.students.create.signature', name: 'Waiver Signature', enabled: false };
-
-			var wizardStepsOrder = [
-				'admin.students.create.basic',
-				'admin.students.create.econtact',
-				'admin.students.create.class',
-				'admin.students.create.photo',
-				'admin.students.create.signature'
-			];
-
-			var defaultStep = 'admin.students.create.basic';
 
 			$scope.errors = {};
 
@@ -34,6 +16,8 @@ define(['../../module'], function(controllers) {
 			} else {
 				$scope.model = StudentSvc.current;
 			}
+
+
 
 			$scope.getStep = function(key) {
 				if(key in wizardSteps) {

@@ -3,8 +3,8 @@ h1 Register Student - Enter {{currentStep.name}}
 div.row
 	div.col-md-3
 		ul.nav.nav-pills.nav-stacked.wizard-steps
-			li(ng-repeat="step in wizardSteps", ng-class="{'active':currentStep.id === step, 'disabled':isStepEnabled(step) != true}")
-				a(ng-click='goToStep(step)', href="/admin/students/create") {{getStepName(step)}}
+			li(ng-repeat="step in wizard.steps", ng-class="{'active': wizard.current.id === step.id, 'disabled': !step.enabled}")
+				a(ng-click='step.enabled && wizard.goTo(step)') {{step.name}}
 
 	div.col-md-9
 		form(name="createStudent", ng-submit="submit()", autocomplete="off")
@@ -19,6 +19,6 @@ div.row
 					button.btn.btn-success(type='button', ng-click='confirmReset(false)') No
 
 			div.form_controls.pull-right
-				button.btn.btn-default(type='button', ng-click='previous()', ng-show='displayPreviousBtn()') Previous
-				button.btn.btn-primary(type='submit', ng-show='displayContinueBtn()', ng-disabled='createStudent.$invalid') Continue
-				button.btn.btn-success(type='submit', ng-show='displaySubmitBtn()', ng-disabled='createStudent.$invalid || submitBtnDisabled') {{submitBtnContent}}
+				button.btn.btn-default(type='button', ng-click='wizard.goBack()', ng-show='wizard.peekPreviousIndex()') Previous
+				button.btn.btn-primary(type='submit', ng-show='!wizard.current.isFinalStep', ng-disabled='createStudent.$invalid') Continue
+				button.btn.btn-success(type='submit', ng-show='wizard.current.isFinalStep', ng-disabled='createStudent.$invalid || submitBtnDisabled') {{submitBtnContent}}
