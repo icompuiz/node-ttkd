@@ -1,8 +1,8 @@
 define(['../module'], function(controllers) {
     'use strict';
 
-    controllers.controller('ListStudentCtrl', ['$scope', '$http', '$log', '$state', 'StudentSvc',
-        function($scope, $http, $log, $state, StudentSvc) {
+    controllers.controller('ListStudentCtrl', ['$scope', '$http', '$log', '$state', '$filter', 'StudentSvc',
+        function($scope, $http, $log, $state, $filter, StudentSvc) {
             $scope.filterOptions = {
                 filterText: '',
                 useExternalFilter: true
@@ -26,13 +26,16 @@ define(['../module'], function(controllers) {
 
             $scope.getPagedDataAsync = function (pageSize, page, searchText) {
                 setTimeout(function () {
-                    var data = {};
+                    var data = [];
 
                     StudentSvc.list().then(function(students){
                         // add students to new array for ng-grid outputting
                         _(students).forEach(function(student){
                             data.push({
-                                'Student_name': student.firstName 
+                                'firstName': student.firstName,
+                                'lastName': student.lastName,
+                                'age': $filter('age')(student.birthday),
+                                '_id': student._id
                             })
                         });
 
@@ -40,23 +43,6 @@ define(['../module'], function(controllers) {
 
                         $scope.setPagingData(data,page,pageSize);
                     });
-                    
-/*
-                    if (searchText) {
-                        var ft = searchText.toLowerCase();
-                        $http.get('jsonFiles/largeLoad.json').success(function (largeLoad) {
-                            data = largeLoad.filter(function(item) {
-                                return JSON.stringify(item).toLowerCase().indexOf(ft) != -1;
-                            });
-
-                            $scope.setPagingData(data,page,pageSize);
-                        });
-                    } else {
-                        $http.get('jsonFiles/largeLoad.json').success(function (largeLoad) {
-                            $scope.setPagingData(largeLoad,page,pageSize);
-                        });
-                    }
-*/
                 }, 100);
             };
 
@@ -73,14 +59,53 @@ define(['../module'], function(controllers) {
                 }
             }, true);
 
+            $scope.optionsButton = '<button type="button" class="btn btn-default btn-sm viewBtn" ng-click="view(row)" >View</button> <button type="button" class="btn btn-default btn-sm editBtn" ng-click="edit(row)" >Edit</button>';
+
             $scope.gridOptions = {
                 data: 'myData',
+                rowHeight: 40,
                 enablePaging: true,
                 showFooter: true,
                 totalServerItems: 'totalServerItems',
                 pagingOptions: $scope.pagingOptions,
-                filterOptions: $scope.filterOptions
+                filterOptions: $scope.filterOptions,
+                selectedItems: [],
+                sortInfo: { fields: ['lastName', 'firstname'], directions: ['asc', 'asc'] },
+                columnDefs: [
+                    { field: 'firstName', displayName: 'First Name' },
+                    { field: 'lastName', displayName: 'Last Name' },
+                    { field: 'age', displayName: 'Age' },
+                    { cellTemplate: $scope.optionsButton, sortable: false },
+                ]
             };
+
+            $scope.edit = function edit(row){
+                console.log("Edit student id: " + row.entity._id)
+            };
+
+            $scope.view = function edit(row){
+                console.log("View student id: " + row.entity._id)
+            };
+
+            $scope.removeDisabled = function() {
+                return $scope.gridOptions.selectedItems.length == 0;
+            };
+
+            $scope.remove = function() {
+                $scope.showRemoveConfirm = true;
+            };
+
+            $scope.confirmRemove = function(remove) {
+                if(remove) {
+                    $log.log('need to remove');
+                    $scope.showRemoveConfirm = false;
+                } else {
+                    $scope.showRemoveConfirm = false;
+                }
+            };
+
+            $scope.showRemoveConfirm = false;
+
         }
     ]);
 });

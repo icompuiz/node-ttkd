@@ -181,6 +181,14 @@ form .text-muted.error {
 
 .gridStyle {
     border: 1px solid rgb(212,212,212);
-    width: 400px; 
-    height: 300px
+    width: 100%;
+    height: 500px;
+}
+
+.btn.editBtn, .btn.viewBtn {
+    margin: 5px;
+}
+
+.ngCellText {
+    line-height: 30px;
 }

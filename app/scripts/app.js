@@ -12,6 +12,7 @@ define('app', [
     './controllers/index',
     './directives/index',
     './factories/index',
+    './filters/index',
     './services/index',
     './factories/index',
     './states/index'
@@ -24,6 +25,7 @@ define('app', [
         'ttkd.controllers',
         'ttkd.directives',
         'ttkd.factories',
+        'ttkd.filters',
         'ttkd.services',
         'ttkd.factories',
         'ttkd.states',
