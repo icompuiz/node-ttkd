@@ -1,7 +1,7 @@
 define(['../module'], function(controllers){
 	'use strict';
-	controllers.controller('EditProgramCtrl', ['$scope', '$state', 'Restangular', 'ProgramSvc', 'ClassSvc', 'RankSvc', 
-		function($scope, $state, Restangular, ProgramSvc, ClassSvc, RankSvc) {
+	controllers.controller('EditProgramCtrl', ['$scope', '$state', '$stateParams', 'Restangular', 'ProgramSvc', 'ClassSvc', 'RankSvc', 
+		function($scope, $state, $stateParams, Restangular, ProgramSvc, ClassSvc, RankSvc) {
 			$scope.currentProgram = {};
 			$scope.newClass = {};
 			$scope.newRank = {};
@@ -22,6 +22,10 @@ define(['../module'], function(controllers){
 				} else {
 					$scope.removedRanks = ProgramSvc.removedRanks;
 				}
+			} else if ($stateParams.id) {
+				ProgramSvc.read($stateParams.id, null, true).then(function(p) {
+					$scope.currentProgram = c;
+				});
 			}
 
 			$scope.cancelEdit = function() {
@@ -40,7 +44,7 @@ define(['../module'], function(controllers){
 			$scope.goToEditClass = function(clss) {
 				ClassSvc.init(clss);
 				ClassSvc.startEditing();
-				$state.go('admin.programs.editclass');
+				$state.go('admin.programs.editclass', { id: clss._id} );
 			};
 
 			$scope.removeClass = function(classToRemove) { 
