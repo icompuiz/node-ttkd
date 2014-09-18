@@ -39,7 +39,7 @@ define(['../module'], function (states) {
         });
 
         $stateProvider.state('admin.programs.edit', {
-            url: '/programs/edit',
+            url: '/programs/edit/:id',
             views: {
                 'section-body': {
                     templateUrl: 'partials/programs/edit',
@@ -69,7 +69,7 @@ define(['../module'], function (states) {
         });
 
         $stateProvider.state('admin.programs.viewclass', {
-            url: '/programs/classes/view',
+            url: '/programs/classes/view/:id',
             views: {
                 'section-body': {
                     templateUrl: 'partials/programs/classes/view',
@@ -79,7 +79,7 @@ define(['../module'], function (states) {
         });
 
         $stateProvider.state('admin.programs.editclass', {
-            url: '/programs/classes/edit',
+            url: '/programs/classes/edit/:id',
             views: {
                 'section-body': {
                     templateUrl: 'partials/programs/classes/edit',

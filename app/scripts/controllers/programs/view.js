@@ -9,6 +9,9 @@ define(['../module'], function(controllers){
 			} else if ($stateParams.id) {
 				ProgramSvc.read($stateParams.id, null, true).then(function(p) { 
 					$scope.currentProgram = p;
+					ClassSvc.list().then(function(classes) {
+						$scope.currentProgram.classes = _.where(classes, {program: $scope.currentProgram._id});
+					});
 				});
 			}
 			
@@ -19,7 +22,7 @@ define(['../module'], function(controllers){
 			$scope.goToViewClass = function(clss) {
 				ClassSvc.init(clss);
 				ClassSvc.startViewing();
-				$state.go('admin.programs.viewclass');
+				$state.go('admin.programs.viewclass', {id: clss._id});
 			};
 
 			$scope.backToHome = function() {

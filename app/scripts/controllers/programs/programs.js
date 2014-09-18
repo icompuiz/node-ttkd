@@ -110,7 +110,7 @@ define(['../module'], function(controllers){
 			$scope.goToEditProgram = function(program) {
 				ProgramSvc.startEditing();
 				ProgramSvc.init(program);
-				$state.go('admin.programs.edit');
+				$state.go('admin.programs.edit', { id: program._id });
 			};
 
 			$scope.goToViewProgram = function(program) {
