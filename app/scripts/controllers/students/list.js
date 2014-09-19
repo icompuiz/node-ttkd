@@ -10,8 +10,8 @@ define(['../module'], function(controllers) {
 
             $scope.totalServerItems = 0;
             $scope.pagingOptions = {
-                pageSizes: [250, 500, 1000],
-                pageSize: 250,
+                pageSizes: [25, 50, 100, 250, 500, 1000],
+                pageSize: 25,
                 currentPage: 1
             };
 
@@ -66,6 +66,21 @@ define(['../module'], function(controllers) {
                 rowHeight: 40,
                 enablePaging: true,
                 showFooter: true,
+                beforeSelectionChange: function (rowItem, event) {
+                    // check if one of the options buttons was clicked
+                    if(event.target.tagName === 'BUTTON') {
+                        return false;
+                    } else {
+                        return true;
+                    }
+                },
+                afterSelectionChange: function (rowItem, event) {
+                    // check if one of the options buttons was clicked
+                    if($scope.gridOptions.selectedItems.length == 0) {
+                        $scope.showRemoveConfirm = false;
+                    }
+                    return true;
+                },
                 totalServerItems: 'totalServerItems',
                 pagingOptions: $scope.pagingOptions,
                 filterOptions: $scope.filterOptions,
