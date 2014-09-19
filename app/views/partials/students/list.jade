@@ -1,10 +1,12 @@
-div(style='margin-bottom: 10px;')
-	button.btn.btn-primary(type='button', ng-show='!showRemoveConfirm', ng-click='add()') Add Student
-	button.btn.btn-danger(type='button', ng-disabled='removeDisabled()', ng-show='!showRemoveConfirm', ng-click='remove()') Remove Selected
-
-	div(ng-show='showRemoveConfirm')
-		p.text-muted Are you sure you wish to remove the {{gridOptions.selectedItems.length}} selected students?
-		button.btn.btn-danger(type='button', ng-click='confirmRemove(true)') Yes
-		button.btn.btn-success(type='button', ng-click='confirmRemove(false)') No
-
-div.gridStyle(ng-grid="gridOptions")
+.row.row-margin-bottom-10
+	.col-md-12
+		.btn-toolbar
+			button.btn.btn-primary(type='button', ng-show='!showRemoveConfirm', ng-click='add()') Add Student
+			button.btn.btn-danger(type='button', ng-disabled='removeDisabled()', ng-show='!showRemoveConfirm', ng-click='remove()') Remove Selected
+		div(ng-show='showRemoveConfirm')
+			p.text-muted Are you sure you wish to remove the {{gridOptions.selectedItems.length}} selected students?
+			button.btn.btn-danger(type='button', ng-click='confirmRemove(true)') Yes
+			button.btn.btn-success(type='button', ng-click='confirmRemove(false)') No
+.row
+	.col-md-12
+		div.gridStyle(ng-grid="gridOptions")
