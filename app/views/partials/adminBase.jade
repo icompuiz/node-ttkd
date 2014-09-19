@@ -3,14 +3,14 @@ doctype html
 nav.navbar.navbar-default.navbar-static-top(role='navigation')
 	.container-fluid
 		.navbar-header
-			button.navbar-toggle.collapsed(type='button', data-toggle='collapse', data-target='#ttkd-application-menu')
+			button.navbar-toggle.collapsed(type='button', ng-click='applicationMenuCollapsed = !applicationMenuCollapsed')
 				span.sr-only Toggle navigation
 				span.icon-bar
 				span.icon-bar
 				span.icon-bar
 			a.navbar-brand(ui-sref='admin.dashboard.home') 
 				span.text ttkd
-		div#ttkd-application-menu.collapse.navbar-collapse
+		div#ttkd-application-menu.navbar-collapse(collapse="!applicationMenuCollapsed")
 			ul.nav.navbar-nav
 				li
 					a(ui-sref='admin.students.home', application-menu-item) Students
