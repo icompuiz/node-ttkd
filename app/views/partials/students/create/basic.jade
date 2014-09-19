@@ -37,7 +37,7 @@ div.form-group.row
 
 	div.col-md-3
 		select.form-control
-			option(selected) NY
+			option(ng-repeat='state in states', ng-selected='state==defaultState') {{state}}
 	div.col-md-4
 		div.input-group
 			input.form-control(type='number', name="zipcode", placeholder='Zip code', ng-model="model.address.zip", required, ng-minlength='5', ng-maxlength='5')

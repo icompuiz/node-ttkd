@@ -38,6 +38,16 @@ define(['../module'], function (states) {
             }
         });
 
+        $stateProvider.state('admin.students.edit', {
+            url: '/students/edit/:id',
+            views: {
+                'section-body': {
+                    templateUrl: 'partials/students/create',
+                    controller: 'CreateStudentCtrl'
+                }
+            }
+        });
+
         $stateProvider.state('admin.students.create', {
             url: '/students/create',
             views: {

@@ -1,8 +1,8 @@
 define(['../module'], function(controllers) {
 	'use strict';
 
-	controllers.controller('CreateStudentCtrl', ['$scope', '$http', '$log', '$state', 'StudentSvc', 'WizardService',
-		function($scope, $http, $log, $state, StudentSvc, WizardService) {
+	controllers.controller('CreateStudentCtrl', ['$scope', '$http', '$log', '$state', '$stateParams', 'StudentSvc', 'WizardService',
+		function($scope, $http, $log, $state, $stateParams, StudentSvc, WizardService) {
 
 			$scope.errors = {};
 
@@ -21,9 +21,19 @@ define(['../module'], function(controllers) {
 			// Create student object
 			function initStudentObject() {
 				if (!StudentSvc.current) {
+					// may be an existing student... try and load
+					var model = StudentSvc.read($stateParams.id, {}, true);
+
+					if(model) {
+						$scope.model = model;
+						return;
+					}
+
+					// existing doesn't exist
 					$scope.model = StudentSvc.init({});
 				} else {
 					$scope.model = StudentSvc.current;
+					return;
 				}
 			}
 
