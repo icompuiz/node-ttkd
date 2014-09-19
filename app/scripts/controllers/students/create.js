@@ -22,36 +22,41 @@ define(['../module'], function(controllers) {
 			function initStudentObject() {
 				if (!StudentSvc.current) {
 					// may be an existing student... try and load
-					var model = StudentSvc.read($stateParams.id, {}, true);
-
-					if(model) {
-						$scope.model = model;
-						return;
+					if (_.isEmpty($stateParams.id)) {
+					    $scope.model = StudentSvc.init({});
+					    // initialize wizard or pull existing wizard here
+					    initializeWizard();
+					} else {
+					    StudentSvc.read($stateParams.id, {}, true).then(function(studentDoc) {
+					    	// initialize wizard or pull existing wizard here
+					    	$scope.model = studentDoc;
+					    	initializeWizard();
+					    });
 					}
-
-					// existing doesn't exist
-					$scope.model = StudentSvc.init({});
 				} else {
 					$scope.model = StudentSvc.current;
-					return;
+					initializeWizard();
 				}
+			}
+
+			function initializeWizard() {
+			    $scope.wizard = WizardService.get('admin.students.create');
+
+				if (!$scope.wizard) {
+					$scope.wizard = WizardService.create('admin.students.create', true);
+					$state.go($scope.wizard.current.id); // go to the initial state of this progression
+				}
+
+				$scope.$watch('wizard.current', function(currentStep, previousStep) {
+					if (currentStep && (currentStep.id !== previousStep.id)) {
+						$state.go(currentStep.id);
+					}
+				});
 			}
 
 			initStudentObject();
 
-			// Create wizard object
-			$scope.wizard = WizardService.get('admin.students.create');
-			if (!$scope.wizard) {
-				$scope.wizard = WizardService.create('admin.students.create', true);
-				$state.go($scope.wizard.current.id); // go to the initial state of this progression
-			}
 
-			// handle navigation
-			$scope.$watch('wizard.current', function(currentStep, previousStep) {
-				if (currentStep && (currentStep.id !== previousStep.id)) {
-					$state.go(currentStep.id);
-				}
-			});
 
 
 			$scope.displayPreviousBtn = function() {

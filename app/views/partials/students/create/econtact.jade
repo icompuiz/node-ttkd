@@ -2,7 +2,7 @@ h2 Primary Emergency Contact
 
 div.form-group
 	div.input-group
-		input.form-control(type='text', name="fullName1", placeholder='Full name', ng-model="model.fullName1", required, ng-maxlength='128', ng-minlength='4')
+		input.form-control(type='text', name="fullName1", placeholder='Full name', ng-model="econtact.fullName1", required, ng-maxlength='128', ng-minlength='4')
 		span.input-group-addon
 			span.glyphicon.glyphicon-asterisk(ng-show="createStudent.fullName1.$invalid && createStudent.fullName1.$pristine")
 			span.glyphicon.glyphicon-remove(ng-show="createStudent.fullName1.$invalid && !createStudent.fullName1.$pristine")
