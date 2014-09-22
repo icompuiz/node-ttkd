@@ -2,16 +2,15 @@
 
 var mongoose = require('mongoose'),
 	Schema = mongoose.Schema,
-	ObjectId = mongoose.Schema.Types.ObjectId;
+	ObjectId = mongoose.Schema.Types.ObjectId,
+
+	EmergencyContact = require('./emergencyContact.js');
 
 var studentSchema = new Schema({
 	firstName: String,
 	lastName: String,
 	emailAddress: String,
-	emergencyContacts: [{
-		ref: 'EmergencyContact',
-		type: ObjectId
-	}],
+	emergencyContacts: [EmergencyContact.schema],
 	birthday: {
 		type: Date
 	},
