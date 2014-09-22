@@ -73,9 +73,6 @@ define(['../../module'], function(controllers) {
 
 
 
-
-
-
 		}
 	]);
 
