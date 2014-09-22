@@ -36,9 +36,15 @@ define(['./module'], function (services) {
 			return _this.activeWizards[id];
 		};
 
+		_this.terminate = function terminate(id) {
+			delete _this.activeWizards[id];
+		};
+
 		_this.reset = function reset() {
 			_this.currentWizard = null;
 		};
+
+
 
 
 	}]);

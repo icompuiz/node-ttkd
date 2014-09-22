@@ -3,6 +3,13 @@ define(['../../module'], function(controllers) {
 
 	controllers.controller('CreateStudentBasicCtrl', ['$scope', '$log', '$state', 'StudentSvc',
 		function($scope, $log, $state, StudentSvc) {
+
+			$scope.model = StudentSvc.current;
+
+			if (!angular.isDefined($scope.model)) {
+				$state.go("admin.students.create");
+			}
+
 			// Date of birth calendar
 			$scope.today = function() {
 					$scope.model.birthday = new Date();
@@ -62,15 +69,6 @@ define(['../../module'], function(controllers) {
 					return false;
 				}
 			}
-
-
-
-
-
-
-
-
-
 
 
 		}
