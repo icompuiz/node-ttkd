@@ -96,7 +96,7 @@ define(['../module'], function(controllers) {
 
             $scope.edit = function(row){
                 console.log("Edit student id: " + row.entity._id);
-                $state.go('admin.students.edit', {id: row.entity._id}, {reload:true, notify:true});
+                $state.go('admin.students.edit', {id: row.entity._id});
             };
 
             $scope.view = function(row){

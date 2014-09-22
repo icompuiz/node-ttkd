@@ -4,6 +4,20 @@ define(['../module'], function(controllers) {
 	controllers.controller('CreateStudentCtrl', ['$scope', '$http', '$log', '$state', '$stateParams', 'StudentSvc', 'EmergencyContactSvc', 'WizardService',
 		function($scope, $http, $log, $state, $stateParams, StudentSvc, EmergencyContactSvc, WizardService) {
 
+			$scope.$on('$stateChangeStart', function(event, toState, toParams, fromState) {
+
+				console.log('Going to state', toState.name);
+				console.log('Current state', $state.current.name);
+				console.log('Current State is equal to fromState', $state.current.name === fromState.name);
+
+				var inWizard = /^(admin.students.create|admin.students.edit)/.test(toState.name);
+				if (!inWizard) {
+					console.log('Leaving wizard and going to ', toState.name);
+					StudentSvc.reset();
+					WizardService.terminate('admin.students.create');
+				};
+
+			});
 
 			// Create student object
 			function initStudentObject() {

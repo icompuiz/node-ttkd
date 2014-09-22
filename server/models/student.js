@@ -11,6 +11,10 @@ var studentSchema = new Schema({
 	lastName: String,
 	emailAddress: String,
 	emergencyContacts: [EmergencyContact.schema],
+	avatar: {
+		ref: 'File',
+		type: ObjectId
+	},
 	birthday: {
 		type: Date
 	},
