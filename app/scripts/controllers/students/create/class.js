@@ -3,7 +3,7 @@ define(['../../module'], function(controllers) {
 
 	controllers.controller('CreateStudentClassCtrl', ['$scope', '$log', '$state', 'StudentSvc',
 		function($scope, $log, $state, StudentSvc) {
-
+			$log.log($scope.model);
 
 		}
 	]);

@@ -22,18 +22,19 @@ define(['../module'], function (states) {
             url: '/students',
             views: {
                 'section-body': {
-                    templateUrl: 'partials/students/home',
-                    controller: 'StudentsCtrl'
+                    templateUrl: 'partials/students/list',
+                    controller: 'ListStudentCtrl'
                 }
             }
         });
 
-        $stateProvider.state('admin.students.list', {
-            url: '/students/list',
+
+        $stateProvider.state('admin.students.edit', {
+            url: '/students/edit/:id',
             views: {
                 'section-body': {
-                    templateUrl: 'partials/students/list',
-                    controller: 'ListStudentCtrl'
+                    templateUrl: 'partials/students/create',
+                    controller: 'CreateStudentCtrl'
                 }
             }
         });

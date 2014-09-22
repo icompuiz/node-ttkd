@@ -37,10 +37,10 @@ div.form-group.row
 
 	div.col-md-3
 		select.form-control
-			option(selected) NY
+			option(ng-repeat='state in states', ng-selected='state==defaultState') {{state}}
 	div.col-md-4
 		div.input-group
-			input.form-control(type='number', name="zipcode", placeholder='Zip code', ng-model="model.address.zip", required, ng-minlength='5', ng-maxlength='5')
+			input.form-control(type='text', name="zipcode", placeholder='Zip code', ng-model="model.address.zip", required, ng-minlength='5', ng-maxlength='5')
 			span.input-group-addon
 				span.glyphicon.glyphicon-asterisk(ng-show="createStudent.zipcode.$invalid && createStudent.zipcode.$pristine")
 				span.glyphicon.glyphicon-remove(ng-show="createStudent.zipcode.$invalid && !createStudent.zipcode.$pristine")
@@ -49,7 +49,7 @@ div.form-group.row
 
 div.form-group
 	div.input-group
-		input.form-control(type='tel', name="homePhoneNumber", phone-number-input, placeholder='Home phone number (optional)', ng-model="model.phone.home", ng-pattern='/^[0-9]{10}$/', maxlength='12')
+		input.form-control(type='tel', name="homePhoneNumber", phone-number-input, placeholder='Home phone number', ng-model="model.phone.home", ng-pattern='/^[0-9]{10}$/', maxlength='12', required)
 		span.input-group-addon
 			span.glyphicon.glyphicon-asterisk(ng-show="createStudent.homePhoneNumber.$invalid && createStudent.homePhoneNumber.$pristine")
 			span.glyphicon.glyphicon-remove(ng-show="createStudent.homePhoneNumber.$invalid && !createStudent.homePhoneNumber.$pristine")
