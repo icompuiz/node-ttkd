@@ -6,6 +6,8 @@ define(['../module'], function(controllers){
 			$scope.newClass = {};
 			$scope.newRank = {};
 
+			$scope.duplicateProgramMessage = 'You must provide a unique program name.';
+
 			if (ProgramSvc.current && ProgramSvc.creating) {
 				$scope.newProgram = ProgramSvc.current;
 			} else {
@@ -145,7 +147,6 @@ define(['../module'], function(controllers){
 
 
 /********************** Form Validation **********************************/
-
 			$scope.isEmpty = function(str) {
 				return (!str || 0 === str.length);
 			};

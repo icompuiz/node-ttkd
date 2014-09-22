@@ -59,8 +59,16 @@ define(['../../module'], function(controllers){
 			};
 
 			$scope.canCreateClass = function() {
-				return !$scope.isEmpty($scope.newClass.name);
+				return !$scope.isEmpty($scope.newClass.name) && !$scope.isDupName();
 			};
 
+			$scope.isDupName = function() {
+				var names = [];
+				if (program) {
+					names = _.map(program.classes, function(c){return c.name;});
+				}
+
+				return _.contains(names, $scope.newClass.name);
+			};
 	}]);
 });	

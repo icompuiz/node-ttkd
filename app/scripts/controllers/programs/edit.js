@@ -23,8 +23,16 @@ define(['../module'], function(controllers){
 					$scope.removedRanks = ProgramSvc.removedRanks;
 				}
 			} else if ($stateParams.id) {
+				var pClasses = [];
 				ProgramSvc.read($stateParams.id, null, true).then(function(p) {
-					$scope.currentProgram = c;
+					ProgramSvc.editing = true;
+					$scope.currentProgram = p;
+					_.each($scope.currentProgram.classes, function(cId) {
+						ClassSvc.read(cId, null, false).then(function(c) {
+							pClasses.push(c);
+						});
+					});
+					$scope.currentProgram.classes = pClasses;
 				});
 			}
 
