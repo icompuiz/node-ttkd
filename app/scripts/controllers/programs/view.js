@@ -10,7 +10,7 @@ define(['../module'], function(controllers){
 				ProgramSvc.read($stateParams.id, null, true).then(function(p) { 
 					$scope.currentProgram = p;
 					ClassSvc.list().then(function(classes) {
-						$scope.currentProgram.classes = _.where(classes, {program: $scope.currentProgram._id});
+						$scope.currentProgram.classObjs = _.where(classes, {program: $scope.currentProgram._id});
 					});
 				});
 			}

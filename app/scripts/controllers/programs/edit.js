@@ -32,7 +32,7 @@ define(['../module'], function(controllers){
 							pClasses.push(c);
 						});
 					});
-					$scope.currentProgram.classes = pClasses;
+					$scope.currentProgram.classObjs = pClasses;
 				});
 			}
 
@@ -59,7 +59,7 @@ define(['../module'], function(controllers){
 				var c = confirm('Are you sure you want to delete ' + classToRemove.name + '?');
 
 				if (c) {
-					$scope.currentProgram.classes = _.without($scope.currentProgram.classes, classToRemove);
+					$scope.currentProgram.classObjs = _.without($scope.currentProgram.classObjs, classToRemove);
 					$scope.removedClasses.push(classToRemove);
 				}
 			};
@@ -79,7 +79,7 @@ define(['../module'], function(controllers){
 
 				//Add or update classes
 				function addClassesToModel(callback, err) {
-					async.each($scope.currentProgram.classes,
+					async.each($scope.currentProgram.classObjs,
 						function(classItem, callback) {
 
 							function beforeSave(c) {

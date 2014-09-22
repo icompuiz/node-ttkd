@@ -6,8 +6,8 @@ table.table
 	tr
 		th.col-md-6.col-sm-6.col-lg-6.col-xs-6 Name
 		th.col-md-6.col-sm-6.col-lg-6.col-xs-6 Students
-		th
-	tr(ng-repeat='class in currentProgram.classes')
+		th Actions
+	tr(ng-repeat='class in currentProgram.classObjs')
 		td 
 			{{class.name}}
 		td
@@ -22,8 +22,8 @@ table.table
 		th.col-md-4.col-sm-4.col-lg-4.col-xs-4 Name
 		th.col-md-4.col-sm-4.col-lg-4.col-xs-4 Order 
 		th.col-md-4.col-sm-4.col-lg-4.col-xs-4 Sub-ranks
-		th
-	tr(ng-repeat='rank in currentProgram.ranks')
+		th Actions
+	tr(ng-repeat='rank in currentProgram.rankObjs')
 		td 
 			{{rank.name}}
 		td

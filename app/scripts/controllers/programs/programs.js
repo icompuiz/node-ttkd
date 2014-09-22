@@ -2,28 +2,122 @@ define(['../module'], function(controllers){
 	'use strict';
 	controllers.controller('ProgramsCtrl', ['$scope', '$state', 'Restangular', 'ProgramSvc', 'ClassSvc', 'RankSvc', 
 		function($scope, $state, Restangular, ProgramSvc, ClassSvc, RankSvc) {
-			$scope.allChecked = false;
 
-			$scope.getPrograms = function() {
-				ProgramSvc.list().then(function(programs) {
-					//Get class objects and put into programs
-					ClassSvc.list().then(function(classes) {
-						var i;
-						for(i=0; i<programs.length; i++) {
-							programs[i].classes = _.where(classes, {'program': programs[i]._id});
-						}
-					});
-					//Get rank objects and put into programs
-					RankSvc.list().then(function(ranks) {
-						var i;
-						for(i=0; i<programs.length; i++) {
-							programs[i].ranks = _.where(ranks, {'program': programs[i]._id});
-						}
-					});
-					$scope.programs = programs;
-				});
+/************ GridOptions *********************************/
+			$scope.filterOptions = {
+				filterText: '',
+				useExternalFilter: true
 			};
-			$scope.getPrograms();
+
+			$scope.totalServerItems = 0;
+			
+			$scope.pagingOptions = {
+				pageSizes: [10, 25, 50],
+				pageSize: 10,
+				currentPage: 1
+			};
+
+			$scope.setPagingData = function(data, page, pageSize) {
+				var pagedData = data.slice((page - 1) * pageSize, page * pageSize);
+				$scope.myData = pagedData;
+				$scope.totalServerItems = data.length;
+				if (!$scope.$$phase) {
+					$scope.$apply();
+				}
+			};
+
+			$scope.getPagedDataAsync = function(pageSize, page, searchText) {
+				setTimeout(function () {
+					var data = [];
+
+					ProgramSvc.list().then(function(programs) {
+						async.parallel([
+							function(callback, err) {
+								//Get class objects and put into programs
+								ClassSvc.list().then(function(classes) {
+									var i;
+									for(i=0; i<programs.length; i++) {
+										programs[i].classes = _.where(classes, {'program': programs[i]._id});
+									}
+									callback();
+								});
+							},
+							function(callback, err) {
+								//Get rank objects and put into programs
+								RankSvc.list().then(function(ranks) {
+									var i;
+									for(i=0; i<programs.length; i++) {
+										programs[i].ranks = _.where(ranks, {'program': programs[i]._id});
+									}
+									callback();
+								});
+							}],
+							function(err) {
+								_.each(programs, function(p) {
+									data.push({
+										'classObjs': p.classes,
+										'rankObjs': p.ranks,
+										'name': p.name,
+										'classNames': _.map(p.classes, function(c){return c.name;}),
+										'rankNames': _.map(p.ranks, function(r){return r.name;}),
+										'_id': p._id
+									});
+								});
+								$scope.setPagingData(data, page, pageSize);
+							}
+						);						
+					});
+				}, 100);
+			};
+
+			$scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage);
+            $scope.$watch('pagingOptions', function (newVal, oldVal) {
+                if (newVal !== oldVal && newVal.currentPage !== oldVal.currentPage) {
+                    $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage, $scope.filterOptions.filterText);
+                }
+            }, true);
+
+            $scope.$watch('filterOptions', function (newVal, oldVal) {
+                if (newVal !== oldVal) {
+                    $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage, $scope.filterOptions.filterText);
+                }
+            }, true);
+
+            $scope.optionsButton = '<button type="button" class="btn btn-default btn-sm viewBtn" ng-click="goToViewProgram(row)" >View</button> <button type="button" class="btn btn-default btn-sm editBtn" ng-click="goToEditProgram(row)" >Edit</button>';
+
+            $scope.gridOptions = {
+            	data: 'myData',
+                rowHeight: 40,
+                enablePaging: true,
+                showFooter: true,
+                beforeSelectionChange: function (rowItem, event) {
+                    // check if one of the options buttons was clicked
+                    if(event.target.tagName === 'BUTTON') {
+                        return false;
+                    } else {
+                        return true;
+                    }
+                },
+                afterSelectionChange: function (rowItem, event) {
+                    // check if one of the options buttons was clicked
+                    if($scope.gridOptions.selectedItems.length === 0) {
+                        $scope.showRemoveConfirm = false;
+                    }
+                    return true;
+                },
+                totalServerItems: 'totalServerItems',
+                pagingOptions: $scope.pagingOptions,
+                filterOptions: $scope.filterOptions,
+                selectedItems: [],
+                sortInfo: { fields: ['name'], directions: ['asc'] },
+                columnDefs: [
+                    { field: 'name', displayName: 'Program Name' },
+                    { field: 'classNames', displayName: 'Classes', cellFilter: 'stringArray' },
+                    { field: 'rankNames', displayName: 'Ranks' },
+                    { cellTemplate: $scope.optionsButton, sortable: false, displayName: 'Actions'},
+                ]
+            };
+/***********************************************************/
 
 			$scope.removeProgram = function(program) { 
 
@@ -76,29 +170,6 @@ define(['../module'], function(controllers){
 							});
 					}]);
 				}
-
-				var r = confirm('Are you sure you want to delete this program? This will remove all associated classes and ranks.');
-				if (r) {
-					removeProgramData(program);
-				}
-
-			};
-
-
-			$scope.removeSelected = function() {
-				var i;
-				for(i=0; i<$scope.programs.length; i++) {
-					if($scope.programs[i].selected){
-						$scope.removeProgram($scope.programs[i]);
-					}
-				}
-			};
-
-			$scope.checkAll = function() {
-				var i;
-				for(i=0; i<$scope.programs.length; i++){
-					$scope.programs[i].selected = $scope.allChecked;
-				}
 			};
 
 			$scope.goToCreateProgram = function() {
@@ -107,16 +178,16 @@ define(['../module'], function(controllers){
 				$state.go('admin.programs.create');
 			};
 
-			$scope.goToEditProgram = function(program) {
+			$scope.goToEditProgram = function(row) {
 				ProgramSvc.startEditing();
-				ProgramSvc.init(program);
-				$state.go('admin.programs.edit', { id: program._id });
+				ProgramSvc.init(row.entity);
+				$state.go('admin.programs.edit', { id: row.entity._id });
 			};
 
-			$scope.goToViewProgram = function(program) {
+			$scope.goToViewProgram = function(row) {
 				ProgramSvc.startViewing();
-				ProgramSvc.init(program);
-				$state.go('admin.programs.view', { id: program._id });
+				ProgramSvc.init(row.entity);
+				$state.go('admin.programs.view', { id: row.entity._id });
 			};
 
 	}]);

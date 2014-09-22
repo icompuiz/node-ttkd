@@ -12,8 +12,8 @@ form.form-group
 		tr
 			th Name
 			th Students
-			th
-		tr(ng-repeat='class in currentProgram.classes')
+			th Actions
+		tr(ng-repeat='class in currentProgram.classObjs')
 			td 
 				{{class.name}}
 			td
@@ -33,8 +33,8 @@ form.form-group
 			th Name
 			th Order 
 			th Sub-ranks
-			th
-		tr(ng-repeat='rank in currentProgram.ranks')
+			th Actions
+		tr(ng-repeat='rank in currentProgram.rankObjs')
 			td 
 				{{rank.name}}
 			td
