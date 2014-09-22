@@ -62,7 +62,7 @@ define(['../module'], function(controllers) {
 									relationship: eDoc.relationship
 								});
 							});
-						}, function(err) {callback();}
+						}, function(err) {}
 					);
 				} else {
 					$scope.econtact = [];

@@ -22,21 +22,12 @@ define(['../module'], function (states) {
             url: '/students',
             views: {
                 'section-body': {
-                    templateUrl: 'partials/students/home',
-                    controller: 'StudentsCtrl'
-                }
-            }
-        });
-
-        $stateProvider.state('admin.students.list', {
-            url: '/students/list',
-            views: {
-                'section-body': {
                     templateUrl: 'partials/students/list',
                     controller: 'ListStudentCtrl'
                 }
             }
         });
+
 
         $stateProvider.state('admin.students.edit', {
             url: '/students/edit/:id',
