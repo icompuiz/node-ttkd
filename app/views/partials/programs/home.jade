@@ -3,7 +3,7 @@ h1 Programs
 	.col-md-12
 		.btn-toolbar.pull-left
 			button.btn.btn-primary(type='button', ng-click='goToCreateProgram()') Create new program
-			button.btn.btn-default(type='button', ng-click='removeSelected()', ng-show='!showRemoveConfirm') Remove selected
+			button.btn.btn-danger(type='button', ng-click='removeSelected()', ng-show='!showRemoveConfirm') Remove selected
 		.pull-left.margin-left-10(ng-show='showRemoveConfirm && gridOptions.selectedItems.length > 0')
 			.btn-toolbar
 				span.text-muted(ng-show='gridOptions.selectedItems.length > 1') Are you sure you wish to remove the {{gridOptions.selectedItems.length}} selected programs?

@@ -117,13 +117,33 @@ define(['../module'], function(controllers){
                     { cellTemplate: $scope.optionsButton, sortable: false, displayName: 'Actions'},
                 ]
             };
-/***********************************************************/
+/*************** End GridOptions******************************/
+
+
+
+
+			$scope.removeSelected = function() {
+				$scope.showRemoveConfirm = true;
+			};
+
+			$scope.confirmRemove = function(remove) {
+				if(remove) {
+					_($scope.gridOptions.selectedItems).forEach(function(program) {
+						$scope.removeProgram(program);
+					});
+					$scope.showRemoveConfirm = false;
+				} else {
+					$scope.showRemoveConfirm = false;
+				}
+			};
+
+			$scope.showRemoveConfirm = false;
 
 			$scope.removeProgram = function(program) { 
 
 				function removeClassesFromProgram(callback, err) {
 					//Remove program's classes
-					async.each(program.classes,
+					async.each(program.classObjs,
 						function(classToRemove, callback) {
 							ClassSvc.read(classToRemove._id, null, true).then(function(c) {
 								ClassSvc.remove().then(function() {
@@ -140,7 +160,7 @@ define(['../module'], function(controllers){
 
 				function removeRanksFromProgram(callback, err) {
 					//Remove program's ranks
-					async.each(program.ranks,
+					async.each(program.rankObjs,
 						function(rankToRemove, callback) {
 							RankSvc.read(rankToRemove._id, null, true).then(function(r) {
 								RankSvc.remove().then(function() {
@@ -164,12 +184,14 @@ define(['../module'], function(controllers){
 							//Remove program
 							ProgramSvc.read(program._id, null, true).then(function(p) {
 								ProgramSvc.remove().then(function() {
-									$scope.programs = _.without($scope.programs, program);
+									//$scope.programs = _.without($scope.programs, program);
+									$scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage);
 									ProgramSvc.reset();
 								});
 							});
 					}]);
 				}
+				removeProgramData(program);
 			};
 
 			$scope.goToCreateProgram = function() {
