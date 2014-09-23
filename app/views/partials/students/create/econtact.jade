@@ -2,7 +2,7 @@ h2 Primary Emergency Contact
 
 div.form-group
 	div.input-group
-		input.form-control(type='text', name="fullName1", placeholder='Full name', ng-model="econtact[0].name", required, ng-maxlength='128', ng-minlength='4')
+		input.form-control(type='text', name="fullName1", placeholder='Full name', ng-model="model.emergencyContacts[0].name", required, ng-maxlength='128', ng-minlength='4')
 		span.input-group-addon
 			span.glyphicon.glyphicon-asterisk(ng-show="createStudent.fullName1.$invalid && createStudent.fullName1.$pristine")
 			span.glyphicon.glyphicon-remove(ng-show="createStudent.fullName1.$invalid && !createStudent.fullName1.$pristine")
@@ -12,7 +12,7 @@ div.form-group
 div.form-group.row
 	div.col-md-6
 		div.input-group
-			input.form-control(type='tel', name="phoneNumber1", phone-number-input, placeholder='Phone number', ng-model="econtact[0].phoneNumber", ng-pattern='/^[0-9]{10}$/', maxlength='12', required)
+			input.form-control(type='tel', name="phoneNumber1", phone-number-input, placeholder='Phone number', ng-model="model.emergencyContacts[0].phoneNumber", ng-pattern='/^[0-9]{10}$/', maxlength='12', required)
 			span.input-group-addon
 				span.glyphicon.glyphicon-asterisk(ng-show="createStudent.phoneNumber1.$invalid && createStudent.phoneNumber1.$pristine")
 				span.glyphicon.glyphicon-remove(ng-show="createStudent.phoneNumber1.$invalid && !createStudent.phoneNumber1.$pristine")
@@ -21,7 +21,7 @@ div.form-group.row
 
 	div.col-md-6
 		div.input-group
-			input.form-control(type='text', name="relationship1", placeholder='Relationship', ng-model="econtact[0].relationship", typeahead="relation for relation in relations | filter:$viewValue | limitTo:5", required)
+			input.form-control(type='text', name="relationship1", placeholder='Relationship', ng-model="model.emergencyContacts[0].relationship", typeahead="relation for relation in relations | filter:$viewValue | limitTo:5", required)
 			span.input-group-addon
 				span.glyphicon.glyphicon-asterisk(ng-show="createStudent.relationship1.$invalid && createStudent.relationship1.$pristine")
 				span.glyphicon.glyphicon-remove(ng-show="createStudent.relationship1.$invalid && !createStudent.relationship1.$pristine")
@@ -33,7 +33,7 @@ h2 Secondary Emergency Contact
 
 div.form-group
 	div.input-group
-		input.form-control(type='text', name="fullName2", placeholder='Full name', ng-model="econtact[1].name", required, ng-maxlength='128', ng-minlength='4')
+		input.form-control(type='text', name="fullName2", placeholder='Full name', ng-model="model.emergencyContacts[1].name", required, ng-maxlength='128', ng-minlength='4')
 		span.input-group-addon
 			span.glyphicon.glyphicon-asterisk(ng-show="createStudent.fullName2.$invalid && createStudent.fullName2.$pristine")
 			span.glyphicon.glyphicon-remove(ng-show="createStudent.fullName2.$invalid && !createStudent.fullName2.$pristine")
@@ -43,7 +43,7 @@ div.form-group
 div.form-group.row
 	div.col-md-6
 		div.input-group
-			input.form-control(type='tel', name="phoneNumber2", phone-number-input, placeholder='Phone number', ng-model="econtact[1].phoneNumber", ng-pattern='/^[0-9]{10}$/', maxlength='12', required)
+			input.form-control(type='tel', name="phoneNumber2", phone-number-input, placeholder='Phone number', ng-model="model.emergencyContacts[1].phoneNumber", ng-pattern='/^[0-9]{10}$/', maxlength='12', required)
 			span.input-group-addon
 				span.glyphicon.glyphicon-asterisk(ng-show="createStudent.phoneNumber2.$invalid && createStudent.phoneNumber2.$pristine")
 				span.glyphicon.glyphicon-remove(ng-show="createStudent.phoneNumber2.$invalid && !createStudent.phoneNumber2.$pristine")
@@ -52,7 +52,7 @@ div.form-group.row
 
 	div.col-md-6
 		div.input-group
-			input.form-control(type='text', name="relationship2", placeholder='Relationship', ng-model="econtact[1].relationship", typeahead="relation for relation in relations | filter:$viewValue | limitTo:5", required)
+			input.form-control(type='text', name="relationship2", placeholder='Relationship', ng-model="model.emergencyContacts[1].relationship", typeahead="relation for relation in relations | filter:$viewValue | limitTo:5", required)
 			span.input-group-addon
 				span.glyphicon.glyphicon-asterisk(ng-show="createStudent.relationship2.$invalid && createStudent.relationship2.$pristine")
 				span.glyphicon.glyphicon-remove(ng-show="createStudent.relationship2.$invalid && !createStudent.relationship2.$pristine")

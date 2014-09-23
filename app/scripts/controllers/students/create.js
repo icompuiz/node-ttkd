@@ -4,52 +4,87 @@ define(['../module'], function(controllers) {
 	controllers.controller('CreateStudentCtrl', ['$scope', '$http', '$log', '$state', '$stateParams', 'StudentSvc', 'EmergencyContactSvc', 'WizardService',
 		function($scope, $http, $log, $state, $stateParams, StudentSvc, EmergencyContactSvc, WizardService) {
 
+			// Check if the state is changed... will need to terminate registered wizard
 			$scope.$on('$stateChangeStart', function(event, toState, toParams, fromState) {
-
-				console.log('Going to state', toState.name);
-				console.log('Current state', $state.current.name);
-				console.log('Current State is equal to fromState', $state.current.name === fromState.name);
-
 				var inWizard = /^(admin.students.create|admin.students.edit)/.test(toState.name);
 				if (!inWizard) {
-					console.log('Leaving wizard and going to ', toState.name);
 					StudentSvc.reset();
-					WizardService.terminate('admin.students.create');
+
+					if(!$scope.model.isNew) {
+						WizardService.terminate('admin.students.edit');
+					} else {
+						WizardService.terminate('admin.students.create');
+					}
 				};
 
 			});
 
-			// Create student object
+			initStudentObject();
+
+			/**
+			 * The following code is used for posting student data
+			 */
+			// Create student
+			function createStudent() {
+				StudentSvc.create(true).then(function(saved) {
+					$log.log('Successfully created student _id: ' + saved._id);
+					StudentSvc.reset();
+					$state.go('admin.students.home');
+				});
+			}
+
+			// Update student
+			function updateStudent() {
+				StudentSvc.update({}, function(){/* before update*/}).then(function(saved) {
+					$log.log('Successfully updated student _id: ' + saved._id);
+					StudentSvc.reset();
+					$state.go('admin.students.home');
+				});
+			}
+
+
+			/**
+			 * The following code is used for initialization.
+			 */
+			// Student init
 			function initStudentObject() {
 				if (!StudentSvc.current) {
-					// may be an existing student... try and load
+					// There may be an existing student id so try and load
 					if (_.isEmpty($stateParams.id)) {
 					    $scope.model = StudentSvc.init({});
 					    $scope.isNew = true;
-					    initOtherData();
-					    // initialize wizard or pull existing wizard here
-					    initializeWizard();
+					    initEContacts(); // Init e-contact
+					    initWizardObject(); // Init wizard
 					} else {
-					    StudentSvc.read($stateParams.id, {}, true).then(function(studentDoc) {
-					    	// initialize wizard or pull existing wizard here
-					    	$scope.model = studentDoc;
-					    	$scope.isNew = false;
-					    	initOtherData();
-					    	initializeWizard();
-					    });
+					    StudentSvc.read($stateParams.id, {}, true).then(
+					    	function(studentDoc) {
+						    	$scope.model = studentDoc;
+						    	$scope.isNew = false;
+						    	initEContacts(); // Init e-contact
+						    	initWizardObject(); // Init wizard
+					    	}
+					    );
 					}
 				} else {
+					// Service already has a current student, get it
 					$scope.model = StudentSvc.current;
-					initOtherData();
-					initializeWizard();
+					initEContacts();
+					initWizardObject();
 				}
 			}
 
-			function initializeWizard() {
-			    $scope.wizard = WizardService.get('admin.students.create');
+			// Wizard init
+			function initWizardObject() {
+				var wizardId = 'admin.students.create';
+
+				if(!$scope.isNew) {
+					wizardId = 'admin.students.edit';
+				}
+
+			    $scope.wizard = WizardService.get(wizardId);
 
 				if (!$scope.wizard) {
-					$scope.wizard = WizardService.create('admin.students.create', true);
+					$scope.wizard = WizardService.create(wizardId, true);
 					$state.go($scope.wizard.current.id); // go to the initial state of this progression
 				}
 
@@ -60,161 +95,56 @@ define(['../module'], function(controllers) {
 				});
 			}
 
-			initStudentObject();
+			// Emergency Contact init
+			function initEContacts() {
+				if(!$scope.model.emergencyContacts || $scope.model.emergencyContacts == null){
+					$scope.model.emergencyContacts = [];
+				}
 
-			function initOtherData() {
-				if($scope.model.emergencyContacts){
-					//Add e contact
-					$scope.econtact = [];
+				var econtactListLen = $scope.model.emergencyContacts.length;
 
-					async.each($scope.model.emergencyContacts,
-						function(contact, callback) {
-							EmergencyContactSvc.read(contact, {}, true).then(function(eDoc) {
-								$scope.econtact.push({
-									name: eDoc.name,
-									phoneNumber: eDoc.phoneNumber,
-									relationship: eDoc.relationship
-								});
-							});
-						}, function(err) {}
-					);
-				} else {
-					$scope.econtact = [];
-					$scope.econtact[0] = {};
-					$scope.econtact[1] = {};
+				if(econtactListLen == 0) {
+					$scope.model.emergencyContacts[0] = EmergencyContactSvc.init({});
+				}
+
+				if(econtactListLen <= 1) {
+					$scope.model.emergencyContacts[1] = EmergencyContactSvc.init({});
 				}
 			}
 
-			var econtactIds = [];
 
-			function updateContacts(id, model) {
-				EmergencyContactSvc.read(id, {}, true).then(function(eDoc) {
-				   	eDoc.name = model.name;
-				   	eDoc.phoneNumber = model.phoneNumber;
-				   	eDoc.relationship = model.relationship;
-
-				   	return EmergencyContactSvc.update({}, function(){
-				   		return true;
-				   	});
-				});
-			}
-
-			function addNewContacts(callback, err) {
-				//Add e contact
-				var curr = 0;
-
-				async.each($scope.econtact,
-					function(contact, callback) {
-						var econtactToAdd = {
-							name: contact.name,
-							phoneNumber: contact.phoneNumber,
-							relationship: contact.relationship
-						};
-
-						if($scope.model.emergencyContacts.length > curr && $scope.model.emergencyContacts[curr] != null) {
-							updateContacts($scope.model.emergencyContacts[curr], econtactToAdd);
-							econtactIds.push($scope.model.emergencyContacts[curr]);
-							curr = curr + 1;
-							callback();
-						} else {
-							//POST each new econtact and add object ID to array
-							EmergencyContactSvc.init(econtactToAdd);
-							EmergencyContactSvc.create(true).then(function(contactAdded, err){
-								econtactIds.push(contactAdded._id);
-								callback();
-							});
-						}
-					},
-					function(err) {
-						callback();
-					}
-				);
-			}
-
-			var studentAdded = null;
-
-			function addStudent() {
-				StudentSvc.init($scope.model);
-				StudentSvc.create(true).then(function(added) {
-					studentAdded = added;
-					//Add econtacts to db
-					(function(econtactIds){
-						async.parallel([
-							addNewContacts],
-							function(err) {
-								//Add econtact references and update student
-								StudentSvc.read(studentAdded._id, {}, true).get().then(function(p){
-									function beforeSave(c) {
-										c.emergencyContacts = econtactIds;
-									}
-									StudentSvc.save(beforeSave).then(function(saved) {
-										$log.log('Successfully saved student _id: ' + saved._id);
-										StudentSvc.reset();
-										$state.go('admin.students.home');
-									});
-								});
-						});
-					})(econtactIds);
-				});
-			}
-
-			function updateStudent() {
-				StudentSvc.init($scope.model);
-				StudentSvc.update({}, function(){/* before update*/}).then(function(added) {
-					studentAdded = added;
-					//Add econtacts to db
-					(function(econtactIds){
-						async.parallel([
-							addNewContacts],
-							function(err) {
-								//Add econtact references and update student
-								StudentSvc.read(studentAdded._id, {}, true).get().then(function(p){
-									function beforeSave(c) {
-										c.emergencyContacts = econtactIds;
-									}
-									StudentSvc.save(beforeSave).then(function(saved) {
-										$log.log('Successfully saved student _id: ' + saved._id);
-										StudentSvc.reset();
-										$state.go('admin.students.home');
-									});
-								});
-						});
-					})(econtactIds);
-				});
-			}
-
-			$scope.displayPreviousBtn = function() {
-				return $scope.wizard.peekPreviousIndex();
-			};
-
-			$scope.displayContinueBtn = function() {
-				return $scope.wizard.peekNextIndex();
-			};
-
-			$scope.submitBtnContent = 'Submit Registration';
-
+			/**
+			 * The following code is used for standard wizard (pattern) behavior.
+			 */
+			// Submit behavior
 			$scope.submit = function() {
-				// check for ng form validity
-
 				if (!$scope.wizard.current.isFinalStep) {
 					$scope.wizard.goFoward();
 				} else {
-					$scope.submitBtnDisabled = true;
-
-					if($scope.isNew) {
-						$scope.submitBtnContent = 'Creating Student...';
-						addStudent();
-					} else {
-						$scope.submitBtnContent = 'Updating Student...';
-						updateStudent();
-					}
+					save();
 				}
 			};
 
+			// Save behavior
+			function save(){
+				$scope.submitBtnDisabled = true;
+
+				if($scope.isNew) {
+					$scope.submitBtnContent = 'Creating Student...';
+					createStudent();
+				} else {
+					$scope.submitBtnContent = 'Updating Student...';
+					updateStudent();
+				}
+			}
+
+			// Reset behavior
 			$scope.showResetConfirm = false;
+
 			$scope.reset = function() {
 				$scope.showResetConfirm = true;
 			};
+
 			$scope.confirmReset = function(resetConfirmed) {
 				$scope.showResetConfirm = false;
 
@@ -225,6 +155,23 @@ define(['../module'], function(controllers) {
 					$scope.createStudent.$setPristine();
 				}
 			};
+
+			// Next button behaviors
+			$scope.displayPreviousBtn = function() {
+				if(!$scope.wizard || $scope.wizard == null) {
+					return false;
+				} else if($scope.wizard.peekPreviousIndex() === false) {
+					return false;
+				} else {
+					return true;
+				}
+			};
+
+			$scope.displayContinueBtn = function() {
+				return $scope.wizard.peekNextIndex();
+			};
+
+			$scope.submitBtnContent = 'Submit Registration';
 		}
 	]);
 
