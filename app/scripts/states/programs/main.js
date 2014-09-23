@@ -59,7 +59,7 @@ define(['../module'], function (states) {
         });
 
         $stateProvider.state('admin.programs.createclass', {
-            url: '/programs/classes/create',
+            url: '/programs/classes/create/:id',
             views: {
                 'section-body': {
                     templateUrl: 'partials/programs/classes/create',

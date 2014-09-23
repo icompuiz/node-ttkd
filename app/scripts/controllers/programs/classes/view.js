@@ -22,6 +22,5 @@ define(['../../module'], function(controllers){
 
 				$state.go('admin.programs.view', {id: $scope.currentClass.program} );
 			};
-
 	}]);
 });	

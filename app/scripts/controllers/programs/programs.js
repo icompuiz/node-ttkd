@@ -118,10 +118,6 @@ define(['../module'], function(controllers){
                 ]
             };
 /*************** End GridOptions******************************/
-
-
-
-
 			$scope.removeSelected = function() {
 				$scope.showRemoveConfirm = true;
 			};
@@ -193,6 +189,10 @@ define(['../module'], function(controllers){
 				}
 				removeProgramData(program);
 			};
+
+            $scope.removeDisabled = function() {
+                return $scope.gridOptions.selectedItems.length == 0;
+            };
 
 			$scope.goToCreateProgram = function() {
 				ProgramSvc.reset();

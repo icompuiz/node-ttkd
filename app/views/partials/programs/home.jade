@@ -3,7 +3,7 @@ h1 Programs
 	.col-md-12
 		.btn-toolbar.pull-left
 			button.btn.btn-primary(type='button', ng-click='goToCreateProgram()') Create new program
-			button.btn.btn-danger(type='button', ng-click='removeSelected()', ng-show='!showRemoveConfirm') Remove selected
+			button.btn.btn-danger(type='button', ng-disabled='removeDisabled()', ng-click='removeSelected()', ng-show='!showRemoveConfirm') Remove selected
 		.pull-left.margin-left-10(ng-show='showRemoveConfirm && gridOptions.selectedItems.length > 0')
 			.btn-toolbar
 				span.text-muted(ng-show='gridOptions.selectedItems.length > 1') Are you sure you wish to remove the {{gridOptions.selectedItems.length}} selected programs?
@@ -13,29 +13,3 @@ h1 Programs
 .row
 	.col-md-12
 		div.gridStyle(ng-grid='gridOptions')
-		//- table(class="table borderless")
-		//- 	tr 
-		//- 		th
-		//- 			input(type='checkbox' ng-model='allChecked' ng-change='checkAll()')
-		//- 		th Name
-		//- 		th Classes
-		//- 		th Ranks
-		//- 		th Actions
-		//- 	tr(ng-repeat='program in programs')
-		//- 		td
-		//- 			input(type='checkbox' ng-model='program.selected')
-		//- 		td {{program.name}}
-		//- 		td
-		//- 			div(ng-repeat='class in program.classes') 
-		//- 				{{class.name}}
-		//- 		td
-		//- 			div(ng-repeat='rank in program.ranks')
-		//- 				{{rank.name}}
-		//- 		td
-		//- 			button.btn.btn-small.btn-info(ng-click='goToViewProgram(program)')
-		//- 				span.glyphicon.glyphicon-eye-open
-		//- 			button.btn.btn-small.btn-default(ng-click='goToEditProgram(program)')
-		//- 				span.glyphicon.glyphicon-edit
-		//- 			button.btn.btn-small.btn-danger(ng-click='removeProgram(program)')
-		//- 				span.glyphicon.glyphicon-remove
-

@@ -28,7 +28,7 @@ define(['../module'], function(controllers){
 				var c = confirm('Are you sure you want to delete ' + classToRemove.name + '?');
 
 				if (c) {
-					$scope.newProgram.classes = _.without($scope.newProgram.classes, classToRemove);
+					$scope.newProgram.classes = _.without($scope.newProgram.classObjs, classToRemove);
 				}
 			};
 
@@ -41,7 +41,7 @@ define(['../module'], function(controllers){
 			};
 
 			$scope.addClassToProgram = function(program) {
-				program.classes.push($scope.newClass);
+				program.classObjs.push($scope.newClass);
 				$scope.newClass = {};
 			};
 
@@ -56,8 +56,8 @@ define(['../module'], function(controllers){
 				$state.go('admin.programs.createclass');
 			};
 
-			$scope.goToEditClass = function(clss) {
-				ClassSvc.init(clss);
+			$scope.goToEditClass = function(row) {
+				ClassSvc.init(row.entity);
 				ClassSvc.startEditing();
 				$state.go('admin.programs.editclass');
 			};
@@ -103,7 +103,7 @@ define(['../module'], function(controllers){
 
 				function addNewClasses(callback, err) {
 					//Add classes
-					async.each($scope.newProgram.classes,
+					async.each($scope.newProgram.classObjs,
 						function(classItem, callback) {
 							var classToAdd = {
 								name: classItem.name,
@@ -144,6 +144,109 @@ define(['../module'], function(controllers){
 					);
 				}
 			};
+
+           $scope.removeClassDisabled = function() {
+                return $scope.classGridOptions.selectedItems.length == 0;
+            };
+
+			$scope.removeSelectedClasses = function() {
+				$scope.showRemoveClassesConfirm = true;
+			};
+
+			$scope.confirmRemoveClasses = function(remove) {
+				if(remove) {
+					_($scope.classGridOptions.selectedItems).forEach(function(c) {
+						$scope.newProgram.classObjs = _.without($scope.newProgram.classObjs, c);
+						$scope.removedClasses.push(c);
+					});
+					$scope.showRemoveClassesConfirm = false;
+				} else {
+					$scope.showRemoveClassesConfirm = false;
+				}
+			};
+
+			$scope.showRemoveClassesConfirm = false;
+
+/********************** Classes Grid Options *****************************/
+
+			$scope.classFilterOptions = {
+				filterText: '',
+				useExternalFilter: true
+			};
+
+			$scope.classTotalServerItems = 0;
+			
+			$scope.classPagingOptions = {
+				pageSizes: [10, 25, 50],
+				pageSize: 10,
+				currentPage: 1
+			};
+
+			$scope.setClassPagingData = function(data, page, pageSize) {
+				var pagedData = data.slice((page - 1) * pageSize, page * pageSize);
+				$scope.myClassData = pagedData;
+				$scope.classTotalServerItems = data.length;
+				if (!$scope.$$phase) {
+					$scope.$apply();
+				}
+			};
+
+			$scope.setClassGridData = function(pageSize, page, searchText) {
+				var data = [];
+				_.each($scope.newProgram.classObjs, function(c) {
+					data.push(c);
+				});
+				$scope.setClassPagingData(data, page, pageSize);
+			};
+
+            $scope.$watch('newProgram.classObjs', function () {
+			    $scope.setClassGridData($scope.classPagingOptions.pageSize, $scope.classPagingOptions.currentPage, $scope.classFilterOptions.filterText);
+            }, true);
+
+            $scope.$watch('classPagingOptions', function (newVal, oldVal) {
+                if (newVal !== oldVal && newVal.currentPage !== oldVal.currentPage) {
+                    $scope.setClassGridData($scope.classPagingOptions.pageSize, $scope.classPagingOptions.currentPage, $scope.classFilterOptions.filterText);
+                }
+            }, true);
+
+            $scope.$watch('classFilterOptions', function (newVal, oldVal) {
+                if (newVal !== oldVal) {
+                    $scope.setClassGridData($scope.classPagingOptions.pageSize, $scope.classPagingOptions.currentPage, $scope.classFilterOptions.filterText);
+                }
+            }, true);
+
+            $scope.classOptionsButton = '<button type="button" class="btn btn-default btn-sm viewBtn" ng-click="goToViewClass(row)" >View</button> <button type="button" class="btn btn-default btn-sm editBtn" ng-click="goToEditClass(row)" >Edit</button>';
+
+            $scope.classGridOptions = {
+            	data: 'myClassData',
+                rowHeight: 40,
+                enablePaging: true,
+                showFooter: true,
+                beforeSelectionChange: function (rowItem, event) {
+                    // check if one of the options buttons was clicked
+                    if(event.target.tagName === 'BUTTON') {
+                        return false;
+                    } else {
+                        return true;
+                    }
+                },
+                afterSelectionChange: function (rowItem, event) {
+                    // check if one of the options buttons was clicked
+                    if($scope.classGridOptions.selectedItems.length === 0) {
+                        $scope.showRemoveConfirm = false;
+                    }
+                    return true;
+                },
+                totalServerItems: 'classTotalServerItems',
+                pagingOptions: $scope.classPagingOptions,
+                filterOptions: $scope.classFilterOptions,
+                selectedItems: [],
+                sortInfo: { fields: ['name'], directions: ['asc'] },
+                columnDefs: [
+                    { field: 'name', displayName: 'Class Name' },
+                    { cellTemplate: $scope.classOptionsButton, sortable: false, displayName: 'Actions'},
+                ]
+            };
 
 
 /********************** Form Validation **********************************/

@@ -19,10 +19,77 @@ define(['../module'], function(controllers){
 				$scope.currentProgram = ProgramSvc.current;
 			} 
 
-			$scope.goToViewClass = function(clss) {
-				ClassSvc.init(clss);
+/******** Class Grid Options ****************************************************/
+			$scope.classFilterOptions = {
+				filterText: '',
+				useExternalFilter: true
+			};
+
+			$scope.classTotalServerItems = 0;
+			
+			$scope.classPagingOptions = {
+				pageSizes: [10, 25, 50],
+				pageSize: 10,
+				currentPage: 1
+			};
+
+			$scope.setClassPagingData = function(data, page, pageSize) {
+				var pagedData = data.slice((page - 1) * pageSize, page * pageSize);
+				$scope.myClassData = pagedData;
+				$scope.classTotalServerItems = data.length;
+				if (!$scope.$$phase) {
+					$scope.$apply();
+				}
+			};
+
+			$scope.setClassGridData = function(pageSize, page, searchText) {
+				var data = [];
+				_.each($scope.currentProgram.classObjs, function(c) {
+					data.push(c);
+				});
+				$scope.setClassPagingData(data, page, pageSize);
+			};
+
+            $scope.$watch('currentProgram.classObjs', function () {
+			    $scope.setClassGridData($scope.classPagingOptions.pageSize, $scope.classPagingOptions.currentPage, $scope.classFilterOptions.filterText);
+            }, true);
+
+            $scope.$watch('classPagingOptions', function (newVal, oldVal) {
+                if (newVal !== oldVal && newVal.currentPage !== oldVal.currentPage) {
+                    $scope.setClassGridData($scope.classPagingOptions.pageSize, $scope.classPagingOptions.currentPage, $scope.classFilterOptions.filterText);
+                }
+            }, true);
+
+            $scope.$watch('classFilterOptions', function (newVal, oldVal) {
+                if (newVal !== oldVal) {
+                    $scope.setClassGridData($scope.classPagingOptions.pageSize, $scope.classPagingOptions.currentPage, $scope.classFilterOptions.filterText);
+                }
+            }, true);
+
+            $scope.viewButton = '<button type="button" class="btn btn-default btn-sm viewBtn" ng-click="goToViewClass(row)" >View</button>';
+
+            $scope.classGridOptions = {
+            	data: 'myClassData',
+                rowHeight: 40,
+                enablePaging: true,
+                showFooter: true,
+                enableRowSelection: false,
+                totalServerItems: 'classTotalServerItems',
+                pagingOptions: $scope.classPagingOptions,
+                filterOptions: $scope.classFilterOptions,
+                selectedItems: [],
+                sortInfo: { fields: ['name'], directions: ['asc'] },
+                columnDefs: [
+                    { field: 'name', displayName: 'Class Name' },
+                    { cellTemplate: $scope.viewButton, sortable: false, displayName: 'Actions'}
+                ]
+            };
+/******** END Class Grid Options *************************************************/
+
+			$scope.goToViewClass = function(row) {
+				ClassSvc.init(row.entity);
 				ClassSvc.startViewing();
-				$state.go('admin.programs.viewclass', {id: clss._id});
+				$state.go('admin.programs.viewclass', {id: row.entity._id});
 			};
 
 			$scope.backToHome = function() {

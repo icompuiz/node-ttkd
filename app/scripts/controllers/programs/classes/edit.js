@@ -36,7 +36,7 @@ define(['../../module'], function(controllers){
 								});
 							},
 							function(err) {
-								currentProgram.classes = pClasses;
+								currentProgram.classObjs = pClasses;
 								currentProgram.populated = true;
 							});
 					});
@@ -55,13 +55,13 @@ define(['../../module'], function(controllers){
 
 			$scope.saveClass = function() {
 				//Find the original class in the program and replace it with the edited class
-				var i = _.findIndex(currentProgram.classes, function(c) {
+				var i = _.findIndex(currentProgram.classObjs, function(c) {
 					return c.name === ClassSvc.orig.name;
 				});
 				if (i >= 0) {
-					currentProgram.classes[i] = $scope.currentClass;
+					currentProgram.classObjs[i] = $scope.currentClass;
 				} else {
-					currentProgram.classes.push($scope.currentClass);
+					currentProgram.classObjs.push($scope.currentClass);
 				}
 
 				ClassSvc.reset();
@@ -93,7 +93,7 @@ define(['../../module'], function(controllers){
 			$scope.isDupName = function() {
 				var names = [];
 				if (currentProgram && currentProgram.populated && orig) {
-					names = _.map(currentProgram.classes, function(c){return c.name;});
+					names = _.map(currentProgram.classObjs, function(c){return c.name;});
 					names = _.without(names, orig.name);
 				}
 

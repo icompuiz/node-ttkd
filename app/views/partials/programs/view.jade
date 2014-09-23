@@ -2,18 +2,9 @@ h1 {{currentProgram.name}}
 br
 
 h2 Classes
-table.table
-	tr
-		th.col-md-6.col-sm-6.col-lg-6.col-xs-6 Name
-		th.col-md-6.col-sm-6.col-lg-6.col-xs-6 Students
-		th Actions
-	tr(ng-repeat='class in currentProgram.classObjs')
-		td 
-			{{class.name}}
-		td
-			a(href='#') Students
-		td
-			button.btn.btn-info.glyphicon.glyphicon-eye-open.pull-right(ng-click='goToViewClass(class)')
+.row
+	.col-md-12
+		div.gridStyle(ng-grid='classGridOptions')
 
 
 h2 Ranks
