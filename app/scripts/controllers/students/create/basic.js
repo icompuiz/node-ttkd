@@ -1,13 +1,13 @@
 define(['../../module'], function(controllers) {
 	'use strict';
 
-	controllers.controller('CreateStudentBasicCtrl', ['$scope', '$log', '$state', 'StudentSvc',
-		function($scope, $log, $state, StudentSvc) {
+	controllers.controller('CreateStudentBasicCtrl', ['$scope', '$log', '$state', '$stateParams', 'StudentSvc',
+		function($scope, $log, $state, $stateParams, StudentSvc) {
 
 			$scope.model = StudentSvc.current;
 
-			if (!angular.isDefined($scope.model)) {
-				$state.go("admin.students.create");
+			if (!angular.isDefined($scope.model) || $scope.model == null) {
+				$state.go("^", $stateParams);
 			}
 
 			// Date of birth calendar
@@ -69,8 +69,6 @@ define(['../../module'], function(controllers) {
 					return false;
 				}
 			}
-
-
 		}
 	]);
 
