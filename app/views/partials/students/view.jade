@@ -1,0 +1,34 @@
+h1 {{currentStudent.firstName}} {{currentStudent.lastName}}
+.row.container
+	.col-md-5
+		h3.row Personal Information
+		.row.well {{currentStudent.birthday}} <br />{{currentStudent.emailAddress}} <br />Home: {{currentStudent.phone.home}} <br />Cell: {{currentStudent.phone.cell}}
+	.col-md-2
+	.col-md-5
+		h3.row Address
+		.row.well {{currentStudent.address.street}} <br />{{currentStudent.address.city}}, {{currentStudent.address.state}} {{currentStudent.address.zip}}
+
+h2 Emergency Contacts
+.row.container
+	.col-md-5(ng-show='showEContact1()')
+		h3.row Primary Contact
+		.row.well {{currentStudent.emergencyContacts[0].name}} ({{currentStudent.emergencyContacts[0].relationship}})<br />{{currentStudent.emergencyContacts[0].phoneNumber}}
+	.col-md-2(ng-show='showEContact1()')
+	.col-md-5(ng-show='showEContact2()')
+		h3.row Secondary Contact
+		.row.well {{currentStudent.emergencyContacts[1].name}} ({{currentStudent.emergencyContacts[1].relationship}})<br />{{currentStudent.emergencyContacts[1].phoneNumber}}
+
+h2 Student Ranks
+
+.btn-toolbar.pull-left
+	button.btn.btn-default(type='button', ng-click='backToHome()') Back
+	button.btn.btn-default(type='button', ng-click='editStudent()') Edit
+	button.btn.btn-danger(type='button', ng-show='!showRemoveConfirm', ng-click='remove()') Remove
+.pull-left.margin-left-10(ng-show='showRemoveConfirm')
+	.btn-toolbar
+		span.text-muted Are you sure you wish to remove this student?
+		button.btn.btn-danger(type='button', ng-click='confirmRemove(true)') Yes
+		button.btn.btn-success(type='button', ng-click='confirmRemove(false)') No
+
+
+div(class='clearfix')
