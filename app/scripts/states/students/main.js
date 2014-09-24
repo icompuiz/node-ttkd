@@ -50,7 +50,7 @@ define(['../module'], function (states) {
         });
 
         $stateProvider.state('admin.students.create.basic', {
-            url: '/basic',
+            // url: '/basic',
             views: {
                 'create-student-wzd-body': {
                     templateUrl: 'partials/students/create/basic',
@@ -60,7 +60,7 @@ define(['../module'], function (states) {
         });
 
         $stateProvider.state('admin.students.create.class', {
-            url: '/class',
+            // url: '/class',
             views: {
                 'create-student-wzd-body': {
                     templateUrl: 'partials/students/create/class',
@@ -70,7 +70,7 @@ define(['../module'], function (states) {
         });
 
         $stateProvider.state('admin.students.create.photo', {
-            url: '/photo',
+            // url: '/photo',
             views: {
                 'create-student-wzd-body': {
                     templateUrl: 'partials/students/create/photo',
@@ -80,7 +80,7 @@ define(['../module'], function (states) {
         });
 
         $stateProvider.state('admin.students.create.signature', {
-            url: '/signature',
+            // url: '/signature',
             views: {
                 'create-student-wzd-body': {
                     templateUrl: 'partials/students/create/signature',
@@ -90,7 +90,7 @@ define(['../module'], function (states) {
         });
 
         $stateProvider.state('admin.students.create.econtact', {
-            url: '/econtact',
+            // url: '/econtact',
             views: {
                 'create-student-wzd-body': {
                     templateUrl: 'partials/students/create/econtact',
@@ -101,6 +101,7 @@ define(['../module'], function (states) {
 
 
     }]).run(['WizardService', function Run(WizardService) {
+        
         var wizardSteps = {};
         wizardSteps['admin.students.create.basic'] = { id: 'admin.students.create.basic', name: 'Basic Information', enabled: false };
         wizardSteps['admin.students.create.econtact'] = { id: 'admin.students.create.econtact', name: 'Emergency Contact', enabled: false };
@@ -110,7 +111,7 @@ define(['../module'], function (states) {
 
         var wizardStepsOrder = [
             wizardSteps['admin.students.create.basic'],
-            wizardSteps['admin.students.create.econtact'],
+            // wizardSteps['admin.students.create.econtact'],
             wizardSteps['admin.students.create.class'],
             wizardSteps['admin.students.create.photo'],
             wizardSteps['admin.students.create.signature']

@@ -67,6 +67,39 @@ function removeGroups(doneRemovingGroups) {
     });
 }
 
+function removeDirectories(doneRemovingDirectories) {
+
+    var Directory = $mongoose.model('Directory');
+    Directory.remove({}, function(err) {
+
+
+        if (err) {
+            console.log('loadData::removeDirectories::fail', err);
+            return doneRemovingDirectories(err);
+        }
+        console.log('loadData::removeDirectories::success');
+        doneRemovingDirectories();
+    });
+
+}
+
+function removeFiles(doneRemovingFiles) {
+
+    var File = $mongoose.model('File');
+    File.remove({}, function(err) {
+
+        if (err) {
+            console.log('loadData::removeFiles::fail', err);
+            return doneRemovingFiles(err);
+        }
+        console.log('loadData::removeFiles::success');
+        doneRemovingFiles();
+
+    });
+
+}
+
+
 function removeAssets(doneRemovingAssets) {
 
     var Asset = $mongoose.model('Route');
@@ -98,6 +131,29 @@ function removeUsers(doneRemovingUsers) {
 
         console.log('loadData::removeUsers::success');
         doneRemovingUsers();
+    });
+}
+
+function addRootDirectory(doneAddingRootDirectory) {
+    var Directory = $mongoose.model('Directory');
+
+    var rootDirectory = {
+        name: 'Site Root',
+        alias: 'site_root',
+        system: true,
+    };
+
+    rootDirectory = new Directory(rootDirectory);
+
+    rootDirectory.save(function(err) {
+        if (err) {
+            console.log('loadData::addRootDirectory::error', err);
+            return doneAddingRootDirectory(err, 'addRootDirectory::error');
+
+        }
+        console.log('loadData::addRootDirectory::success');
+
+        doneAddingRootDirectory(null, 'addRootDirectory::sucessful');
     });
 }
 
@@ -393,6 +449,8 @@ function addAssets(doneAddingAssets) {
 var tasks = {
     removeUsers: removeUsers,
     removeGroups: removeGroups,
+    removeDirectories: removeDirectories,
+    removeFiles: removeFiles,
     removeAccessControlLists: removeAccessControlLists,
     removeAccessControlEntries: removeAccessControlEntries,
     removeMockObjects: removeMockObjects,
@@ -400,6 +458,7 @@ var tasks = {
     addGroups: addGroups,
     addUsers: addUsers,
     addAssets: addAssets,
+    addRootDirectory: addRootDirectory,
     addMocks: addMocks,
 };
 
