@@ -40,6 +40,19 @@ define('app', [
             $locationProvider.html5Mode(true).hashPrefix('!');
 
           }
+      ]).config(['$provide', 
+        function($provide){
+            $provide.decorator('dateParser', function($delegate){
+                var oldParse = $delegate.parse;
+                $delegate.parse = function(input, format) {
+                    if ( !angular.isString(input) || !format ) {
+                        return input;
+                    }
+                    return oldParse.apply(this, arguments);
+                };
+                return $delegate;
+            });
+        }
       ]).run(function($state, $rootScope, Restangular) {
 
         Restangular.setBaseUrl('/api');

@@ -19,6 +19,6 @@ div.row
 					button.btn.btn-success(type='button', ng-click='confirmReset(false)') No
 
 			div.form_controls.pull-right
-				button.btn.btn-default(type='button', ng-click='wizard.goBack()', ng-show='wizard.peekPreviousIndex() >= 0') Previous
+				button.btn.btn-default(type='button', ng-click='wizard.goBack()', ng-show='displayPreviousBtn()') Previous
 				button.btn.btn-primary(type='submit', ng-show='!wizard.current.isFinalStep', ng-disabled='createStudent.$invalid') Continue
 				button.btn.btn-success(type='submit', ng-show='wizard.current.isFinalStep', ng-disabled='createStudent.$invalid || submitBtnDisabled') {{submitBtnContent}}

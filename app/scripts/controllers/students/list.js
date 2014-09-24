@@ -101,7 +101,8 @@ define(['../module'], function(controllers) {
             };
 
             $scope.view = function(row){
-                console.log("View student id: " + row.entity._id)
+                console.log("View student id: " + row.entity._id);
+                $state.go('admin.students.view', {id: row.entity._id});
             };
 
             $scope.removeDisabled = function() {
