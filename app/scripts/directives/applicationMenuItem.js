@@ -8,17 +8,17 @@ define(['./module'], function(directives) {
                 restrict: 'A',
                 scope: {
                     uiSref: '='
-                },
-                link: function($scope, tElement, tAttr) {
+                  },
+                  link: function($scope, tElement, tAttr) {
 
                     function setActive(isActive) {
                         var parent = tElement.parent('li');
                         if (isActive) {
-                            parent.addClass('active');
+                          parent.addClass('active');
                         } else {
-                            parent.removeClass('active');
+                          parent.removeClass('active');
                         }
-                    }
+                      }
 
                     $scope.active = $state.is(tAttr.uiSref);
                     setActive($scope.active);
@@ -26,10 +26,10 @@ define(['./module'], function(directives) {
                     $scope.$on('$stateChangeSuccess', function() {
                         $scope.active = $state.is(tAttr.uiSref);
                         setActive($scope.active);
-                    });
-                }
-            };
+                      });
+                  }
+                };
             return applicationMenuItemDtv;
-        }
-    ]);
-});
+          }
+      ]);
+  });

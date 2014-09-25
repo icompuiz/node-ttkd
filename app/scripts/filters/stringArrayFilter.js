@@ -1,10 +1,9 @@
 define(['./module'], function(filters) {
     'use strict';
 
-  filters.filter('stringArray', ['$log', function() {
-    return function(myArray) {
-        return myArray.join(', ');
-    };
-  }]);
-});
-    
+	  filters.filter('stringArray', ['$log', function() {
+        return function(myArray) {
+            return myArray.join(', ');
+          };
+      }]);
+  });
