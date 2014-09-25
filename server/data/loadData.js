@@ -134,6 +134,21 @@ function removeUsers(doneRemovingUsers) {
     });
 }
 
+function removeStudents(doneRemovingStudents){
+    var Student = $mongoose.model('Student');
+    console.log('loadData::removeStudents::enter');
+
+    Student.remove({}, function(err) {
+        if(err) {
+            console.log('loadData::removeStudents::fail', err);
+            return doneRemovingStudents(err);
+        }
+
+        console.log('loadData::removeStudents::success');
+        doneRemovingStudents();
+    });
+}
+
 function addRootDirectory(doneAddingRootDirectory) {
     var Directory = $mongoose.model('Directory');
 
@@ -448,6 +463,7 @@ function addAssets(doneAddingAssets) {
 
 var tasks = {
     removeUsers: removeUsers,
+    removeStudents: removeStudents,
     removeGroups: removeGroups,
     removeDirectories: removeDirectories,
     removeFiles: removeFiles,
