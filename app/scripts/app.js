@@ -10,6 +10,7 @@ define('app', [
     // 'text!',
     'ngGrid',
     'restangular',
+    'sigPad',
     './controllers/index',
     './directives/index',
     './factories/index',
