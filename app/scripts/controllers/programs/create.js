@@ -223,8 +223,6 @@ define(['../module'], function(controllers){
                 }
             }, true);
 
-            $scope.classOptionsButton = '<button type="button" class="btn btn-default btn-sm viewBtn" ng-click="goToViewClass(row)" >View</button> <button type="button" class="btn btn-default btn-sm editBtn" ng-click="goToEditClass(row)" >Edit</button>';
-
             $scope.classGridOptions = {
             	data: 'myClassData',
                 rowHeight: 40,
@@ -252,7 +250,7 @@ define(['../module'], function(controllers){
                 sortInfo: { fields: ['name'], directions: ['asc'] },
                 columnDefs: [
                     { field: 'name', displayName: 'Class Name' },
-                    { cellTemplate: $scope.classOptionsButton, sortable: false, displayName: 'Actions'},
+                    { cellTemplate: '/partials/programs/classes/list/editOptionsButton', sortable: false, displayName: 'Actions'},
                 ]
             };
 

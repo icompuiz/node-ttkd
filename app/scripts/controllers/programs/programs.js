@@ -83,8 +83,6 @@ define(['../module'], function(controllers){
                 }
             }, true);
 
-            $scope.optionsButton = '<button type="button" class="btn btn-default btn-sm viewBtn" ng-click="goToViewProgram(row)" >View</button> <button type="button" class="btn btn-default btn-sm editBtn" ng-click="goToEditProgram(row)" >Edit</button>';
-
             $scope.gridOptions = {
             	data: 'myData',
                 rowHeight: 40,
@@ -114,7 +112,7 @@ define(['../module'], function(controllers){
                     { field: 'name', displayName: 'Program Name' },
                     { field: 'classNames', displayName: 'Classes', cellFilter: 'stringArray' },
                     { field: 'rankNames', displayName: 'Ranks' },
-                    { cellTemplate: $scope.optionsButton, sortable: false, displayName: 'Actions'},
+                    { cellTemplate: '/partials/programs/list/optionsButton', sortable: false, displayName: 'Actions'},
                 ]
             };
 /*************** End GridOptions******************************/
