@@ -21,6 +21,31 @@ define(['../module'], function(controllers) {
 
 			initStudentObject();
 
+
+			/**
+			 * The following code is used for controller level validation logic
+			 */
+			// Validation functions can be placed in individual sub-controllers
+			var validationFunctions = [];
+
+			// To add a function to be invoked on the submit call, use:
+			// $scope.addValidationFunction(functionName)
+			$scope.addValidationFunction = function(fct) {
+				validationFunctions.push(fct);
+			};
+
+			// The following is called when the form is submitted
+			function studentLogicValidates() {
+				var passes = true;
+
+				_.forEach(validationFunctions, function(fct) {
+					passes = passes && fct();
+				});
+
+				return passes;
+			}
+
+
 			/**
 			 * The following code is used for posting student data
 			 */
@@ -164,6 +189,11 @@ define(['../module'], function(controllers) {
 			 */
 			// Submit behavior
 			$scope.submit = function() {
+				if(!studentLogicValidates()) {
+					$log.log('Validation failed');
+					return false;
+				}
+
 				if (!$scope.wizard.current.isFinalStep) {
 					$scope.wizard.goFoward();
 				} else {
@@ -174,6 +204,8 @@ define(['../module'], function(controllers) {
 			// Save behavior
 			function save(){
 				$scope.submitBtnDisabled = true;
+
+				$log.log($scope);
 
 				if($scope.isNew) {
 					$scope.submitBtnContent = 'Creating Student...';

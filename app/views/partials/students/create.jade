@@ -21,4 +21,5 @@ div.row
 			div.form_controls.pull-right
 				button.btn.btn-default(type='button', ng-click='wizard.goBack()', ng-show='displayPreviousBtn()') Previous
 				button.btn.btn-primary(type='submit', ng-show='!wizard.current.isFinalStep', ng-disabled='createStudent.$invalid') Continue
-				button.btn.btn-success(type='submit', ng-show='wizard.current.isFinalStep', ng-disabled='createStudent.$invalid || submitBtnDisabled') {{submitBtnContent}}
+				button.btn.btn-default(type='button', ng-show='wizard.current.isFinalStep', ng-disabled='submitBtnDisabled', data-action='clearsigpad') Clear Signature
+				button.btn.btn-success(type='submit', ng-show='wizard.current.isFinalStep', ng-disabled='createStudent.$invalid || submitBtnDisabled', data-action='savesigpad') {{submitBtnContent}}

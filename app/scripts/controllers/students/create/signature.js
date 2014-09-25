@@ -9,6 +9,16 @@ define(['../../module'], function(controllers) {
 				$state.go("^", $stateParams);
 			}
 
+			// Make sure that the signature pad doesn't have any errosr
+			function validateSigPadSigned() {
+				if($scope.model.signaturedata.errors && $scope.model.signaturedata.errors != null) {
+					return false;
+				} else {
+					return true;
+				}
+			}
+			$scope.addValidationFunction(validateSigPadSigned);
+
 		}
 	]);
 
