@@ -20,6 +20,10 @@ define(['./module'], function (directives) {
           var newElem = $(html);
           element.replaceWith(newElem);
 
+          if(!scope.data) {
+            scope.data = {};
+          }
+
           var canvas = document.querySelector('canvas');
           var signaturePad = new SignaturePad(canvas);
 
@@ -33,11 +37,8 @@ define(['./module'], function (directives) {
           window.onresize = resizeCanvas;
           resizeCanvas();
 
-          var wrapper = document.getElementById('signature-pad');
           var clearButton = document.querySelector('[data-action=clearsigpad]');
           var saveButton = document.querySelector('[data-action=savesigpad]');
-
-          scope.data = {};
 
           clearButton.addEventListener('click', function () {
               signaturePad.clear();
@@ -51,6 +52,11 @@ define(['./module'], function (directives) {
                   scope.data.data = signaturePad.toDataURL();
               }
           });
+
+          // this needs to be at the end of all initialization otherwise it will be overwritten!
+          if(scope.data.data && scope.data.data != null) {
+            signaturePad.fromDataURL(scope.data.data);
+          }
 
          };
       }

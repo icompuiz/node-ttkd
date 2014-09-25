@@ -18,7 +18,6 @@ define(['../../module'], function(controllers) {
 				}
 			}
 			$scope.addValidationFunction(validateSigPadSigned);
-
 		}
 	]);
 

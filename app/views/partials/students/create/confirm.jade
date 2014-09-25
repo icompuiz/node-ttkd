@@ -1,0 +1,75 @@
+p Please confirm the following information you provided is correct. If it is not, go back to the necessary step to correct the issue. When all information is correct, please submit this registration.
+
+h3 Basic Information
+table.table.borderless
+	tr
+		td(style='width:50%') First name
+		td {{model.firstName}}
+	tr
+		td(style='width:50%') Last name
+		td {{model.lastName}}
+	tr
+		td Address
+		td {{model.address.street}}
+	tr
+		td City
+		td {{model.address.city}}
+	tr
+		td State
+		td {{model.address.state}}
+	tr
+		td Zip code
+		td {{model.address.zip}}
+	tr
+		td Home Phone
+		td {{model.phone.home}}
+	tr
+		td Cell Phone
+		td {{model.phone.cell}}
+	tr
+		td Email Address
+		td {{model.emailAddress}}
+	tr
+		td Birth Date
+		td {{model.birthday}}
+
+h3 Emergency Contact
+table.table.borderless
+	tr
+		td(style='width:50%') Primary Contact Name
+		td(style='width:50%') {{model.emergencyContacts[0].name}}
+	tr
+		td Primary Contact Phone
+		td {{model.emergencyContacts[0].phoneNumber}}
+	tr
+		td Primary Contact Relationship
+		td {{model.emergencyContacts[0].relationship}}
+	tr
+		td Secondary Contact Name
+		td {{model.emergencyContacts[1].name}}
+	tr
+		td Secondary Contact Phone
+		td {{model.emergencyContacts[1].phoneNumber}}
+	tr
+		td Secondary Contact Relationship
+		td {{model.emergencyContacts[1].relationship}}
+
+h3 Photo
+table.table.borderless
+	tr
+		td(style='width:50%') Attached?
+		td(ng-hide="uploader.queue.length",style='width:50%') No
+		td(ng-show="uploader.queue.length",style='width:50%') Yes
+
+h3 Waiver
+table.table.borderless
+	tr
+		td(style='width:50%') Participant
+		td(style='width:50%') {{model.waiver.participant}}
+	tr
+		td Guardian
+		td {{model.waiver.guardian}}
+	tr
+		td Signed?
+		td(ng-show='model.signaturedata.errors && model.signaturedata.errors != null') No
+		td(ng-hide='model.signaturedata.errors && model.signaturedata.errors != null') Yes

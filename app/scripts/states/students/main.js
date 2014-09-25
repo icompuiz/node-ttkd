@@ -148,6 +148,24 @@ define(['../module'], function (states) {
             }
         });
 
+        $stateProvider.state('admin.students.create.confirm', {
+            views: {
+                'create-student-wzd-body': {
+                    templateUrl: 'partials/students/create/confirm',
+                    controller: 'CreateStudentConfirmCtrl'
+                }
+            }
+        });
+
+        $stateProvider.state('admin.students.edit.confirm', {
+            views: {
+                'create-student-wzd-body': {
+                    templateUrl: 'partials/students/create/confirm',
+                    controller: 'CreateStudentConfirmCtrl'
+                }
+            }
+        });
+
 
     }]).run(['WizardService', function Run(WizardService) {
         
@@ -156,28 +174,32 @@ define(['../module'], function (states) {
         wizardSteps['admin.students.create.econtact'] = { id: 'admin.students.create.econtact', name: 'Emergency Contact', enabled: false };
         wizardSteps['admin.students.create.class'] = { id: 'admin.students.create.class', name: 'Class Information', enabled: false };
         wizardSteps['admin.students.create.photo'] = { id: 'admin.students.create.photo', name: 'Student Picture', enabled: false };
-        wizardSteps['admin.students.create.signature'] = { id: 'admin.students.create.signature', name: 'Waiver Signature', enabled: false, isFinalStep: true };
+        wizardSteps['admin.students.create.signature'] = { id: 'admin.students.create.signature', name: 'Waiver Signature', enabled: false };
+        wizardSteps['admin.students.create.confirm'] = { id: 'admin.students.create.confirm', name: 'Review Registration', enabled: false, isFinalStep: true };
         
         wizardSteps['admin.students.edit.basic'] = { id: 'admin.students.edit.basic', name: 'Basic Information', enabled: false };
         wizardSteps['admin.students.edit.econtact'] = { id: 'admin.students.edit.econtact', name: 'Emergency Contact', enabled: false };
         wizardSteps['admin.students.edit.class'] = { id: 'admin.students.edit.class', name: 'Class Information', enabled: false };
-        wizardSteps['admin.students.edit.photo'] = { id: 'admin.students.edit.photo', name: 'Student Picture', enabled: false, isFinalStep: true };
+        wizardSteps['admin.students.edit.photo'] = { id: 'admin.students.edit.photo', name: 'Student Picture', enabled: false };
+        wizardSteps['admin.students.edit.confirm'] = { id: 'admin.students.edit.confirm', name: 'Review Registration', enabled: false, isFinalStep: true };
 
 
 
         var wizardStepsOrder = [
             wizardSteps['admin.students.create.basic'],
-            // wizardSteps['admin.students.create.econtact'],
+            wizardSteps['admin.students.create.econtact'],
             wizardSteps['admin.students.create.class'],
             wizardSteps['admin.students.create.photo'],
-            wizardSteps['admin.students.create.signature']
+            wizardSteps['admin.students.create.signature'],
+            wizardSteps['admin.students.create.confirm']
         ];
 
         var wizardStepsOrderEdit = [
             wizardSteps['admin.students.edit.basic'],
-            // wizardSteps['admin.students.edit.econtact'],
+            wizardSteps['admin.students.edit.econtact'],
             wizardSteps['admin.students.edit.class'],
             wizardSteps['admin.students.edit.photo'],
+            wizardSteps['admin.students.edit.confirm']
         ];
 
         WizardService.register('admin.students.create', wizardStepsOrder);

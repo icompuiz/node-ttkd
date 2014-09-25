@@ -36,11 +36,11 @@ div.form-group.row
 		p.text-muted.error(ng-show="createStudent.city.$invalid && !createStudent.city.$pristine") Student's city must be between 2 and 64 characters long.
 
 	div.col-md-3
-		select.form-control
-			option(ng-repeat='state in states', ng-selected='state==defaultState') {{state}}
+		select.form-control(ng-model='model.address.state')
+			option(ng-repeat='state in states', ng-selected='state==defaultState', value='{{state}}') {{state}}
 	div.col-md-4
 		div.input-group
-			input.form-control(type='text', name="zipcode", placeholder='Zip code', ng-model="model.address.zip", required, ng-minlength='5', ng-maxlength='5')
+			input.form-control(type='text', name="zipcode", placeholder='Zip code', ng-model="model.address.zip", required, ng-minlength='5', ng-maxlength='5', maxlength='5')
 			span.input-group-addon
 				span.glyphicon.glyphicon-asterisk(ng-show="createStudent.zipcode.$invalid && createStudent.zipcode.$pristine")
 				span.glyphicon.glyphicon-remove(ng-show="createStudent.zipcode.$invalid && !createStudent.zipcode.$pristine")
