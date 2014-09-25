@@ -204,3 +204,35 @@ form .text-muted.error {
 .margin-left-10 {
     margin-left: 10px;
 }
+
+.my-drop-zone { border: dotted 3px lightgray; }
+.nv-file-over { border: dotted 3px red; } /* Default class applied to drop zones on over */
+.another-file-over-class { border: dotted 3px green; }
+
+canvas {
+    background-color: #f3f3f3;
+    -webkit-box-shadow: 3px 3px 3px 0 #e3e3e3;
+    -moz-box-shadow: 3px 3px 3px 0 #e3e3e3;
+    box-shadow: 3px 3px 3px 0 #e3e3e3;
+    border: 1px solid #c3c3c3;
+    height: 100px;
+    margin: 6px 0 0 6px;
+}
+
+.thumbnail-student-list {
+    width: 40px;
+    height: 40px;
+    padding: 2px;
+    border-radius: 2px;
+    margin: 0 auto;
+}
+
+.thumbnail-view-student {
+    width: 50%;
+    height: auto;
+    margin: 0 auto;
+}
+
+.grid-student-list-icon-cell {
+    text-align: center;
+}

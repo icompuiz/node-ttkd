@@ -1,7 +1,7 @@
 .row.row-margin-bottom-10
 	.col-md-12
 		.btn-toolbar.pull-left
-			button.btn.btn-primary(type='button', ng-click='add()') Add Student
+			a.btn.btn-primary(ui-sref='admin.students.create') Add Student
 			button.btn.btn-danger(type='button', ng-disabled='removeDisabled()', ng-show='!showRemoveConfirm', ng-click='remove()') Remove Selected
 		.pull-left.margin-left-10(ng-show='showRemoveConfirm && gridOptions.selectedItems.length > 0')
 			.btn-toolbar

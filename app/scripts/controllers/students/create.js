@@ -25,22 +25,68 @@ define(['../module'], function(controllers) {
 			 * The following code is used for posting student data
 			 */
 			// Create student
-			function createStudent() {
-				StudentSvc.create(true).then(function(saved) {
-					$log.log('Successfully created student _id: ' + saved._id);
-					StudentSvc.reset();
-					$state.go('admin.students.home');
-				});
-			}
+			function saveStudent() {
+                // StudentSvc.init($scope.model);
 
-			// Update student
-			function updateStudent() {
-				StudentSvc.update({}, function(){/* before update*/}).then(function(saved) {
-					$log.log('Successfully updated student _id: ' + saved._id);
-					StudentSvc.reset();
-					$state.go('admin.students.home');
-				});
-			}
+                function uploadAvatarTask(uploadAvatarTaskDone) {
+
+                    if ($scope.model.uploader && $scope.model.uploader.queue.length) {
+                        $scope.model.uploader.onCompleteItem = function(item, response, status) {
+
+                            console.log(item);
+                            console.log(response);
+
+                            if (200 === status) {
+                                uploadAvatarTaskDone(null, response._id);
+                            } else {
+                                var error  = new Error('An error occurred while uploading the avatar');
+                    			uploadAvatarTaskDone(error);
+                            }
+
+                        };
+                        $scope.model.uploader.uploadAll();
+                    } else {
+                        uploadAvatarTaskDone();
+                    }
+
+                }
+
+                function saveStudentModelTask(avatarId, saveStudentModelTaskDone) {
+
+                    if (avatarId) {
+                        $scope.model.avatar = avatarId;
+                    }
+
+                    $scope.model.uploader.destroy();
+                    $scope.model.uploader = null;
+
+                    StudentSvc.save().then(function(saved) {
+
+                        saveStudentModelTaskDone(null, saved);
+
+                    }, function() {
+                    	var error  = new Error('An error occurred while saving the model');
+                    	saveStudentModelTaskDone(error);
+                    });
+
+                }
+
+                function afterWaterfall(err, student) {
+                	if (!err) {
+	                    $log.log('Successfully saved student _id: ' + student._id);
+	                    StudentSvc.reset();
+	                    $state.go('admin.students.home');
+                	} else {
+                		// handle upload error case
+                		// handle save error case
+                	}
+                }
+
+                var tasks = [uploadAvatarTask, saveStudentModelTask];
+
+
+                async.waterfall(tasks, afterWaterfall);
+            }
 
 
 			/**
@@ -97,13 +143,13 @@ define(['../module'], function(controllers) {
 
 			// Emergency Contact init
 			function initEContacts() {
-				if(!$scope.model.emergencyContacts || $scope.model.emergencyContacts == null){
+				if(!$scope.model.emergencyContacts || $scope.model.emergencyContacts === null){
 					$scope.model.emergencyContacts = [];
 				}
 
 				var econtactListLen = $scope.model.emergencyContacts.length;
 
-				if(econtactListLen == 0) {
+				if(econtactListLen === 0) {
 					$scope.model.emergencyContacts[0] = EmergencyContactSvc.init({});
 				}
 
@@ -131,11 +177,10 @@ define(['../module'], function(controllers) {
 
 				if($scope.isNew) {
 					$scope.submitBtnContent = 'Creating Student...';
-					createStudent();
 				} else {
 					$scope.submitBtnContent = 'Updating Student...';
-					updateStudent();
 				}
+				saveStudent();
 			}
 
 			// Reset behavior
@@ -158,7 +203,7 @@ define(['../module'], function(controllers) {
 
 			// Next button behaviors
 			$scope.displayPreviousBtn = function() {
-				if(!$scope.wizard || $scope.wizard == null) {
+				if(!$scope.wizard || $scope.wizard === null) {
 					return false;
 				} else if($scope.wizard.peekPreviousIndex() === false) {
 					return false;

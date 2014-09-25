@@ -9,5 +9,6 @@ define([
 	'./create/class',
 	'./create/econtact',
 	'./create/photo',
-	'./create/signature'
+	'./create/signature',
+	'./view'
 ], function () {});

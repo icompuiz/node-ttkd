@@ -31,12 +31,13 @@ define(['../module'], function(controllers) {
                     StudentSvc.list().then(function(students){
                         // add students to new array for ng-grid outputting
                         _(students).forEach(function(student){
-                            data.push({
-                                'firstName': student.firstName,
-                                'lastName': student.lastName,
-                                'age': $filter('age')(student.birthday),
-                                '_id': student._id
-                            })
+                            // data.push({
+                            //     'firstName': student.firstName,
+                            //     'lastName': student.lastName,
+                            //     'age': $filter('age')(student.birthday),
+                            //     '_id': student._id
+                            // })
+                            data.push(student);
                         });
 
 
@@ -59,7 +60,6 @@ define(['../module'], function(controllers) {
                 }
             }, true);
 
-            $scope.optionsButton = '<button type="button" class="btn btn-default btn-sm viewBtn" ng-click="view(row)" >View</button> <button type="button" class="btn btn-default btn-sm editBtn" ng-click="edit(row)" >Edit</button>';
 
             $scope.gridOptions = {
                 data: 'myData',
@@ -87,10 +87,11 @@ define(['../module'], function(controllers) {
                 selectedItems: [],
                 sortInfo: { fields: ['lastName', 'firstname'], directions: ['asc', 'asc'] },
                 columnDefs: [
+                    { cellTemplate: '/partials/students/list/studentAvatar', sortable: false, width: 70, height: 70, cellClass: 'grid-student-list-icon-cell' },
                     { field: 'firstName', displayName: 'First Name' },
                     { field: 'lastName', displayName: 'Last Name' },
                     { field: 'age', displayName: 'Age' },
-                    { cellTemplate: $scope.optionsButton, sortable: false },
+                    { cellTemplate: '/partials/students/list/optionsButton', sortable: false },
                 ]
             };
 
@@ -100,7 +101,8 @@ define(['../module'], function(controllers) {
             };
 
             $scope.view = function(row){
-                console.log("View student id: " + row.entity._id)
+                console.log("View student id: " + row.entity._id);
+                $state.go('admin.students.view', {id: row.entity._id});
             };
 
             $scope.removeDisabled = function() {

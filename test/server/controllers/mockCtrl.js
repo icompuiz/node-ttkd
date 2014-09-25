@@ -34,12 +34,31 @@ describe('Mock', function() {
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
                 .expect(function(res) {
-                	console.log(res.body);
+                    console.log(res.body);
                 })
                 .expect(200, done);
 
 
         });
+
+        it('should add a new mock object', function(done) {
+            var mock = {
+                    field: 'kdgmflkmdlfmdlf'
+            };
+            
+            request(app)
+                .post('/api/mocks')
+                .send(mock)
+                .set('Accept', 'application/json')
+                .expect('Content-Type', /json/)
+                .expect(function(res) {
+
+                    // mock.field === res.body.field;
+
+                })
+                .expect(200, done);
+
+        })
 
     });
 });

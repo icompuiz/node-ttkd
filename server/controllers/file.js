@@ -135,9 +135,16 @@ var handleFileDownload = function(req, res, next) {
 
             console.log('controller::file::handleFileDownload::findById::download::sucess', 'Sending stream');
 
+            var disposition = "filename=" + $path.basename(fileStream.filename);
+
+            if (req.query.download) {
+                disposition = "attachment; " + disposition;
+            }
+
+
             var type = fileStream.contentType;
             res.header('Content-Type', type);
-            res.header("Content-Disposition", "attachment; filename=" + $path.basename(fileStream.filename));
+            res.header("Content-Disposition", disposition);
             fileStream.stream(true).pipe(res);
         });
 

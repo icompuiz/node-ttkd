@@ -1,0 +1,53 @@
+.row
+	.col-md-6
+		// - avatar
+		img.thumbnail.thumbnail-view-student(ng-if="currentStudent.avatar", src="/api/fs/files/{{currentStudent.avatar}}/download")
+		img.thumbnail.thumbnail-view-student(ng-if="!currentStudent.avatar", src="http://placehold.it/32x32.png")
+	.col-md-6
+		.col-md-12
+			h1 {{currentStudent.firstName}} {{currentStudent.lastName}}
+		.col-md-12
+			// address
+			p 
+				| {{currentStudent.address.street}} 
+				br
+				| {{currentStudent.address.city}}, {{currentStudent.address.state}} {{currentStudent.address.zip}}
+		.col-md-12
+			// birthday
+			p
+				span.glyphicon.glyphicon-calendar &nbsp;
+				| {{currentStudent.birthday | date: 'MM/dd/yyyy' }}
+				br
+				span.glyphicon.glyphicon-envelope &nbsp;
+				| {{currentStudent.emailAddress}}
+				br 
+				span.glyphicon.glyphicon-home &nbsp;
+				| {{currentStudent.phone.home}}
+				br
+				span.glyphicon.glyphicon-phone &nbsp;
+				| {{currentStudent.phone.cell}}
+.row
+
+	h2.col-md-12 Emergency Contacts
+	.col-md-5(ng-show='showEContact1()')
+		h3 Primary Contact
+		.well {{currentStudent.emergencyContacts[0].name}} ({{currentStudent.emergencyContacts[0].relationship}})<br />{{currentStudent.emergencyContacts[0].phoneNumber}}
+	.col-md-2(ng-show='showEContact1()')
+	.col-md-5(ng-show='showEContact2()')
+		h3 Secondary Contact
+		.well {{currentStudent.emergencyContacts[1].name}} ({{currentStudent.emergencyContacts[1].relationship}})<br />{{currentStudent.emergencyContacts[1].phoneNumber}}
+
+.row
+	h2.col-md-12 Student Ranks
+	.btn-toolbar.pull-left
+		button.btn.btn-default(type='button', ng-click='backToHome()') Back
+		button.btn.btn-default(type='button', ng-click='editStudent()') Edit
+		button.btn.btn-danger(type='button', ng-show='!showRemoveConfirm', ng-click='remove()') Remove
+	.pull-left.margin-left-10(ng-show='showRemoveConfirm')
+		.btn-toolbar
+			span.text-muted Are you sure you wish to remove this student?
+			button.btn.btn-danger(type='button', ng-click='confirmRemove(true)') Yes
+			button.btn.btn-success(type='button', ng-click='confirmRemove(false)') No
+
+
+div(class='clearfix')
