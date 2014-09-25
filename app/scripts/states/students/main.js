@@ -158,10 +158,10 @@ define(['../module'], function (states) {
         wizardSteps['admin.students.create.photo'] = { id: 'admin.students.create.photo', name: 'Student Picture', enabled: false };
         wizardSteps['admin.students.create.signature'] = { id: 'admin.students.create.signature', name: 'Waiver Signature', enabled: false, isFinalStep: true };
         
-        wizardSteps['admin.students.edit.basic'] = { id: 'admin.students.edit.basic', name: 'Basic Information', enabled: false };
-        wizardSteps['admin.students.edit.econtact'] = { id: 'admin.students.edit.econtact', name: 'Emergency Contact', enabled: false };
-        wizardSteps['admin.students.edit.class'] = { id: 'admin.students.edit.class', name: 'Class Information', enabled: false };
-        wizardSteps['admin.students.edit.photo'] = { id: 'admin.students.edit.photo', name: 'Student Picture', enabled: false, isFinalStep: true };
+        wizardSteps['admin.students.edit.basic'] = { id: 'admin.students.edit.basic', name: 'Basic Information', enabled: true };
+        wizardSteps['admin.students.edit.econtact'] = { id: 'admin.students.edit.econtact', name: 'Emergency Contact', enabled: true };
+        wizardSteps['admin.students.edit.class'] = { id: 'admin.students.edit.class', name: 'Class Information', enabled: true };
+        wizardSteps['admin.students.edit.photo'] = { id: 'admin.students.edit.photo', name: 'Student Picture', enabled: true, isFinalStep: true };
 
 
 
