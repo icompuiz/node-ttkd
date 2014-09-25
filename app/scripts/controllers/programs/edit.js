@@ -71,24 +71,6 @@ define(['../module'], function(controllers){
 				$state.go('admin.programs.editclass', { id: row.entity._id} );
 			};
 
-			$scope.removeClass = function(classToRemove) { 
-				var c = confirm('Are you sure you want to delete ' + classToRemove.name + '?');
-
-				if (c) {
-					$scope.currentProgram.classObjs = _.without($scope.currentProgram.classObjs, classToRemove);
-					$scope.removedClasses.push(classToRemove);
-				}
-			};
-
-			$scope.removeRank = function(rankToRemove) { 
-				var c = confirm('Are you sure you want to delete ' + rankToRemove.name + '?');
-
-				if (c) {
-					$scope.currentProgram.ranks = _.without($scope.currentProgram.ranks, rankToRemove);
-					$scope.removedRanks.push(rankToRemove);
-				}
-			};
-
 			$scope.saveProgram = function() {
 				var classIDs = [],
 					rankIDs = [];
@@ -223,7 +205,8 @@ define(['../module'], function(controllers){
 				if(remove) {
 					_($scope.classGridOptions.selectedItems).forEach(function(c) {
 						$scope.currentProgram.classObjs = _.without($scope.currentProgram.classObjs, c);
-						$scope.removedClasses.push(c);
+						$scope.removedClasses.push(c);						
+						$scope.classGridOptions.selectedItems.length = 0;
 					});
 					$scope.showRemoveClassesConfirm = false;
 				} else {

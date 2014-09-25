@@ -32,22 +32,6 @@ define(['../module'], function(controllers){
 				$state.go('admin.programs.home');
 			};
 
-			$scope.removeClass = function(classToRemove) { 
-				var c = confirm('Are you sure you want to delete ' + classToRemove.name + '?');
-
-				if (c) {
-					$scope.newProgram.classes = _.without($scope.newProgram.classObjs, classToRemove);
-				}
-			};
-
-			$scope.removeClass = function(rankToRemove) { 
-				var c = confirm('Are you sure you want to delete ' + rankToRemove.name + '?');
-
-				if (c) {
-					$scope.newProgram.ranks = _.without($scope.newProgram.ranks, rankToRemove);
-				}
-			};
-
 			$scope.addClassToProgram = function(program) {
 				program.classObjs.push($scope.newClass);
 				$scope.newClass = {};
@@ -166,6 +150,7 @@ define(['../module'], function(controllers){
 					_($scope.classGridOptions.selectedItems).forEach(function(c) {
 						$scope.newProgram.classObjs = _.without($scope.newProgram.classObjs, c);
 						$scope.removedClasses.push(c);
+						$scope.classGridOptions.selectedItems.length
 					});
 					$scope.showRemoveClassesConfirm = false;
 				} else {

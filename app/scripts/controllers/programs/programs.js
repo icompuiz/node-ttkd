@@ -125,6 +125,7 @@ define(['../module'], function(controllers){
 					_($scope.gridOptions.selectedItems).forEach(function(program) {
 						$scope.removeProgram(program);
 					});
+					$scope.gridOptions.selectedItems.length = 0;
 					$scope.showRemoveConfirm = false;
 				} else {
 					$scope.showRemoveConfirm = false;
