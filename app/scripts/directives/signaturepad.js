@@ -42,6 +42,7 @@ define(['./module'], function (directives) {
 
           clearButton.addEventListener('click', function () {
               signaturePad.clear();
+              scope.data.data = signaturePad.toDataURL();
           });
 
           saveButton.addEventListener('click', function () {
