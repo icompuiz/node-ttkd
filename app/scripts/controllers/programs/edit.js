@@ -8,6 +8,16 @@ define(['../module'], function(controllers){
 			$scope.removedRanks = [];
 			$scope.removedClasses = [];
 
+			$scope.programNames = [];
+
+			$scope.getPrograms = function(){
+				ProgramSvc.list().then(function(progs) {
+					$scope.programNames = _.map(progs, function(p){return p.name;});
+					$scope.programNames = _.without($scope.programNames, $scope.currentProgram.name);
+				});
+			};
+			$scope.getPrograms();
+
 			if (ProgramSvc.current && ProgramSvc.editing) {
 				$scope.currentProgram = ProgramSvc.current;
 
@@ -298,12 +308,16 @@ define(['../module'], function(controllers){
             };
 
 /********************** Form Validation **********************************/
-			function isEmpty(str) {
-				return (!str || 0 === str.length);				
-			}
+			$scope.isEmpty = function() {
+				return (!$scope.currentProgram.name || 0 === $scope.currentProgram.name.length);				
+			};
 
 			$scope.canSaveProgram = function() {
-				return !isEmpty($scope.currentProgram.name);
+				return !$scope.isEmpty() && !$scope.isDupName();
+			};
+
+			$scope.isDupName = function() {
+				return _.contains($scope.programNames, $scope.currentProgram.name);
 			};
 	}]);
 });	

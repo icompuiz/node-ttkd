@@ -6,7 +6,15 @@ define(['../module'], function(controllers){
 			$scope.newClass = {};
 			$scope.newRank = {};
 
-			$scope.duplicateProgramMessage = 'You must provide a unique program name.';
+
+			$scope.programNames = [];
+
+			$scope.getPrograms = function(){
+				ProgramSvc.list().then(function(progs) {
+					$scope.programNames = _.map(progs, function(p){return p.name;});
+				});
+			};
+			$scope.getPrograms();
 
 			if (ProgramSvc.current && ProgramSvc.creating) {
 				$scope.newProgram = ProgramSvc.current;
@@ -255,7 +263,11 @@ define(['../module'], function(controllers){
 			};
 
 			$scope.canSaveProgram = function() {
-				return !$scope.isEmpty($scope.newProgram.name);
+				return !$scope.isEmpty($scope.newProgram.name) && !$scope.isDupName();
+			};
+
+			$scope.isDupName = function() {
+				return _.contains($scope.programNames, $scope.newProgram.name);
 			};
 
 	}]);

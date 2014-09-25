@@ -4,8 +4,9 @@ form.form-group
 	.input-group
 		input(type='text', class='form-control', placeholder='Program name' ng-model="currentProgram.name")
 		span(class='input-group-addon')
-			span(ng-show='!isEmpty(currentProgram.name)', class='glyphicon glyphicon-ok input-valid')
-			span(ng-show='isEmpty(currentProgram.name)', class='glyphicon glyphicon-remove input-invalid')
+			span(ng-show='!isEmpty() && !isDupName()', class='glyphicon glyphicon-ok input-valid')
+			span(ng-show='isEmpty() || isDupName()', class='glyphicon glyphicon-remove input-invalid')
+	p.text-muted.error(ng-show='isDupName()') Program name must be unique!
 
 	h2 Classes
 	.row.row-margin-bottom-10
