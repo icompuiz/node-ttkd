@@ -44,7 +44,11 @@ define(['../module'], function(controllers){
 
             $scope.confirmRemove = function(remove) {
                 if(remove) {
-                    $log.log('need to remove');
+                    $log.log('Removing selected student...');
+
+                    $log.log(' |_ Removing student: ' + $scope.currentStudent.firstName + ' ' + $scope.currentStudent.lastName + ' ' + $scope.currentStudent._id);
+                    removeStudentData($scope.currentStudent);
+
                     $scope.showRemoveConfirm = false;
                 } else {
                     $scope.showRemoveConfirm = false;
@@ -52,5 +56,15 @@ define(['../module'], function(controllers){
             };
 
             $scope.showRemoveConfirm = false;
+
+            function removeStudentData(student) {
+                //Remove Student
+                StudentSvc.read(student._id, null, true).then(function() {
+                    StudentSvc.remove().then(function() {
+                        StudentSvc.reset();
+                        $scope.backToHome();
+                    });
+                });
+            }
 	}]);
 });

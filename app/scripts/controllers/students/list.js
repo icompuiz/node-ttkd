@@ -24,7 +24,7 @@ define(['../module'], function(controllers) {
                 }
             };
 
-            $scope.getPagedDataAsync = function (pageSize, page, searchText) {
+            $scope.getPagedDataAsync = function (pageSize, page) {
                 setTimeout(function () {
                     var data = [];
 
@@ -74,9 +74,9 @@ define(['../module'], function(controllers) {
                         return true;
                     }
                 },
-                afterSelectionChange: function (rowItem, event) {
+                afterSelectionChange: function () {
                     // check if one of the options buttons was clicked
-                    if($scope.gridOptions.selectedItems.length == 0) {
+                    if($scope.gridOptions.selectedItems.length === 0) {
                         $scope.showRemoveConfirm = false;
                     }
                     return true;
@@ -96,26 +96,37 @@ define(['../module'], function(controllers) {
             };
 
             $scope.edit = function(row){
-                console.log("Edit student id: " + row.entity._id);
+                console.log('Edit student id: ' + row.entity._id);
                 $state.go('admin.students.edit', {id: row.entity._id});
             };
 
             $scope.view = function(row){
-                console.log("View student id: " + row.entity._id);
+                console.log('View student id: ' + row.entity._id);
                 $state.go('admin.students.view', {id: row.entity._id});
             };
 
             $scope.removeDisabled = function() {
-                return $scope.gridOptions.selectedItems.length == 0;
+                return $scope.gridOptions.selectedItems.length === 0;
             };
 
             $scope.remove = function() {
                 $scope.showRemoveConfirm = true;
             };
 
+
+
             $scope.confirmRemove = function(remove) {
                 if(remove) {
-                    $log.log('need to remove');
+                    $log.log('Removing selected students...');
+
+                    _($scope.gridOptions.selectedItems).forEach(function(student) {
+                        $log.log(' |_ Removing student: ' + student.firstName + ' ' + student.lastName + ' ' + student._id);
+                        removeStudentData(student);
+                    });
+
+                    // empty selection
+                    $scope.gridOptions.selectedItems.length = 0;
+
                     $scope.showRemoveConfirm = false;
                 } else {
                     $scope.showRemoveConfirm = false;
@@ -124,6 +135,16 @@ define(['../module'], function(controllers) {
 
             $scope.showRemoveConfirm = false;
 
+
+            function removeStudentData(student) {
+                //Remove Student
+                StudentSvc.read(student._id, null, true).then(function() {
+                    StudentSvc.remove().then(function() {
+                        $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage);
+                        StudentSvc.reset();
+                    });
+                });
+            }
         }
     ]);
 });

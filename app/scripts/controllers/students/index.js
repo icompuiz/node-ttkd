@@ -10,5 +10,6 @@ define([
 	'./create/econtact',
 	'./create/photo',
 	'./create/signature',
+	'./create/confirm',
 	'./view'
 ], function () {});
