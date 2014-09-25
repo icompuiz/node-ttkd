@@ -1,8 +1,8 @@
 define(['../module'], function(controllers) {
 	'use strict';
 
-	controllers.controller('CreateStudentCtrl', ['$scope', '$http', '$log', '$state', '$stateParams', 'StudentSvc', 'EmergencyContactSvc', 'WizardService',
-		function($scope, $http, $log, $state, $stateParams, StudentSvc, EmergencyContactSvc, WizardService) {
+	controllers.controller('CreateStudentCtrl', ['$scope', '$http', '$log', '$state', '$stateParams', 'StudentSvc', 'EmergencyContactSvc', 'WizardService','$timeout',
+		function($scope, $http, $log, $state, $stateParams, StudentSvc, EmergencyContactSvc, WizardService, $timeout) {
 
 			// Check if the state is changed... will need to terminate registered wizard
 			$scope.$on('$stateChangeStart', function(event, toState, toParams, fromState) {
@@ -65,13 +65,13 @@ define(['../module'], function(controllers) {
                                 uploadAvatarTaskDone(null, response._id);
                             } else {
                                 var error  = new Error('An error occurred while uploading the avatar');
-                    			uploadAvatarTaskDone(error);
+                    			uploadAvatarTaskDone(error, null);
                             }
 
                         };
                         $scope.model.uploader.uploadAll();
                     } else {
-                        uploadAvatarTaskDone();
+                        uploadAvatarTaskDone(null, false);
                     }
 
                 }
@@ -81,9 +81,6 @@ define(['../module'], function(controllers) {
                     if (avatarId) {
                         $scope.model.avatar = avatarId;
                     }
-
-                    $scope.model.uploader.destroy();
-                    $scope.model.uploader = null;
 
                     StudentSvc.save().then(function(saved) {
 
@@ -98,10 +95,21 @@ define(['../module'], function(controllers) {
 
                 function afterWaterfall(err, student) {
                 	if (!err) {
-	                    $log.log('Successfully saved student _id: ' + student._id);
+
+	                    $scope.model.uploader.destroy();
+	                    $scope.model.uploader = null;
 	                    StudentSvc.reset();
 	                    $state.go('admin.students.home');
+
                 	} else {
+	                    $log.log('Failed to save student');
+                    	$scope.submitBtnContent = 'Failed to save student';
+	                    $scope.wizard.end();
+
+	                    $timeout(function() {
+							$scope.submitBtnContent = 'Submit Registration';
+							$scope.submitBtnDisabled = false;
+	                    }, 2000);
                 		// handle upload error case
                 		// handle save error case
                 	}
