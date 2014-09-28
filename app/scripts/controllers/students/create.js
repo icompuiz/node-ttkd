@@ -10,7 +10,7 @@ define(['../module'], function(controllers) {
 				if (!inWizard) {
 					StudentSvc.reset();
 
-					if(!$scope.model.isNew) {
+					if(!$scope.isNew) {
 						WizardService.terminate('admin.students.edit');
 					} else {
 						WizardService.terminate('admin.students.create');
