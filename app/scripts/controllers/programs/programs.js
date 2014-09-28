@@ -111,7 +111,7 @@ define(['../module'], function(controllers){
                 columnDefs: [
                     { field: 'name', displayName: 'Program Name' },
                     { field: 'classNames', displayName: 'Classes', cellFilter: 'stringArray' },
-                    { field: 'rankNames', displayName: 'Ranks' },
+                    { field: 'rankNames', displayName: 'Ranks', cellFilter: 'stringArray'},
                     { cellTemplate: '/partials/programs/list/optionsButton', sortable: false, displayName: 'Actions'},
                 ]
             };

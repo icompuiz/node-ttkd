@@ -9,8 +9,13 @@ define(['../module'], function(controllers){
 			} else if ($stateParams.id) {
 				ProgramSvc.read($stateParams.id, null, true).then(function(p) { 
 					$scope.currentProgram = p;
+					//Attach class objects to current program
 					ClassSvc.list().then(function(classes) {
 						$scope.currentProgram.classObjs = _.where(classes, {program: $scope.currentProgram._id});
+					});
+					//Attach rank objects to current program
+					RankSvc.list().then(function(ranks) {
+						$scope.currentProgram.rankObjs = _.where(ranks, {program: $scope.currentProgram._id});
 					});
 				});
 			}
@@ -82,12 +87,84 @@ define(['../module'], function(controllers){
                     { cellTemplate: '/partials/programs/classes/list/viewOptionsButton', sortable: false, displayName: 'Actions'}
                 ]
             };
-/******** END Class Grid Options *************************************************/
+
+/******** Rank Grid Options ****************************************************/
+
+			$scope.rankFilterOptions = {
+				filterText: '',
+				useExternalFilter: true
+			};
+
+			$scope.rankTotalServerItems = 0;
+			
+			$scope.rankPagingOptions = {
+				pageSizes: [10, 25, 50],
+				pageSize: 10,
+				currentPage: 1
+			};
+
+			$scope.setRankPagingData = function(data, page, pageSize) {
+				var pagedData = data.slice((page - 1) * pageSize, page * pageSize);
+				$scope.myRankData = pagedData;
+				$scope.rankTotalServerItems = data.length;
+				if (!$scope.$$phase) {
+					$scope.$apply();
+				}
+			};
+
+			$scope.setRankGridData = function(pageSize, page, searchText) {
+				var data = [];
+				_.each($scope.currentProgram.rankObjs, function(c) {
+					data.push(c);
+				});
+				$scope.setRankPagingData(data, page, pageSize);
+			};
+
+            $scope.$watch('currentProgram.rankObjs', function () {
+			    $scope.setRankGridData($scope.rankPagingOptions.pageSize, $scope.rankPagingOptions.currentPage, $scope.rankFilterOptions.filterText);
+            }, true);
+
+            $scope.$watch('rankPagingOptions', function (newVal, oldVal) {
+                if (newVal !== oldVal && newVal.currentPage !== oldVal.currentPage) {
+                    $scope.setRankGridData($scope.rankPagingOptions.pageSize, $scope.rankPagingOptions.currentPage, $scope.rankFilterOptions.filterText);
+                }
+            }, true);
+
+            $scope.$watch('rankFilterOptions', function (newVal, oldVal) {
+                if (newVal !== oldVal) {
+                    $scope.setRankGridData($scope.rankPagingOptions.pageSize, $scope.rankPagingOptions.currentPage, $scope.rankFilterOptions.filterText);
+                }
+            }, true);
+
+            $scope.rankGridOptions = {
+            	data: 'myRankData',
+                rowHeight: 40,
+                enablePaging: true,
+                showFooter: true,
+                enableRowSelection: false,
+                totalServerItems: 'rankTotalServerItems',
+                pagingOptions: $scope.rankPagingOptions,
+                filterOptions: $scope.rankFilterOptions,
+                selectedItems: [],
+                sortInfo: { fields: ['name'], directions: ['asc'] },
+                columnDefs: [
+                    { field: 'name', displayName: 'Rank Name' },
+                    { cellTemplate: '/partials/programs/ranks/list/viewOptionsButton', sortable: false, displayName: 'Actions'}
+                ]
+            };
+
+/*********************************************************/
 
 			$scope.goToViewClass = function(row) {
 				ClassSvc.init(row.entity);
 				ClassSvc.startViewing();
 				$state.go('admin.programs.viewclass', {id: row.entity._id});
+			};
+
+			$scope.goToViewRank = function(row) {
+				RankSvc.init(row.entity);
+				RankSvc.startViewing();
+				$state.go('admin.programs.viewrank', {id: row.entity._id});
 			};
 
 			$scope.backToHome = function() {
