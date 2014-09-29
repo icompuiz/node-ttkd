@@ -212,6 +212,7 @@ define(['../module'], function(controllers) {
 				if (!$scope.wizard.current.isFinalStep) {
 					$scope.wizard.goFoward();
 				} else {
+					$log.log($scope.model);
 					save();
 				}
 			};

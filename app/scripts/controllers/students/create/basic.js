@@ -101,11 +101,19 @@ define(['../../module'], function(controllers) {
 			};
 
 			$scope.$watchCollection('model.additionalEmailAddresses', function(newNames, oldNames) {
+				performEmailChange(newNames);
+  			});
+
+			$scope.$watch('model.primaryEmailAddress', function(newNames, oldNames) {
+				performEmailChange(newNames);
+  			});
+
+  			function performEmailChange(newNames) {
     			$scope.model.emailAddresses = [];
     			$scope.model.emailAddresses.push($scope.model.primaryEmailAddress);
     			$scope.model.emailAddresses = $scope.model.emailAddresses.concat(newNames);
     			$log.log($scope.model.emailAddresses);
-  			});
+  			}
 		}
 	]);
 
