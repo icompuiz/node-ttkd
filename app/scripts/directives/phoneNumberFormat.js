@@ -47,7 +47,7 @@ define(['./module'], function (directives) {
 
           // This runs when we update the text field
           ngModelCtrl.$parsers.push(function(viewValue) {
-            if(viewValue && viewValue != null) {
+            if(viewValue && viewValue !== null) {
               return viewValue.replace(/-/g, '');
             } else {
               return viewValue;

@@ -174,6 +174,13 @@ define(['../module'], function(controllers) {
 				});
 			}
 
+
+
+
+
+			$scope.displayPreviousBtn = function() {
+				return $scope.wizard.peekPreviousIndex();
+			};
 			// Emergency Contact init
 			function initEContacts() {
 				if(!$scope.model.emergencyContacts || $scope.model.emergencyContacts === null){
@@ -241,6 +248,8 @@ define(['../module'], function(controllers) {
 				}
 			};
 
+			initStudentObject();
+			
 			// Next button behaviors
 			$scope.displayPreviousBtn = function() {
 				if(!$scope.wizard || $scope.wizard === null) {

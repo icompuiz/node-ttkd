@@ -32,7 +32,7 @@ define(['./module'], function (directives) {
               canvas.width = canvas.offsetWidth * ratio;
               canvas.height = canvas.offsetHeight * ratio;
               canvas.getContext('2d').scale(ratio, ratio);
-          }
+            }
 
           window.onresize = resizeCanvas;
           resizeCanvas();
@@ -43,23 +43,23 @@ define(['./module'], function (directives) {
           clearButton.addEventListener('click', function () {
               signaturePad.clear();
               scope.data.data = signaturePad.toDataURL();
-          });
+            });
 
           saveButton.addEventListener('click', function () {
               if (signaturePad.isEmpty()) {
-                  scope.data.errors = 'Please sign the above agreement.';
+                scope.data.errors = 'Please sign the above agreement.';
               } else {
-                  scope.data.errors = null;
-                  scope.data.data = signaturePad.toDataURL();
+                scope.data.errors = null;
+                scope.data.data = signaturePad.toDataURL();
               }
-          });
+            });
 
           // this needs to be at the end of all initialization otherwise it will be overwritten!
-          if(scope.data.data && scope.data.data != null) {
+          if(scope.data.data && scope.data.data !== null) {
             signaturePad.fromDataURL(scope.data.data);
           }
 
-         };
+        };
       }
     };
 
