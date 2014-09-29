@@ -37,7 +37,7 @@ div.form-group.row
 
 	div.col-md-3
 		select.form-control(ng-model='model.address.state')
-			option(ng-repeat='state in states', ng-selected='state==defaultState', value='{{state}}') {{state}}
+			option(ng-repeat='state in states', ng-selected='state==model.address.state', value='{{state}}') {{state}}
 	div.col-md-4
 		div.input-group
 			input.form-control(type='text', name="zipcode", placeholder='Zip code', ng-model="model.address.zip", required, ng-minlength='5', ng-maxlength='5', maxlength='5')
@@ -67,12 +67,27 @@ div.form-group
 
 div.form-group
 	div.input-group
-		input.form-control(type='email', name="emailAddress", placeholder='Email address',ng-model="model.emailAddress", required)
+		span.input-group-btn
+			button.btn.btn-success(type='button', ng-click='insertNewEmail()')
+				i.glyphicon.glyphicon-plus
+		input.form-control(type='email', name="primaryEmailAddress", placeholder='Primary email address',ng-model="model.primaryEmailAddress", required)
 		span.input-group-addon
-			span.glyphicon.glyphicon-asterisk(ng-show="createStudent.emailAddress.$invalid && createStudent.emailAddress.$pristine")
-			span.glyphicon.glyphicon-remove(ng-show="createStudent.emailAddress.$invalid && !createStudent.emailAddress.$pristine")
-			span.glyphicon.glyphicon-ok(ng-show="createStudent.emailAddress.$valid")
-	p.text-muted.error(ng-show="createStudent.emailAddress.$invalid && !createStudent.emailAddress.$pristine") Student's email address must be a valid email address.
+			span.glyphicon.glyphicon-asterisk(ng-show="createStudent.primaryEmailAddress.$invalid && createStudent.primaryEmailAddress.$pristine")
+			span.glyphicon.glyphicon-remove(ng-show="createStudent.primaryEmailAddress.$invalid && !createStudent.primaryEmailAddress.$pristine")
+			span.glyphicon.glyphicon-ok(ng-show="createStudent.primaryEmailAddress.$valid")
+	p.text-muted.error(ng-show="createStudent.primaryEmailAddress.$invalid && !createStudent.primaryEmailAddress.$pristine") Primary email address must be a valid email address.
+
+div.form-group(ng-repeat="additionalEmailIndex in additionalEmailAddressesIndices")
+	div.input-group
+		span.input-group-btn
+			button.btn.btn-danger(type='button', ng-click='removeEmail(additionalEmailIndex)')
+				i.glyphicon.glyphicon-minus
+		input.form-control(type='email', name="emailAddress_extra[{{$index}}]", placeholder='Additional email address',ng-model="model.additionalEmailAddresses[$index]", required)
+		span.input-group-addon
+			span.glyphicon.glyphicon-asterisk(ng-show="createStudent.emailAddress_extra[{{$index}}].$invalid && createStudent.emailAddress_extra[{{$index}}].$pristine")
+			span.glyphicon.glyphicon-remove(ng-show="createStudent.emailAddress_extra[{{$index}}].$invalid && !createStudent.emailAddress_extra[{{$index}}].$pristine")
+			span.glyphicon.glyphicon-ok(ng-show="createStudent.emailAddress_extra[{{$index}}].$valid")
+	p.text-muted.error(ng-show="createStudent.emailAddress_extra[{{$index}}].$invalid && !createStudent.emailAddress_extra[{{$index}}].$pristine") Secondary email address must be a valid email address.
 
 div.form-group
 	div.input-group

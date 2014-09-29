@@ -61,6 +61,7 @@ define(['./module'], function (directives) {
             $element.val($filter('phoneNumber')(ngModelCtrl.$viewValue));
           };
 
+          $element.val($filter('phoneNumber')($element.val()));
           $element.bind('keyup', listener);
           $element.bind('keypress', keydownListener);
 

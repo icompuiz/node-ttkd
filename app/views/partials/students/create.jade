@@ -13,8 +13,8 @@ div.row
 			div.form-controls.pull-left(ng-show='isNew')
 				button.btn.btn-danger(type='button', ng-show='!showResetConfirm', ng-click='reset()') Reset Registration Form
 
-				div(ng-show='showResetConfirm')
-					p.text-muted Are you sure you wish to reset form?
+				.btn-toolbar(ng-show='showResetConfirm')
+					span.text-muted Are you sure you wish to reset form?
 					button.btn.btn-danger(type='button', ng-click='confirmReset(true)') Yes
 					button.btn.btn-success(type='button', ng-click='confirmReset(false)') No
 

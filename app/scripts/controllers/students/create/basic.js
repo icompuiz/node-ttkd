@@ -1,8 +1,8 @@
 define(['../../module'], function(controllers) {
 	'use strict';
 
-	controllers.controller('CreateStudentBasicCtrl', ['$scope', '$log', '$state', '$stateParams', 'StudentSvc',
-		function($scope, $log, $state, $stateParams, StudentSvc) {
+	controllers.controller('CreateStudentBasicCtrl', ['$scope', '$log', '$filter', '$state', '$stateParams', 'StudentSvc',
+		function($scope, $log, $filter, $state, $stateParams, StudentSvc) {
 
 			$scope.model = StudentSvc.current;
 
@@ -37,6 +37,11 @@ define(['../../module'], function(controllers) {
 			'WY'];
 			$scope.defaultState = 'NY';
 
+			if(!$scope.model.address) {
+				$scope.model.address = {};
+				$scope.model.address.state = $scope.defaultState;
+			}
+
 			function validateData() {
 				return validateFirstName() && validateLastName();
 			}
@@ -69,6 +74,38 @@ define(['../../module'], function(controllers) {
 					return false;
 				}
 			}
+
+			//add support for multiple email addresses
+			if(!$scope.model.emailAddresses) {
+				$scope.model.emailAddresses = [];
+			}
+
+			var allEmails = _.clone($scope.model.emailAddresses);
+			$scope.model.primaryEmailAddress = allEmails[0];
+			$scope.model.additionalEmailAddresses = allEmails;
+			$scope.model.additionalEmailAddresses.splice(0,1);
+			$scope.additionalEmailAddressesIndices = [];
+
+			for(var i=0; i<$scope.model.additionalEmailAddresses.length; i++) {
+				$scope.additionalEmailAddressesIndices[i] = i;
+			}
+
+			$scope.insertNewEmail = function() {
+				$scope.additionalEmailAddressesIndices.push($scope.additionalEmailAddressesIndices.length);
+			};
+
+			$scope.removeEmail = function(index) {
+				$log.log('removing additional email field with index:' + index);
+				$scope.additionalEmailAddressesIndices.splice($scope.additionalEmailAddressesIndices.length-1, 1);
+				$scope.model.additionalEmailAddresses.splice(index, 1);
+			};
+
+			$scope.$watchCollection('model.additionalEmailAddresses', function(newNames, oldNames) {
+    			$scope.model.emailAddresses = [];
+    			$scope.model.emailAddresses.push($scope.model.primaryEmailAddress);
+    			$scope.model.emailAddresses = $scope.model.emailAddresses.concat(newNames);
+    			$log.log($scope.model.emailAddresses);
+  			});
 		}
 	]);
 
