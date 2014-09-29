@@ -1,6 +1,6 @@
 define(['../../module'], function(controllers){
 	'use strict';
-	controllers.controller('CreateRankCtrl', ['$scope', '$state', '$stateParams', 'Restangular', 'RankSvc', 'ProgramSvc',
+	controllers.controller('EditRankCtrl', ['$scope', '$state', '$stateParams', 'Restangular', 'RankSvc', 'ProgramSvc',
 		function($scope, $state, $stateParams, Restangular, RankSvc, ProgramSvc) {
 			$scope.rank = {};
 			$scope.swapRank = {};
@@ -9,47 +9,63 @@ define(['../../module'], function(controllers){
 			};
 			var program = {};
 
+			var orig = null;
+
 			function setDropdownItems() {
 				var ordered = _.sortBy(program.rankObjs, 'rankOrder');
 				var orders = _.map(ordered, function(r){return r.rankOrder;});
 
-				if (!$scope.rank.rankOrder) {
-					$scope.rank.rankOrder = ordered.length + 1;
+				if (orders.length === 0) {
+					$scope.rank.rankOrder = 1;
 					orders.push($scope.rank.rankOrder);
 				}
-				
+
 				$scope.dropdown.items = orders;
 			}
 
-			if (ProgramSvc.current) {
+			// load current program and rank if available from services
+			if (RankSvc.current && RankSvc.editing) {
+				$scope.rank = RankSvc.current;
 				program = ProgramSvc.current;
-				$scope.rank.program = program._id;
-				setDropdownItems();
-			} else if ($stateParams.id) { 
-				ProgramSvc.editing = true;
-				ProgramSvc.read($stateParams.id, null, true).then(function(p) {
-					var rankObjs = [];
-
-					$scope.rank = {
-						program: ProgramSvc.current._id
+				if (!RankSvc.orig) {
+					RankSvc.orig = {
+						name: RankSvc.current.name
 					};
-					RankSvc.init($scope.rank);
+					orig = RankSvc.orig;
+				}
+				program.populated = true;
+			// Otherwise get them from db
+			} else if ($stateParams.id) { 
+				RankSvc.read($stateParams.id, null, true).then(function(r) {
+					$scope.rank = RankSvc.current;
+					RankSvc.orig = {
+						name: r.name
+					};
+					orig = RankSvc.orig;
+					ProgramSvc.read(r.program, null, true).then(function(p) {
+						var rankObjs = [];
 
-					async.each(p.ranks,  // Attach rank objects to current program
-						function(rId, callback) {
-							RankSvc.read(rId, null, false).then(function(r) {
-								rankObjs.push(r);
-								callback();
-							});
-						},
-						function(err) {
-							program = p;
-							program.rankObjs = rankObjs;
-							setDropdownItems();
-						}
-					);
+						async.each(p.ranks,  // Attach rank objects to current program
+							function(rId, callback) {
+								RankSvc.read(rId, null, false).then(function(r) {
+									rankObjs.push(r);
+									callback();
+								});
+							},
+							function(err) {
+								program = p;
+								program.rankObjs = rankObjs;
+								program.populated = true;
+							}
+						);
+					});
 				});					
-			} 
+			}
+
+			// For new ranks, initialize to the last rankOrder for the program
+			if (!$scope.rank.rankOrder && program.rankObjs) {
+				$scope.rank.rankOrder = program.rankObjs.length + 1;
+			}
 
 			$scope.setRankOrder = function(newVal) {
 				if (!$scope.oldVal) {
@@ -84,25 +100,30 @@ define(['../../module'], function(controllers){
 			}
 
 
-			$scope.cancelCreate = function() {
+			$scope.cancelEdit = function() {
 
 				RankSvc.reset();
+				RankSvc.orig = null;
 
 				goToPrevState();
 			};
 
-			$scope.createRank = function() {
-
-				//Perform the rank order swap if necessary
-				if ($scope.showOrderWarning) {
-					$scope.swapRank.rankOrder = $scope.swapRankOrder;
+			$scope.saveRank = function() {
+				//Find the original rank in the program and replace it with the edited rank
+				var i = _.findIndex(program.rankObjs, function(r) {
+					return r.name === RankSvc.orig.name;
+				});
+				if (i >= 0) {
+					program.rankObjs[i] = $scope.rank;
+				} else {
+					program.rankObjs.push($scope.rank);
 				}
 
-				program.rankObjs.push($scope.rank);
-
 				RankSvc.reset();
+				RankSvc.orig = null;
 
 				goToPrevState();
+				
 			};
 
 
@@ -113,14 +134,15 @@ define(['../../module'], function(controllers){
 				return (!str || 0 === str.length);
 			};
 
-			$scope.canCreateRank = function() {
+			$scope.canSaveRank = function() {
 				return !$scope.isEmpty($scope.rank.name) && !$scope.isDupName();
 			};
 
 			$scope.isDupName = function() {
 				var names = [];
-				if (program) {
-					names = _.map(program.rankObjs, function(c){return c.name;});
+				if (program && program.populated && orig) {
+					names = _.map(program.rankObjs, function(r){return r.name;});
+					names = _.without(names, orig.name);
 				}
 
 				return _.contains(names, $scope.rank.name);
