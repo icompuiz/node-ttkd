@@ -38,6 +38,23 @@ function register() {
         }
     });
 
+    resource.route('root.post', {
+        handler: function(req, res, next) {
+
+            model.findOne({
+                name: 'Site Root',
+                system: true
+            }).exec(function(err, rootDir) {
+
+                req.body.directory = rootDir._id;
+
+                FileCtrl.handleFileUpload(req, res, next);
+
+            });
+
+        }
+    });
+
     // Access Control: remove 
     resource.before('delete', function(req, res, next) {
 

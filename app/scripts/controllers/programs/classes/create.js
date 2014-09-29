@@ -1,29 +1,48 @@
 define(['../../module'], function(controllers){
 	'use strict';
-	controllers.controller('CreateClassCtrl', ['$scope', '$state', 'Restangular', 'ClassSvc', 'ProgramSvc',
-		function($scope, $state, Restangular, ClassSvc, ProgramSvc) {
+	controllers.controller('CreateClassCtrl', ['$scope', '$state', '$stateParams', 'Restangular', 'ClassSvc', 'ProgramSvc',
+		function($scope, $state, $stateParams, Restangular, ClassSvc, ProgramSvc) {
 			$scope.newClass = {};
 			var program = {};
 
 			if (ClassSvc.current && ClassSvc.creating) {
 				$scope.newClass = ClassSvc.current;
+				program = ProgramSvc.current;
+			} else if ($stateParams.id) {
+				ProgramSvc.read($stateParams.id, null, true).then(function(p) {
+					var classObjs = [];
+					async.each(p.classes, 
+						function(cId, callback) {
+							ClassSvc.read(cId, null, false).then(function(c) {
+								classObjs.push(c);
+								callback();
+							});
+						},
+						function(err) {
+							program = p;
+							program.classObjs = classObjs;
+						}
+					);
+					$scope.newClass = {
+						program: ProgramSvc.current._id
+					};
+					ClassSvc.init($scope.newClass);
+				});					
 			} else {
-				$scope.newClass = ClassSvc.init({
-					program: ProgramSvc.current._id
-				});
+				program = ProgramSvc.current;
+				if (!program.classObjs) {
+					program.classObjs = [];
+				}
 			}
 
-			if (ProgramSvc.current) {
-				program = ProgramSvc.current;
-			}
 
 			function goToPrevState() {
 				if (ProgramSvc.editing) {
-					$state.go('admin.programs.edit');
+					$state.go('admin.programs.edit', {id: $scope.newClass.program});
 				} else if (ProgramSvc.creating) {
 					$state.go('admin.programs.create');
 				} else {
-					$state.go('admin.prorams.home');
+					$state.go('admin.programs.home');
 				}
 			}
 
@@ -37,13 +56,13 @@ define(['../../module'], function(controllers){
 			$scope.createClass = function() {
 
 				//Make sure the class name is not a duplicate within the program
-				var classNames = _.map(program.classes, function(c) { return c.name });
+				var classNames = _.map(program.classObjs, function(c) { return c.name; });
 				if (_.contains(classNames, $scope.newClass.name)) {
 					alert('Class name must be unique!');
 					return;
 				}
 
-				ProgramSvc.current.classes.push($scope.newClass);
+				program.classObjs.push($scope.newClass);
 
 				ClassSvc.reset();
 
@@ -59,8 +78,16 @@ define(['../../module'], function(controllers){
 			};
 
 			$scope.canCreateClass = function() {
-				return !$scope.isEmpty($scope.newClass.name);
+				return !$scope.isEmpty($scope.newClass.name) && !$scope.isDupName();
 			};
 
+			$scope.isDupName = function() {
+				var names = [];
+				if (program) {
+					names = _.map(program.classObjs, function(c){return c.name;});
+				}
+
+				return _.contains(names, $scope.newClass.name);
+			};
 	}]);
 });	

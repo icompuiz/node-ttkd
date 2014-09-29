@@ -9,5 +9,7 @@ define([
 	'./create/class',
 	'./create/econtact',
 	'./create/photo',
-	'./create/signature'
+	'./create/signature',
+	'./create/confirm',
+	'./view'
 ], function () {});

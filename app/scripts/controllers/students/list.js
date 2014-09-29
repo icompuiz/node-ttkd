@@ -24,19 +24,20 @@ define(['../module'], function(controllers) {
                 }
             };
 
-            $scope.getPagedDataAsync = function (pageSize, page, searchText) {
+            $scope.getPagedDataAsync = function (pageSize, page) {
                 setTimeout(function () {
                     var data = [];
 
                     StudentSvc.list().then(function(students){
                         // add students to new array for ng-grid outputting
                         _(students).forEach(function(student){
-                            data.push({
-                                'firstName': student.firstName,
-                                'lastName': student.lastName,
-                                'age': $filter('age')(student.birthday),
-                                '_id': student._id
-                            })
+                            // data.push({
+                            //     'firstName': student.firstName,
+                            //     'lastName': student.lastName,
+                            //     'age': $filter('age')(student.birthday),
+                            //     '_id': student._id
+                            // })
+                            data.push(student);
                         });
 
 
@@ -59,7 +60,6 @@ define(['../module'], function(controllers) {
                 }
             }, true);
 
-            $scope.optionsButton = '<button type="button" class="btn btn-default btn-sm viewBtn" ng-click="view(row)" >View</button> <button type="button" class="btn btn-default btn-sm editBtn" ng-click="edit(row)" >Edit</button>';
 
             $scope.gridOptions = {
                 data: 'myData',
@@ -74,9 +74,9 @@ define(['../module'], function(controllers) {
                         return true;
                     }
                 },
-                afterSelectionChange: function (rowItem, event) {
+                afterSelectionChange: function () {
                     // check if one of the options buttons was clicked
-                    if($scope.gridOptions.selectedItems.length == 0) {
+                    if($scope.gridOptions.selectedItems.length === 0) {
                         $scope.showRemoveConfirm = false;
                     }
                     return true;
@@ -87,32 +87,46 @@ define(['../module'], function(controllers) {
                 selectedItems: [],
                 sortInfo: { fields: ['lastName', 'firstname'], directions: ['asc', 'asc'] },
                 columnDefs: [
+                    { cellTemplate: '/partials/students/list/studentAvatar', sortable: false, width: 70, height: 70, cellClass: 'grid-student-list-icon-cell' },
                     { field: 'firstName', displayName: 'First Name' },
                     { field: 'lastName', displayName: 'Last Name' },
                     { field: 'age', displayName: 'Age' },
-                    { cellTemplate: $scope.optionsButton, sortable: false },
+                    { cellTemplate: '/partials/students/list/optionsButton', sortable: false },
                 ]
             };
 
-            $scope.edit = function edit(row){
-                console.log("Edit student id: " + row.entity._id)
+            $scope.edit = function(row){
+                console.log('Edit student id: ' + row.entity._id);
+                $state.go('admin.students.edit', {id: row.entity._id});
             };
 
-            $scope.view = function edit(row){
-                console.log("View student id: " + row.entity._id)
+            $scope.view = function(row){
+                console.log('View student id: ' + row.entity._id);
+                $state.go('admin.students.view', {id: row.entity._id});
             };
 
             $scope.removeDisabled = function() {
-                return $scope.gridOptions.selectedItems.length == 0;
+                return $scope.gridOptions.selectedItems.length === 0;
             };
 
             $scope.remove = function() {
                 $scope.showRemoveConfirm = true;
             };
 
+
+
             $scope.confirmRemove = function(remove) {
                 if(remove) {
-                    $log.log('need to remove');
+                    $log.log('Removing selected students...');
+
+                    _($scope.gridOptions.selectedItems).forEach(function(student) {
+                        $log.log(' |_ Removing student: ' + student.firstName + ' ' + student.lastName + ' ' + student._id);
+                        removeStudentData(student);
+                    });
+
+                    // empty selection
+                    $scope.gridOptions.selectedItems.length = 0;
+
                     $scope.showRemoveConfirm = false;
                 } else {
                     $scope.showRemoveConfirm = false;
@@ -121,6 +135,16 @@ define(['../module'], function(controllers) {
 
             $scope.showRemoveConfirm = false;
 
+
+            function removeStudentData(student) {
+                //Remove Student
+                StudentSvc.read(student._id, null, true).then(function() {
+                    StudentSvc.remove().then(function() {
+                        $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage);
+                        StudentSvc.reset();
+                    });
+                });
+            }
         }
     ]);
 });

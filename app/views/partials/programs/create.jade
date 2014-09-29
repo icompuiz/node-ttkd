@@ -5,53 +5,40 @@ form.form-group
 	.input-group
 		input(type='text', class='form-control', placeholder='Program name' ng-model="newProgram.name")
 		span(class='input-group-addon')
-			span(ng-show='!isEmpty(newProgram.name)', class='glyphicon glyphicon-ok input-valid')
-			span(ng-show='isEmpty(newProgram.name)', class='glyphicon glyphicon-remove input-invalid')
+			span(ng-show='!isEmpty(newProgram.name) && !isDupName()', class='glyphicon glyphicon-ok input-valid')
+			span(ng-show='isEmpty(newProgram.name) || isDupName()', class='glyphicon glyphicon-remove input-invalid')
+	p.text-muted.error(ng-show='isDupName()') Program name must be unique!
 
 	h2 Classes
-	table.table
-		tr
-			th Name
-			th Students
-			th
-		tr(ng-repeat='class in newProgram.classes')
-			td 
-				{{class.name}}
-			td
-				a(href='#') Students
-			td
-				.pull-right
-					button.btn.btn-default.glyphicon.glyphicon-edit(ng-click='goToEditClass(class)')
-					button.btn.btn-danger.glyphicon.glyphicon-remove(type='button' ng-click='removeClass(class)')
-		tr
-			td
-				button.btn.btn-success.glyphicon.glyphicon-plus(type='button' ng-click='goToCreateClass()')
-			td
-			td
+	.row.row-margin-bottom-10
+		.col-md-12
+			.btn-toolbar.pull-left
+				button.btn.btn-primary(type='button', ng-click='goToCreateClass()') Create new class
+				button.btn.btn-danger(type='button', ng-disabled='removeClassDisabled()', ng-click='removeSelectedClasses()', ng-show='!showRemoveClassesConfirm') Remove selected
+			.pull-left.margin-left-10(ng-show='showRemoveClassesConfirm && classGridOptions.selectedItems.length > 0')
+				.btn-toolbar
+					span.text-muted(ng-show='classGridOptions.selectedItems.length > 1') Are you sure you wish to remove the {{classGridOptions.selectedItems.length}} selected classes?
+					span.text-muted(ng-show='classGridOptions.selectedItems.length == 1') Are you sure you wish to remove the selected class?
+					button.btn.btn-danger(type='button', ng-click='confirmRemoveClasses(true)') Yes
+					button.btn.btn-success(type='button', ng-click='confirmRemoveClasses(false)') No
+	.row
+		.col-md-12
+			div.gridStyle(ng-grid='classGridOptions')
 	h2 Ranks
-	table.table
-		tr
-			th Name
-			th Order 
-			th Sub-ranks
-			th
-		tr(ng-repeat='rank in newProgram.ranks')
-			td 
-				{{rank.name}}
-			td
-				{{rank.rankOrder}}
-			td
-				a(href='#') SUB-RANKS
-			td
-				.pull-right
-					button.btn.btn-default.glyphicon.glyphicon-edit(ng-click='goToEditRank(rank)')
-					button.btn.btn-danger.glyphicon.glyphicon-remove(type='button' ng-click='removeRank(rank)')
-		tr
-			td
-				button.btn.btn-success.glyphicon.glyphicon-plus(type='button' ng-click='goToCreateRank()')
-			td
-			td
-			td
+	.row.row-margin-bottom-10
+		.col-md-12
+			.btn-toolbar.pull-left
+				button.btn.btn-primary(type='button', ng-click='goToCreateRank()') Create new rank
+				button.btn.btn-danger(type='button', ng-disabled='removeRankDisabled()', ng-click='removeSelectedRanks()', ng-show='!showRemoveRanksConfirm') Remove selected
+			.pull-left.margin-left-10(ng-show='showRemoveRanksConfirm && rankGridOptions.selectedItems.length > 0')
+				.btn-toolbar
+					span.text-muted(ng-show='rankGridOptions.selectedItems.length > 1') Are you sure you wish to remove the {{rankGridOptions.selectedItems.length}} selected ranks?
+					span.text-muted(ng-show='rankGridOptions.selectedItems.length == 1') Are you sure you wish to remove the selected rank?
+					button.btn.btn-danger(type='button', ng-click='confirmRemoveRanks(true)') Yes
+					button.btn.btn-success(type='button', ng-click='confirmRemoveRanks(false)') No
+	.row
+		.col-md-12
+			div.gridStyle(ng-grid='rankGridOptions')
 
 	input.btn.btn-primary.pull-right(ng-disabled='!canSaveProgram()' type='submit', value='Create Program', ng-click='createProgram()')
 	input.btn.btn-warning.pull-right(type='reset', value='Cancel', ng-click='cancelCreate()')

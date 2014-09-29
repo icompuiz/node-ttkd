@@ -1,4 +1,4 @@
 /**
  * Attach all state definitions
  **/
-define(['./main', './applicationMenuItem', './phoneNumberFormat'], function () {});
+define(['./main', './applicationMenuItem', './phoneNumberFormat', './afuThumbnail', './signaturepad'], function () {});

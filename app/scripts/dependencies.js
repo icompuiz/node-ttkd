@@ -15,9 +15,11 @@ requirejs.config({
         'aysnc': '../bower_components/async/lib/async',
         '$': '../bower_components/jquery/dist/jquery',
         'angular-bootstrap':'../bower_components/angular-bootstrap/ui-bootstrap',
+        'angular-file-upload':'../bower_components/angular-file-upload/angular-file-upload.min',
         'restangular':'../bower_components/restangular/dist/restangular.min',
         'angular-bootstrap-tmpls': '../bower_components/angular-bootstrap/ui-bootstrap-tpls',
-        'ngGrid': '../bower_components/ng-grid/ng-grid-2.0.13.min'
+        'ngGrid': '../bower_components/ng-grid/ng-grid-2.0.13.min',
+        'sigPad': '../bower_components/signature_pad/signature_pad'
       },
 
     /**
@@ -46,8 +48,14 @@ requirejs.config({
           'angular-bootstrap':{
             deps:['angular', '$', 'angular-bootstrap-tmpls']
           },
+          'angular-file-upload':{
+            deps:['angular']
+          },
           'ngGrid':{
             deps: ['angular', '$']
+          },
+          'sigPad':{
+            deps: ['$']
           }
         },
 

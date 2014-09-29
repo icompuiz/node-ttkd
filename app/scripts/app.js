@@ -6,9 +6,11 @@ define('app', [
     'angular',
     'angular-ui-router',
     'angular-bootstrap',
+    'angular-file-upload',
     // 'text!',
     'ngGrid',
     'restangular',
+    'sigPad',
     './controllers/index',
     './directives/index',
     './factories/index',
@@ -22,6 +24,7 @@ define('app', [
     return ng.module('ttkd', [
         'ngGrid',
         'restangular',
+        'angularFileUpload',
         'ttkd.controllers',
         'ttkd.directives',
         'ttkd.factories',
@@ -38,7 +41,20 @@ define('app', [
             $locationProvider.html5Mode(true).hashPrefix('!');
 
           }
-      ]).run(function($state, $rootScope, Restangular) {
+      ]).config(['$provide',
+        function($provide){
+            $provide.decorator('dateParser', function($delegate){
+                var oldParse = $delegate.parse;
+                $delegate.parse = function(input, format) {
+                    if ( !angular.isString(input) || !format ) {
+                      return input;
+                    }
+                    return oldParse.apply(this, arguments);
+                  };
+                return $delegate;
+              });
+          }
+        ]).run(function($state, $rootScope, Restangular) {
 
         Restangular.setBaseUrl('/api');
 

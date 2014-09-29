@@ -8,6 +8,16 @@ define(['../module'], function(controllers){
 			$scope.removedRanks = [];
 			$scope.removedClasses = [];
 
+			$scope.programNames = [];
+
+			$scope.getPrograms = function(){
+				ProgramSvc.list().then(function(progs) {
+					$scope.programNames = _.map(progs, function(p){return p.name;});
+					$scope.programNames = _.without($scope.programNames, $scope.currentProgram.name);
+				});
+			};
+			$scope.getPrograms();
+
 			if (ProgramSvc.current && ProgramSvc.editing) {
 				$scope.currentProgram = ProgramSvc.current;
 
@@ -23,8 +33,16 @@ define(['../module'], function(controllers){
 					$scope.removedRanks = ProgramSvc.removedRanks;
 				}
 			} else if ($stateParams.id) {
+				var pClasses = [];
 				ProgramSvc.read($stateParams.id, null, true).then(function(p) {
-					$scope.currentProgram = c;
+					ProgramSvc.editing = true;
+					$scope.currentProgram = p;
+					_.each($scope.currentProgram.classes, function(cId) {
+						ClassSvc.read(cId, null, false).then(function(c) {
+							pClasses.push(c);
+						});
+					});
+					$scope.currentProgram.classObjs = pClasses;
 				});
 			}
 
@@ -38,31 +56,19 @@ define(['../module'], function(controllers){
 			$scope.goToCreateClass = function() {
 				ClassSvc.reset();
 				ClassSvc.startCreating();
-				$state.go('admin.programs.createclass');
+				$state.go('admin.programs.createclass', {id: $scope.currentProgram._id});
 			};
 
-			$scope.goToEditClass = function(clss) {
-				ClassSvc.init(clss);
+			$scope.goToViewClass = function(row) {
+				ClassSvc.init(row.entity);
+				ClassSvc.startViewing();
+				$state.go('admin.programs.viewclass', {id: row.entity._id} );
+			}
+
+			$scope.goToEditClass = function(row) {
+				ClassSvc.init(row.entity);
 				ClassSvc.startEditing();
-				$state.go('admin.programs.editclass', { id: clss._id} );
-			};
-
-			$scope.removeClass = function(classToRemove) { 
-				var c = confirm('Are you sure you want to delete ' + classToRemove.name + '?');
-
-				if (c) {
-					$scope.currentProgram.classes = _.without($scope.currentProgram.classes, classToRemove);
-					$scope.removedClasses.push(classToRemove);
-				}
-			};
-
-			$scope.removeRank = function(rankToRemove) { 
-				var c = confirm('Are you sure you want to delete ' + rankToRemove.name + '?');
-
-				if (c) {
-					$scope.currentProgram.ranks = _.without($scope.currentProgram.ranks, rankToRemove);
-					$scope.removedRanks.push(rankToRemove);
-				}
+				$state.go('admin.programs.editclass', { id: row.entity._id} );
 			};
 
 			$scope.saveProgram = function() {
@@ -71,7 +77,7 @@ define(['../module'], function(controllers){
 
 				//Add or update classes
 				function addClassesToModel(callback, err) {
-					async.each($scope.currentProgram.classes,
+					async.each($scope.currentProgram.classObjs,
 						function(classItem, callback) {
 
 							function beforeSave(c) {
@@ -173,24 +179,132 @@ define(['../module'], function(controllers){
 								program.name = $scope.currentProgram.name;
 							}
 
-							ProgramSvc.save(beforeSave).then(function(added) {
+							ProgramSvc.read($scope.currentProgram._id, null, true).then(function(p) {
+								ProgramSvc.save(beforeSave).then(function(added) {
 								console.log('Changes to program' + added.name + ' successful.');
 								ProgramSvc.reset();
 								$state.go('admin.programs.home');
 							});
+							})
+							
 							
 						}
 					);
 				})(classIDs, rankIDs);
 			};
 
+            $scope.removeClassDisabled = function() {
+                return $scope.classGridOptions.selectedItems.length == 0;
+            };
+
+			$scope.removeSelectedClasses = function() {
+				$scope.showRemoveClassesConfirm = true;
+			};
+
+			$scope.confirmRemoveClasses = function(remove) {
+				if(remove) {
+					_($scope.classGridOptions.selectedItems).forEach(function(c) {
+						$scope.currentProgram.classObjs = _.without($scope.currentProgram.classObjs, c);
+						$scope.removedClasses.push(c);						
+						$scope.classGridOptions.selectedItems.length = 0;
+					});
+					$scope.showRemoveClassesConfirm = false;
+				} else {
+					$scope.showRemoveClassesConfirm = false;
+				}
+			};
+
+			$scope.showRemoveClassesConfirm = false;
+
+/********************** Classes Grid Options *****************************/
+			$scope.classFilterOptions = {
+				filterText: '',
+				useExternalFilter: true
+			};
+
+			$scope.classTotalServerItems = 0;
+			
+			$scope.classPagingOptions = {
+				pageSizes: [10, 25, 50],
+				pageSize: 10,
+				currentPage: 1
+			};
+
+			$scope.setClassPagingData = function(data, page, pageSize) {
+				var pagedData = data.slice((page - 1) * pageSize, page * pageSize);
+				$scope.myClassData = pagedData;
+				$scope.classTotalServerItems = data.length;
+				if (!$scope.$$phase) {
+					$scope.$apply();
+				}
+			};
+
+			$scope.setClassGridData = function(pageSize, page, searchText) {
+				var data = [];
+				_.each($scope.currentProgram.classObjs, function(c) {
+					data.push(c);
+				});
+				$scope.setClassPagingData(data, page, pageSize);
+			};
+
+            $scope.$watch('currentProgram.classObjs', function () {
+			    $scope.setClassGridData($scope.classPagingOptions.pageSize, $scope.classPagingOptions.currentPage, $scope.classFilterOptions.filterText);
+            }, true);
+
+            $scope.$watch('classPagingOptions', function (newVal, oldVal) {
+                if (newVal !== oldVal && newVal.currentPage !== oldVal.currentPage) {
+                    $scope.setClassGridData($scope.classPagingOptions.pageSize, $scope.classPagingOptions.currentPage, $scope.classFilterOptions.filterText);
+                }
+            }, true);
+
+            $scope.$watch('classFilterOptions', function (newVal, oldVal) {
+                if (newVal !== oldVal) {
+                    $scope.setClassGridData($scope.classPagingOptions.pageSize, $scope.classPagingOptions.currentPage, $scope.classFilterOptions.filterText);
+                }
+            }, true);
+
+            $scope.classGridOptions = {
+            	data: 'myClassData',
+                rowHeight: 40,
+                enablePaging: true,
+                showFooter: true,
+                beforeSelectionChange: function (rowItem, event) {
+                    // check if one of the options buttons was clicked
+                    if(event.target.tagName === 'BUTTON') {
+                        return false;
+                    } else {
+                        return true;
+                    }
+                },
+                afterSelectionChange: function (rowItem, event) {
+                    // check if one of the options buttons was clicked
+                    if($scope.classGridOptions.selectedItems.length === 0) {
+                        $scope.showRemoveConfirm = false;
+                    }
+                    return true;
+                },
+                totalServerItems: 'classTotalServerItems',
+                pagingOptions: $scope.classPagingOptions,
+                filterOptions: $scope.classFilterOptions,
+                selectedItems: [],
+                sortInfo: { fields: ['name'], directions: ['asc'] },
+                columnDefs: [
+                    { field: 'name', displayName: 'Class Name' },
+                    { cellTemplate: '/partials/programs/classes/list/editOptionsButton', sortable: false, displayName: 'Actions'},
+                ]
+            };
+
 /********************** Form Validation **********************************/
-			function isEmpty(str) {
-				return (!str || 0 === str.length);				
-			}
+			$scope.isEmpty = function() {
+				return (!$scope.currentProgram.name || 0 === $scope.currentProgram.name.length);				
+			};
 
 			$scope.canSaveProgram = function() {
-				return !isEmpty($scope.currentProgram.name);
+				return !$scope.isEmpty() && !$scope.isDupName();
+			};
+
+			$scope.isDupName = function() {
+				return _.contains($scope.programNames, $scope.currentProgram.name);
 			};
 	}]);
 });	

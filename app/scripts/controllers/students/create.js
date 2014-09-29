@@ -1,49 +1,169 @@
 define(['../module'], function(controllers) {
 	'use strict';
 
-	controllers.controller('CreateStudentCtrl', ['$scope', '$http', '$log', '$state', '$stateParams', 'StudentSvc', 'WizardService',
-		function($scope, $http, $log, $state, $stateParams, StudentSvc, WizardService) {
+	controllers.controller('CreateStudentCtrl', ['$scope', '$http', '$log', '$state', '$stateParams', 'StudentSvc', 'EmergencyContactSvc', 'WizardService','$timeout',
+		function($scope, $http, $log, $state, $stateParams, StudentSvc, EmergencyContactSvc, WizardService, $timeout) {
 
-			$scope.errors = {};
+			// Check if the state is changed... will need to terminate registered wizard
+			$scope.$on('$stateChangeStart', function(event, toState, toParams, fromState) {
+				var inWizard = /^(admin.students.create|admin.students.edit)/.test(toState.name);
+				if (!inWizard) {
+					StudentSvc.reset();
 
-			// $scope.model = {
-			// 	"firstName": "Johnny",
-			// 	"lastName": "Appleseed",
-			// 	"address": {
-			// 		"street": "1 Lomb Memorial Drive",
-			// 		"city": "Rochester",
-			// 		"zip": 14623
-			// 	},
-			// 	"emailAddress": "johnn.a@rit.edu",
-			// 	"birthday": "1991-07-22T04:00:00.000Z"
-			// };
+					if(!$scope.model.isNew) {
+						WizardService.terminate('admin.students.edit');
+					} else {
+						WizardService.terminate('admin.students.create');
+					}
+				};
 
-			// Create student object
+			});
+
+			initStudentObject();
+
+
+			/**
+			 * The following code is used for controller level validation logic
+			 */
+			// Validation functions can be placed in individual sub-controllers
+			var validationFunctions = [];
+
+			// To add a function to be invoked on the submit call, use:
+			// $scope.addValidationFunction(functionName)
+			$scope.addValidationFunction = function(fct) {
+				validationFunctions.push(fct);
+			};
+
+			// The following is called when the form is submitted
+			function studentLogicValidates() {
+				var passes = true;
+
+				_.forEach(validationFunctions, function(fct) {
+					passes = passes && fct();
+				});
+
+				return passes;
+			}
+
+
+			/**
+			 * The following code is used for posting student data
+			 */
+			// Create student
+			function saveStudent() {
+                // StudentSvc.init($scope.model);
+
+                function uploadAvatarTask(uploadAvatarTaskDone) {
+
+                    if ($scope.model.uploader && $scope.model.uploader.queue.length) {
+                        $scope.model.uploader.onCompleteItem = function(item, response, status) {
+
+                            console.log(item);
+                            console.log(response);
+
+                            if (200 === status) {
+                                uploadAvatarTaskDone(null, response._id);
+                            } else {
+                                var error  = new Error('An error occurred while uploading the avatar');
+                    			uploadAvatarTaskDone(error, null);
+                            }
+
+                        };
+                        $scope.model.uploader.uploadAll();
+                    } else {
+                        uploadAvatarTaskDone(null, false);
+                    }
+
+                }
+
+                function saveStudentModelTask(avatarId, saveStudentModelTaskDone) {
+
+                    if (avatarId) {
+                        $scope.model.avatar = avatarId;
+                    }
+
+                    StudentSvc.save().then(function(saved) {
+
+                        saveStudentModelTaskDone(null, saved);
+
+                    }, function() {
+                    	var error  = new Error('An error occurred while saving the model');
+                    	saveStudentModelTaskDone(error);
+                    });
+
+                }
+
+                function afterWaterfall(err, student) {
+                	if (!err) {
+
+	                    $scope.model.uploader.destroy();
+	                    $scope.model.uploader = null;
+	                    StudentSvc.reset();
+	                    $state.go('admin.students.home');
+
+                	} else {
+	                    $log.log('Failed to save student');
+                    	$scope.submitBtnContent = 'Failed to save student';
+	                    $scope.wizard.end();
+
+	                    $timeout(function() {
+							$scope.submitBtnContent = 'Submit Registration';
+							$scope.submitBtnDisabled = false;
+	                    }, 2000);
+                		// handle upload error case
+                		// handle save error case
+                	}
+                }
+
+                var tasks = [uploadAvatarTask, saveStudentModelTask];
+
+
+                async.waterfall(tasks, afterWaterfall);
+            }
+
+
+			/**
+			 * The following code is used for initialization.
+			 */
+			// Student init
 			function initStudentObject() {
 				if (!StudentSvc.current) {
-					// may be an existing student... try and load
+					// There may be an existing student id so try and load
 					if (_.isEmpty($stateParams.id)) {
 					    $scope.model = StudentSvc.init({});
-					    // initialize wizard or pull existing wizard here
-					    initializeWizard();
+					    $scope.isNew = true;
+					    initEContacts(); // Init e-contact
+					    initWizardObject(); // Init wizard
 					} else {
-					    StudentSvc.read($stateParams.id, {}, true).then(function(studentDoc) {
-					    	// initialize wizard or pull existing wizard here
-					    	$scope.model = studentDoc;
-					    	initializeWizard();
-					    });
+					    StudentSvc.read($stateParams.id, {}, true).then(
+					    	function(studentDoc) {
+						    	$scope.model = studentDoc;
+						    	$scope.isNew = false;
+						    	initEContacts(); // Init e-contact
+						    	initWizardObject(); // Init wizard
+					    	}
+					    );
 					}
 				} else {
+					// Service already has a current student, get it
 					$scope.model = StudentSvc.current;
-					initializeWizard();
+					initEContacts();
+					initWizardObject();
 				}
 			}
 
-			function initializeWizard() {
-			    $scope.wizard = WizardService.get('admin.students.create');
+			// Wizard init
+			function initWizardObject() {
+				var wizardId = 'admin.students.create';
+
+				if(!$scope.isNew) {
+					wizardId = 'admin.students.edit';
+				}
+
+			    $scope.wizard = WizardService.get(wizardId);
 
 				if (!$scope.wizard) {
-					$scope.wizard = WizardService.create('admin.students.create', true);
+					$scope.wizard = WizardService.create(wizardId, true);
 					$state.go($scope.wizard.current.id); // go to the initial state of this progression
 				}
 
@@ -61,35 +181,62 @@ define(['../module'], function(controllers) {
 			$scope.displayPreviousBtn = function() {
 				return $scope.wizard.peekPreviousIndex();
 			};
+			// Emergency Contact init
+			function initEContacts() {
+				if(!$scope.model.emergencyContacts || $scope.model.emergencyContacts === null){
+					$scope.model.emergencyContacts = [];
+				}
 
-			$scope.displayContinueBtn = function() {
-				return $scope.wizard.peekNextIndex();
-			};
+				var econtactListLen = $scope.model.emergencyContacts.length;
 
-			$scope.submitBtnContent = 'Submit Registration';
+				if(econtactListLen === 0) {
+					$scope.model.emergencyContacts[0] = EmergencyContactSvc.init({});
+				}
 
-			function onSaveSuccess() {
-				console.log('Student Saved Successfully');
+				if(econtactListLen <= 1) {
+					$scope.model.emergencyContacts[1] = EmergencyContactSvc.init({});
+				}
 			}
 
+
+			/**
+			 * The following code is used for standard wizard (pattern) behavior.
+			 */
+			// Submit behavior
 			$scope.submit = function() {
-				// check for ng form validity
-				$log.log($scope.model);
+				if(!studentLogicValidates()) {
+					$log.log('Validation failed');
+					return false;
+				}
 
 				if (!$scope.wizard.current.isFinalStep) {
 					$scope.wizard.goFoward();
 				} else {
-					$scope.submitBtnContent = 'Creating Student...';
-					$scope.submitBtnDisabled = true;
-					StudentSvc.create(true).then(onSaveSuccess);
+					save();
 				}
-
 			};
 
+			// Save behavior
+			function save(){
+				$scope.submitBtnDisabled = true;
+
+				$log.log($scope);
+
+				if($scope.isNew) {
+					$scope.submitBtnContent = 'Creating Student...';
+				} else {
+					$scope.submitBtnContent = 'Updating Student...';
+				}
+				saveStudent();
+			}
+
+			// Reset behavior
 			$scope.showResetConfirm = false;
+
 			$scope.reset = function() {
 				$scope.showResetConfirm = true;
 			};
+
 			$scope.confirmReset = function(resetConfirmed) {
 				$scope.showResetConfirm = false;
 
@@ -103,6 +250,22 @@ define(['../module'], function(controllers) {
 
 			initStudentObject();
 			
+			// Next button behaviors
+			$scope.displayPreviousBtn = function() {
+				if(!$scope.wizard || $scope.wizard === null) {
+					return false;
+				} else if($scope.wizard.peekPreviousIndex() === false) {
+					return false;
+				} else {
+					return true;
+				}
+			};
+
+			$scope.displayContinueBtn = function() {
+				return $scope.wizard.peekNextIndex();
+			};
+
+			$scope.submitBtnContent = 'Submit Registration';
 		}
 	]);
 

@@ -3,30 +3,49 @@ define(['../../module'], function(controllers){
 	controllers.controller('EditClassCtrl', ['$scope', '$state', '$stateParams', 'Restangular', 'ClassSvc', 'ProgramSvc',
 		function($scope, $state, $stateParams, Restangular, ClassSvc, ProgramSvc) {
 			$scope.currentClass = {};
-			var currentProgram = {};
+			var currentProgram = null;
+			var orig = null;
 
 			if (ClassSvc.current && ClassSvc.editing) {
 				$scope.currentClass = ClassSvc.current;
-				//Store the original class so we can find and save changes after editing
+				currentProgram = ProgramSvc.current;
+				currentProgram.populated = true;
 				if (!ClassSvc.orig) {
 					ClassSvc.orig = {
 						name: ClassSvc.current.name,
 						studentList: ClassSvc.current.studentList
-					};
+					}
 				}
+				orig = ClassSvc.orig;
 			} else if ($stateParams.id) {
 				ClassSvc.read($stateParams.id, null, true).then(function(c) {
 					$scope.currentClass = c;
+					ClassSvc.orig = {
+						name: c.name,
+						studentList: c.studentList
+					};
+					orig = ClassSvc.orig;
+					ProgramSvc.read($scope.currentClass.program, null, true).then(function(p) {
+						var pClasses = [];
+						currentProgram = p;
+						async.each(p.classes,
+							function(cItem, callback) {
+								ClassSvc.read(cItem, null, false).then(function(pc) {
+									pClasses.push(pc);
+									callback();
+								});
+							},
+							function(err) {
+								currentProgram.classObjs = pClasses;
+								currentProgram.populated = true;
+							});
+					});
 				});
-			}
-
-			if (ProgramSvc.current) {
-				currentProgram = ProgramSvc.current;
 			}
 
 			function goToPrevState() {
 				if (ProgramSvc.editing) {
-					$state.go('admin.programs.edit', { id: $scope.currentProgram._id });
+					$state.go('admin.programs.edit', { id: currentProgram._id});
 				} else if (ProgramSvc.creating) {
 					$state.go('admin.programs.create');
 				} else {
@@ -35,30 +54,14 @@ define(['../../module'], function(controllers){
 			}
 
 			$scope.saveClass = function() {
-
-				//Compare class attributes, return true if they are the same
-				function areSameClass(c1, c2) {
-					var sameName = c1.name === c2.name,
-						sameStudents = c1.studentList === c2.studentList;
-
-					return sameName && sameStudents;
-				}
-
-				//Make sure the class name is not a duplicate within the program
-				var classNames = _.map(currentProgram.classes, function(c) { return c.name; });
-				if (_.contains(classNames, $scope.currentClass.name)) {
-					alert('Class name must be unique!');
-					return;
-				}
-
-				//Find the original class in the program and replace it with the edited clas
-				var i = _.findIndex(currentProgram.classes, function(c) {
-					return areSameClass(c, ClassSvc.orig);
+				//Find the original class in the program and replace it with the edited class
+				var i = _.findIndex(currentProgram.classObjs, function(c) {
+					return c.name === ClassSvc.orig.name;
 				});
 				if (i >= 0) {
-					currentProgram.classes[i] = $scope.currentClass;
+					currentProgram.classObjs[i] = $scope.currentClass;
 				} else {
-					currentProgram.classes.push($scope.currentClass);
+					currentProgram.classObjs.push($scope.currentClass);
 				}
 
 				ClassSvc.reset();
@@ -84,8 +87,17 @@ define(['../../module'], function(controllers){
 			};
 
 			$scope.canSaveClass = function() {
-				return !$scope.isEmpty($scope.currentClass.name);
+				return !$scope.isEmpty($scope.currentClass.name) && !$scope.isDupName();
 			};
 
+			$scope.isDupName = function() {
+				var names = [];
+				if (currentProgram && currentProgram.populated && orig) {
+					names = _.map(currentProgram.classObjs, function(c){return c.name;});
+					names = _.without(names, orig.name);
+				}
+
+				return _.contains(names, $scope.currentClass.name);
+			};
 	}]);
 });	

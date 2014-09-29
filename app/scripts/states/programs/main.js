@@ -59,7 +59,7 @@ define(['../module'], function (states) {
         });
 
         $stateProvider.state('admin.programs.createclass', {
-            url: '/programs/classes/create',
+            url: '/programs/classes/create/:id',
             views: {
                 'section-body': {
                     templateUrl: 'partials/programs/classes/create',
@@ -84,6 +84,36 @@ define(['../module'], function (states) {
                 'section-body': {
                     templateUrl: 'partials/programs/classes/edit',
                     controller: 'EditClassCtrl'
+                }
+            }
+        });
+
+        $stateProvider.state('admin.programs.createrank', {
+            url: '/programs/ranks/create/:id',
+            views: {
+                'section-body': {
+                    templateUrl: 'partials/programs/ranks/create',
+                    controller: 'CreateRankCtrl'
+                }
+            }
+        });
+
+        $stateProvider.state('admin.programs.viewrank', {
+            url: '/programs/ranks/view/:id',
+            views: {
+                'section-body': {
+                    templateUrl: 'partials/programs/ranks/view',
+                    controller: 'ViewRankCtrl'
+                }
+            }
+        });
+
+        $stateProvider.state('admin.programs.editrank', {
+            url: '/programs/ranks/edit/:id',
+            views: {
+                'section-body': {
+                    templateUrl: 'partials/programs/ranks/edit',
+                    controller: 'EditRankCtrl'
                 }
             }
         });
