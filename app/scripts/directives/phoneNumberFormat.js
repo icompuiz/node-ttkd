@@ -30,6 +30,7 @@ define(['./module'], function (directives) {
             if(!keyedUp && lastKey === e.keyCode) {
               // the same button may have been keyed twice...
               // need to key up, or hit a different key (same ppl are quick with num pad)
+              e.preventDefault();
               return false;
             }
 
@@ -41,6 +42,7 @@ define(['./module'], function (directives) {
               return true;
             } else {
               $log.log(tmpVal + ' is not a natural number for ph #');
+              e.preventDefault();
               return false;
             }
           };
