@@ -9,7 +9,7 @@ var mongoose = require('mongoose'),
 var studentSchema = new Schema({
 	firstName: String,
 	lastName: String,
-	emailAddress: String,
+	emailAddresses: [String],
 	emergencyContacts: [EmergencyContact.schema],
 	avatar: {
 		ref: 'File',
