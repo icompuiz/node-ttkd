@@ -54,7 +54,6 @@ define(['../module'], function(controllers) {
 				});
 			}
 
-			initStudentObject();
 
 
 
@@ -101,6 +100,9 @@ define(['../module'], function(controllers) {
 					$scope.createStudent.$setPristine();
 				}
 			};
+
+			initStudentObject();
+			
 		}
 	]);
 
