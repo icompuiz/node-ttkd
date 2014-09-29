@@ -10,6 +10,9 @@ form.form-group
 			span(ng-show='isEmpty(newClass.name) || isDupName()', class='glyphicon glyphicon-remove input-invalid')
 	p.text-muted.error(ng-show='isDupName()') Class name must be unique!
 	h2 Students
+	.row
+	.col-md-12
+		div.gridStyle(ng-grid='classGridOptions')
 
 	input.btn.btn-primary.pull-right(ng-disabled='!canCreateClass()', type='submit', value='Create Class', ng-click="createClass()")
 	input.btn.btn-warning.pull-right(type='reset', value='Cancel', ng-click='cancelCreate()')

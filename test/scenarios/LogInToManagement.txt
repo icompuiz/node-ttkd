@@ -1,0 +1,7 @@
+Scenario: Log in to management
+
+	Feature: Login as an administrator
+		Unit: send username and password and authenticate correctly
+			username: administrator
+			password: password
+		Unit: send incorrect username and password and authenticate should fail

@@ -1,0 +1,20 @@
+Scenario: CRUD Workshop Attendance List
+
+	Feature: Return a list of all workshop attendance lists
+		Unit: get('/api/workshopAttendanceList') returns an array of all the lists
+
+	Feature: Create a workshop attendance list and add it to the database
+		Unit: workshop attendance list has a valid student list
+		Unit: Date is valid
+	
+	Feature: Read a workshop attendance list from the database
+		Unit: workshopAttendanceList_id matches url_id
+	
+	Feature: Update an existing workshop attendance list in the database
+		Unit: Change is made
+			Unit: Remove a student
+			Unit: Add a student
+			Unit: Change the date
+	
+	Feature: Delete a workshop attendance list in the database
+		Unit: Url_id has no workshopAttendanceList_id match

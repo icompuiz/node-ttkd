@@ -1,0 +1,33 @@
+Scenario: CRUD Emergency Contact
+
+	Feature: Return a list of all emergency contacts
+		Unit: get('/api/emergencyContacts') returns an array of all the emergency contacts
+
+	Feature: Create a emergency contact and add it to the database
+		Unit: emergency contact name is valid
+			Unit: name is alphanumeric
+				/(a-zA-Z0-9)/
+				Accept: ljkjflaksjdf09sf09a0s9df0sdlfJLKJSOIJ
+				Reject: !@&&$*(@_)_"?><.,
+				Test for error status code
+			Unit: emergency contact name is between 2 and 64 characters
+		Unit: email address is a real email
+			/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}/
+			Accept: sesansone@gmail.com
+			Reject: ra*d.di.ocm@mail
+		Unit: phone number is a real phone number
+		Unit: relationship is valid
+			Unit: Relationship is alphanumeric
+				/(a-zA-Z0-9)/
+				Accept: ljkjflaksjdf09sf09a0s9df0sdlfJLKJSOIJ
+				Reject: !@&&$*(@_)_"?><.,
+	
+	Feature: Read a emergency contact from the database
+		Unit: emergencyContact_id matches url_id
+		Unit: emergency contact is tied to a student (e.g. deleting a student deletes its emergency contacts)
+	
+	Feature: Update an existing emergency contact in the database
+		Unit: Change is made
+	
+	Feature: Delete a emergency contact in the database
+		Unit: Url_id has no emergencyContact_id match
