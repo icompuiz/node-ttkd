@@ -65,29 +65,19 @@ div.form-group
 			span.glyphicon.glyphicon-ok(ng-show="createStudent.cellPhoneNumber.$valid")
 	p.text-muted.error(ng-show="createStudent.cellPhoneNumber.$invalid && !createStudent.cellPhoneNumber.$pristine") Student's cell phone number must be a valid 10 digit number. E.g. 555-555-5555
 
-div.form-group
-	div.input-group
+.form-group(ng-repeat="currentEmail in model.emailAddresses")
+	.input-group
 		span.input-group-btn
-			button.btn.btn-success(type='button', ng-click='insertNewEmail()')
-				i.glyphicon.glyphicon-plus
-		input.form-control(type='email', name="primaryEmailAddress", placeholder='Primary email address',ng-model="model.primaryEmailAddress", required)
-		span.input-group-addon
-			span.glyphicon.glyphicon-asterisk(ng-show="createStudent.primaryEmailAddress.$invalid && createStudent.primaryEmailAddress.$pristine")
-			span.glyphicon.glyphicon-remove(ng-show="createStudent.primaryEmailAddress.$invalid && !createStudent.primaryEmailAddress.$pristine")
-			span.glyphicon.glyphicon-ok(ng-show="createStudent.primaryEmailAddress.$valid")
-	p.text-muted.error(ng-show="createStudent.primaryEmailAddress.$invalid && !createStudent.primaryEmailAddress.$pristine") Primary email address must be a valid email address.
-
-div.form-group(ng-repeat="additionalEmailIndex in additionalEmailAddressesIndices")
-	div.input-group
-		span.input-group-btn
-			button.btn.btn-danger(type='button', ng-click='removeEmail(additionalEmailIndex)')
+			button.btn.btn-danger(type='button', ng-show='currentEmail.isRemovable', ng-click='removeEmail($index)')
 				i.glyphicon.glyphicon-minus
-		input.form-control(type='email', name="emailAddress_extra[{{$index}}]", placeholder='Additional email address',ng-model="model.additionalEmailAddresses[$index]", required)
+			button.btn.btn-success(type='button', ng-hide='currentEmail.isRemovable', ng-click='insertNewEmail()')
+				i.glyphicon.glyphicon-plus
+		input.form-control(type='email', name="{{currentEmail.id}}", placeholder='{{currentEmail.placeholder}}',ng-model="currentEmail.value", required)
 		span.input-group-addon
-			span.glyphicon.glyphicon-asterisk(ng-show="createStudent.emailAddress_extra[{{$index}}].$invalid && createStudent.emailAddress_extra[{{$index}}].$pristine")
-			span.glyphicon.glyphicon-remove(ng-show="createStudent.emailAddress_extra[{{$index}}].$invalid && !createStudent.emailAddress_extra[{{$index}}].$pristine")
-			span.glyphicon.glyphicon-ok(ng-show="createStudent.emailAddress_extra[{{$index}}].$valid")
-	p.text-muted.error(ng-show="createStudent.emailAddress_extra[{{$index}}].$invalid && !createStudent.emailAddress_extra[{{$index}}].$pristine") Secondary email address must be a valid email address.
+			span.glyphicon.glyphicon-asterisk(ng-show="createStudent[currentEmail.id].$invalid && createStudent[currentEmail.id].$pristine")
+			span.glyphicon.glyphicon-remove(ng-show="createStudent[currentEmail.id].$invalid && !createStudent[currentEmail.id].$pristine")
+			span.glyphicon.glyphicon-ok(ng-show="createStudent[currentEmail.id].$valid")
+	p.text-muted.error(ng-show="createStudent[currentEmail.id].$invalid && !createStudent[currentEmail.id].$pristine") Secondary email address must be a valid email address.
 
 div.form-group
 	div.input-group

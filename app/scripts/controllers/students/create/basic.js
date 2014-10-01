@@ -80,26 +80,29 @@ define(['../../module'], function(controllers) {
 				$scope.model.emailAddresses = [];
 			}
 
-			var allEmails = _.clone($scope.model.emailAddresses);
-			$scope.model.primaryEmailAddress = allEmails[0];
-			$scope.model.additionalEmailAddresses = allEmails;
-			$scope.model.additionalEmailAddresses.splice(0,1);
-			$scope.additionalEmailAddressesIndices = [];
-
-			for(var i=0; i<$scope.model.additionalEmailAddresses.length; i++) {
-				$scope.additionalEmailAddressesIndices[i] = i;
+			if($scope.model.emailAddresses.length < 1) {
+				// initialize with primary email
+				$scope.model.emailAddresses.push({
+					id: 'primaryemail_' + $scope.model.emailAddresses.length,
+					value: '',
+					isRemovable: false,
+					placeholder: 'Primary email address'
+				})
 			}
 
 			$scope.insertNewEmail = function() {
-				$scope.additionalEmailAddressesIndices.push($scope.additionalEmailAddressesIndices.length);
+				$scope.model.emailAddresses.push({
+					id: 'primaryemail_' + $scope.model.emailAddresses.length,
+					value: '',
+					isRemovable: true,
+					placeholder: 'Secondary email address'
+				});
 			};
 
 			$scope.removeEmail = function(index) {
-				$log.log('removing additional email field with index:' + index);
-				$scope.additionalEmailAddressesIndices.splice($scope.additionalEmailAddressesIndices.length-1, 1);
-				$scope.model.additionalEmailAddresses.splice(index, 1);
+				$scope.model.emailAddresses.splice(index, 1);
 			};
-
+/*
 			$scope.$watchCollection('model.additionalEmailAddresses', function(newNames, oldNames) {
 				performEmailChange(newNames);
   			});
@@ -114,6 +117,7 @@ define(['../../module'], function(controllers) {
     			$scope.model.emailAddresses = $scope.model.emailAddresses.concat(newNames);
     			$log.log($scope.model.emailAddresses);
   			}
+  */
 		}
 	]);
 
