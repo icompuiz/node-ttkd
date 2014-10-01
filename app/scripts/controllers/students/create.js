@@ -10,7 +10,7 @@ define(['../module'], function(controllers) {
 				if (!inWizard) {
 					StudentSvc.reset();
 
-					if(/edit/.test(toState.name)) {
+					if(/edit/.test(fromState.name)) {
 						WizardService.terminate('admin.students.edit');
 					} else {
 						WizardService.terminate('admin.students.create');
@@ -99,6 +99,7 @@ define(['../module'], function(controllers) {
                 function uploadAvatarTask(uploadAvatarTaskDone) {
 
                     if ($scope.model.uploader && $scope.model.uploader.queue.length) {
+                    	$scope.model.uploader.queue[0].formData = [{ name: new Date().getTime().toString() }];
                         $scope.model.uploader.onCompleteItem = function(item, response, status) {
 
                             console.log(item);
@@ -125,8 +126,10 @@ define(['../module'], function(controllers) {
                         $scope.model.avatar = avatarId;
                     }
                     
-                    $scope.model.uploader.destroy();
-                    $scope.model.uploader = null;
+                    if (angular.isDefined($scope.model.uploader)) {
+	                    $scope.model.uploader.destroy();
+	                    $scope.model.uploader = null;
+                    }
 
                     StudentSvc.save().then(function(saved) {
 
@@ -143,8 +146,11 @@ define(['../module'], function(controllers) {
                 	if (!err) {
 
 	                    StudentSvc.reset();
-	                    
-	                    $state.go('admin.students.home');
+	                    if ($stateParams.classId) {
+	                    	$state.go('admin.programs.viewclass', { id: $stateParams.classId });
+	                    } else {
+	                    	$state.go('admin.students.home');
+	                    }
 
                 	} else {
 	                    $log.log('Failed to save student');

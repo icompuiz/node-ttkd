@@ -38,6 +38,22 @@ var studentSchema = new Schema({
 	}
 });
 
+studentSchema.pre('remove', function(preRemoveDone) {
+
+	var _doc = this;
+
+	var ClassModel = mongoose.model('Class');
+
+	ClassModel.findOneAndUpdate({
+		students: _doc._id
+	}, {
+		$pull: {
+			students: _doc._id
+		}
+	}, preRemoveDone);
+
+});
+
 var Student = mongoose.model('Student', studentSchema);
 
 module.exports = Student;

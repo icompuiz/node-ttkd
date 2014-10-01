@@ -134,10 +134,16 @@ define(['../../module'], function(controllers){
                     $log.log('Removing selected students...');
 
                     _($scope.gridOptions.selectedItems).forEach(function(student) {
+                    	if (!student) {
+                    		return;
+                    	}
+
                         $log.log(' |_ Removing student: ' + student.firstName + ' ' + student.lastName + ' ' + student._id);
                         // removeStudentData(student);
 
-                        _.remove($scope.currentClass.students, student);
+                        $scope.currentClass.students = $scope.currentClass.students.filter(function(filterStudent) {
+                        	return filterStudent._id !== student._id
+                        });
                     });
 
                     completeRemove();
@@ -158,7 +164,11 @@ define(['../../module'], function(controllers){
                 //Remove Students
                 function beforeSave(_class)  {
                 	_class.students = _class.students.map(function(student) {
-                		return student._id;
+                		if (student) {
+                			return student._id;
+                		}
+                	}).filter(function(filterStudent) {
+                		return filterStudent;
                 	});
 
                 	return _class;
