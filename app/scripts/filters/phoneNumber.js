@@ -4,6 +4,7 @@ define(['./module'], function(filters) {
   filters.filter('phoneNumber', ['$log', function() {
     return function(input) {
       input = input || '';
+      input = input.replace(/-/g, '');
       var out = '';
 
       for (var i = 0; i < input.length; i++) {

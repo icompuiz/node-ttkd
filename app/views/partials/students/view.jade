@@ -18,23 +18,22 @@
 				span.glyphicon.glyphicon-calendar &nbsp;
 				| {{currentStudent.birthday | date: 'MM/dd/yyyy' }}
 				br
-				span.glyphicon.glyphicon-envelope &nbsp;
-				| {{currentStudent.emailAddress}}
-				br 
+				span.glyphicon.glyphicon-envelope(ng-repeat='email in currentStudent.emailAddresses') &nbsp; {{email}}
+					br
 				span.glyphicon.glyphicon-home &nbsp;
-				| {{currentStudent.phone.home}}
+				| {{currentStudent.phone.home | phoneNumber}}
 				br
 				span.glyphicon.glyphicon-phone &nbsp;
-				| {{currentStudent.phone.cell}}
+				| {{currentStudent.phone.cell | phoneNumber}}
 .row
 	h2.col-md-12 Emergency Contacts
 	.col-md-5(ng-show='showEContact1()')
 		h3 Primary Contact
-		.well {{currentStudent.emergencyContacts[0].name}} ({{currentStudent.emergencyContacts[0].relationship}})<br />{{currentStudent.emergencyContacts[0].phoneNumber}}
+		.well {{currentStudent.emergencyContacts[0].name}} ({{currentStudent.emergencyContacts[0].relationship}})<br />{{currentStudent.emergencyContacts[0].phoneNumber | phoneNumber}}
 	.col-md-2(ng-show='showEContact1()')
 	.col-md-5(ng-show='showEContact2()')
 		h3 Secondary Contact
-		.well {{currentStudent.emergencyContacts[1].name}} ({{currentStudent.emergencyContacts[1].relationship}})<br />{{currentStudent.emergencyContacts[1].phoneNumber}}
+		.well {{currentStudent.emergencyContacts[1].name}} ({{currentStudent.emergencyContacts[1].relationship}})<br />{{currentStudent.emergencyContacts[1].phoneNumber | phoneNumber}}
 
 .row
 	h2.col-md-12 Student Ranks

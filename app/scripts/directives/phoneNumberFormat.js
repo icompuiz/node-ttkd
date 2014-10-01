@@ -30,6 +30,7 @@ define(['./module'], function (directives) {
             if(!keyedUp && lastKey === e.keyCode) {
               // the same button may have been keyed twice...
               // need to key up, or hit a different key (same ppl are quick with num pad)
+              e.preventDefault();
               return false;
             }
 
@@ -41,13 +42,14 @@ define(['./module'], function (directives) {
               return true;
             } else {
               $log.log(tmpVal + ' is not a natural number for ph #');
+              e.preventDefault();
               return false;
             }
           };
 
           // This runs when we update the text field
           ngModelCtrl.$parsers.push(function(viewValue) {
-            if(viewValue && viewValue != null) {
+            if(viewValue && viewValue !== null) {
               return viewValue.replace(/-/g, '');
             } else {
               return viewValue;
@@ -59,6 +61,7 @@ define(['./module'], function (directives) {
             $element.val($filter('phoneNumber')(ngModelCtrl.$viewValue));
           };
 
+          $element.val($filter('phoneNumber')($element.val()));
           $element.bind('keyup', listener);
           $element.bind('keypress', keydownListener);
 

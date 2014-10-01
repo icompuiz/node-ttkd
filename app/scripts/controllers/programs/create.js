@@ -166,6 +166,8 @@ define(['../module'], function(controllers){
 				}
 			};
 
+			$scope.showRemoveClassesConfirm = false;
+
            $scope.removeRankDisabled = function() {
                 return $scope.rankGridOptions.selectedItems.length == 0;
             };
@@ -186,7 +188,6 @@ define(['../module'], function(controllers){
 					$scope.showRemoveRanksConfirm = false;
 				}
 			};
-
 
 			$scope.showRemoveRanksConfirm = false;
 

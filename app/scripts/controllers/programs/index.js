@@ -9,5 +9,6 @@ define([
 	'./classes/create',
 	'./classes/view',
 	'./classes/edit',
-	'./ranks/create'
+	'./ranks/create',
+	'./ranks/edit'
 ], function () {});

@@ -1,0 +1,24 @@
+Scenario: CRUD Workshops
+
+	Feature: Return a list of all workshops
+		Unit: get('/api/workshops') returns an array of all the workshops
+
+	Feature: Create a workshop and add it to the database
+		Unit: workshop name is valid
+			Unit: name is alphanumeric
+				/(a-zA-Z0-9)/
+				Accept: ljkjflaksjdf09sf09a0s9df0sdlfJLKJSOIJ
+				Reject: !@&&$*(@_)_"?><.,
+				Test for error status code
+			Unit: workshop name is between 2 and 64 characters
+		Unit: workshop has a valid student list
+		Unit: workshop has a valid list of meeting times
+	
+	Feature: Read a workshop from the database
+		Unit: workshop_id matches url_id
+	
+	Feature: Update an existing workshop in the database
+		Unit: Change is made
+	
+	Feature: Delete a workshop in the database
+		Unit: Url_id has no workshop_id match
