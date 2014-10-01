@@ -29,7 +29,7 @@ table.table.borderless
 	tr
 		td Email Address
 		td
-			p(ng-repeat="email in model.emailAddresses") {{email}}
+			p(ng-repeat="email in model.tmpEmailAddresses") {{email.value}}
 	tr
 		td Birth Date
 		td {{model.birthday | date: 'MM/dd/yyyy' }}

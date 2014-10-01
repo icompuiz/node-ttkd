@@ -10,7 +10,7 @@ define(['../module'], function(controllers) {
 				if (!inWizard) {
 					StudentSvc.reset();
 
-					if(!$scope.isNew) {
+					if(/edit/.test(toState.name)) {
 						WizardService.terminate('admin.students.edit');
 					} else {
 						WizardService.terminate('admin.students.create');
@@ -50,8 +50,6 @@ define(['../module'], function(controllers) {
 			    },
 			};
 
-			initStudentObject();
-
 
 			/**
 			 * The following code is used for controller level validation logic
@@ -83,6 +81,20 @@ define(['../module'], function(controllers) {
 			// Create student
 			function saveStudent() {
                 // StudentSvc.init($scope.model);
+
+                function mapEmailAddressesTask(mapEmailAddressesTaskDone) {
+					//convert emails
+					
+					$scope.model.emailAddresses = $scope.model.tmpEmailAddresses.map(function(emailObj) {
+						return emailObj.value;
+					});
+
+					// for(var i=0; i<$scope.model.tmpEmailAddresses.length; i++) {
+					// 	$scope.model.emailAddresses[i] = $scope.model.tmpEmailAddresses[i].value;
+					// }
+
+					return mapEmailAddressesTaskDone(null);
+                }
 
                 function uploadAvatarTask(uploadAvatarTaskDone) {
 
@@ -131,6 +143,7 @@ define(['../module'], function(controllers) {
                 	if (!err) {
 
 	                    StudentSvc.reset();
+	                    
 	                    $state.go('admin.students.home');
 
                 	} else {
@@ -147,7 +160,7 @@ define(['../module'], function(controllers) {
                 	}
                 }
 
-                var tasks = [uploadAvatarTask, saveStudentModelTask];
+                var tasks = [mapEmailAddressesTask, uploadAvatarTask, saveStudentModelTask];
 
 
                 async.waterfall(tasks, afterWaterfall);
@@ -163,24 +176,15 @@ define(['../module'], function(controllers) {
 					// There may be an existing student id so try and load
 					if (_.isEmpty($stateParams.id)) {
 					    $scope.model = StudentSvc.init(mockStudent || {});
-					    $scope.isNew = true;
-					    initEContacts(); // Init e-contact
 					    initWizardObject(); // Init wizard
 					} else {
 					    StudentSvc.read($stateParams.id, {}, true).then(
 					    	function(studentDoc) {
 						    	$scope.model = studentDoc;
-						    	$scope.isNew = false;
-						    	initEContacts(); // Init e-contact
 						    	initWizardObject(); // Init wizard
 					    	}
 					    );
 					}
-				} else {
-					// Service already has a current student, get it
-					$scope.model = StudentSvc.current;
-					initEContacts();
-					initWizardObject();
 				}
 			}
 
@@ -191,18 +195,15 @@ define(['../module'], function(controllers) {
 					$scope.model.class = $stateParams.classId;
 				}
 
-				var wizardId = 'admin.students.create';
-
-				if(!$scope.isNew) {
-					wizardId = 'admin.students.edit';
-				}
+				var wizardId = $state.$current.name;
 
 			    $scope.wizard = WizardService.get(wizardId);
 
 				if (!$scope.wizard) {
 					$scope.wizard = WizardService.create(wizardId, true);
-					$state.go($scope.wizard.current.id); // go to the initial state of this progression
 				}
+				
+				$state.go($scope.wizard.current.id); // go to the initial state of this progression
 
 				$scope.$watch('wizard.current', function(currentStep, previousStep) {
 					if (currentStep && (currentStep.id !== previousStep.id)) {
@@ -219,21 +220,7 @@ define(['../module'], function(controllers) {
 				return $scope.wizard.peekPreviousIndex();
 			};
 			// Emergency Contact init
-			function initEContacts() {
-				if(!$scope.model.emergencyContacts || $scope.model.emergencyContacts === null){
-					$scope.model.emergencyContacts = [];
-				}
 
-				var econtactListLen = $scope.model.emergencyContacts.length;
-
-				if(econtactListLen === 0) {
-					$scope.model.emergencyContacts[0] = EmergencyContactSvc.init({});
-				}
-
-				if(econtactListLen <= 1) {
-					$scope.model.emergencyContacts[1] = EmergencyContactSvc.init({});
-				}
-			}
 
 
 			/**
@@ -246,11 +233,6 @@ define(['../module'], function(controllers) {
 					return false;
 				}
 
-				//convert emails
-				$scope.model.emailAddresses = [];
-				for(var i=0; i<$scope.model.tmpEmailAddresses.length; i++) {
-					$scope.model.emailAddresses[i] = $scope.model.tmpEmailAddresses[i].value;
-				}
 
 				if (!$scope.wizard.current.isFinalStep) {
 					$scope.wizard.goFoward();
@@ -266,7 +248,7 @@ define(['../module'], function(controllers) {
 
 				$log.log($scope);
 
-				if($scope.isNew) {
+				if(!angular.isDefined($scope.model._id)) {
 					$scope.submitBtnContent = 'Creating Student...';
 				} else {
 					$scope.submitBtnContent = 'Updating Student...';
@@ -292,7 +274,6 @@ define(['../module'], function(controllers) {
 				}
 			};
 
-			initStudentObject();
 			
 			// Next button behaviors
 			$scope.displayPreviousBtn = function() {
@@ -310,6 +291,8 @@ define(['../module'], function(controllers) {
 			};
 
 			$scope.submitBtnContent = 'Submit Registration';
+
+			initStudentObject();
 		}
 	]);
 

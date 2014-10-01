@@ -78,30 +78,36 @@ define(['../../module'], function(controllers) {
 			//add support for multiple email addresses
 			if(!$scope.model.tmpEmailAddresses) {
 				$scope.model.tmpEmailAddresses = [];
+			}
 
-				if($scope.model.emailAddresses) {
-					//populate existing
-					for(var i=0; i<$scope.model.emailAddresses.length; i++) {
-						var tmpObj = {};
-						tmpObj.id = 'email_' + $scope.model.tmpEmailAddresses.length;
-						tmpObj.value = $scope.model.emailAddresses[i];
-						tmpObj.isPristine = true;
+			// use email id counter so the names are always unique
+			var emailIdCounter = $scope.model.tmpEmailAddresses.length;
 
-						if(i===0) {
-							tmpObj.placeholder = 'Primary email address';
-							tmpObj.isRemovable = false;
-						} else {
-							tmpObj.placeholder = 'Additional email address';
-							tmpObj.isRemovable = true;
-						}
+			if($scope.model.emailAddresses) {
+				//populate existing
+				for(var i=0; i<$scope.model.emailAddresses.length; i++) {
+					var tmpObj = {};
+					tmpObj.id = 'email_' + emailIdCounter++;
+					tmpObj.value = $scope.model.emailAddresses[i];
+					tmpObj.isPristine = true;
+
+					if(i===0) {
+						tmpObj.placeholder = 'Primary email address';
+						tmpObj.isRemovable = false;
+					} else {
+						tmpObj.placeholder = 'Additional email address';
+						tmpObj.isRemovable = true;
 					}
+
+					// need to add the email address to the array of tmp email addresses
+					$scope.model.tmpEmailAddresses.push(tmpObj);
 				}
 			}
 
 			if($scope.model.tmpEmailAddresses.length < 1) {
 				// initialize with primary email
 				$scope.model.tmpEmailAddresses.push({
-					id: 'email_0',
+					id: 'email_' + emailIdCounter++,
 					value: '',
 					isRemovable: false,
 					placeholder: 'Primary email address',
