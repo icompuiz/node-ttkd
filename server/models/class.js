@@ -6,10 +6,10 @@ var mongoose = require('mongoose'),
 
 var classSchema = new Schema({
 	name: String,
-	studentList: {
-		ref: 'StudentList',
-		type: ObjectId
-	},
+	students: [{
+			ref: 'Student',
+			type: ObjectId
+		}],
 	program: {
 		ref: 'Program',
 		type: ObjectId

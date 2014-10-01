@@ -1,0 +1,49 @@
+Scenario: CRUD Student
+
+	Feature: Return a list of all students
+		Unit: get('/api/students') returns an array of all the students
+
+	Feature: Create a student and add them to the database
+		Unit: student first name is valid
+			Unit: first name is alphanumeric
+				/(a-zA-Z0-9)/
+				Accept: ljkjflaksjdf09sf09a0s9df0sdlfJLKJSOIJ
+				Reject: !@&&$*(@_)_"?><.,
+				Test for error status code
+			Unit: student first name is between 2 and 64 characters
+		Unit: student last name is valid
+			Unit: last name is alphanumeric
+				/(a-zA-Z0-9)/
+				Accept: ljkjflaksjdf09sf09a0s9df0sdlfJLKJSOIJ
+				Reject: !@&&$*(@_)_"?><.,
+				Test for error status code
+			Unit: student last name is between 2 and 64 characters
+		Unit: student date of birth is in the past
+			Accept: 02/23/1992
+			Reject: 09/25/2020
+		Unit: email address is a real email
+			/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}/
+			Accept: sesansone@gmail.com
+			Reject: ra*d.di.ocm@mail
+		Unit: address is formatted correctly
+			Unit: street is alphanumeric
+			Unit: city is alpha characters
+			Unit: state is in correct 2 letter form
+			Unit: zip is 5 digits
+		Unit: phone number (home/cell) are real phone numbers
+			Unit: Home number must exist
+			Unit: Cell number is optional
+		Unit: ranks are valid
+		Unit: date modified is in the past
+		Unit: uniform size is valid
+		Unit: belt size is valid
+		Unit: emergency contacts are present
+	
+	Feature: Read a student from the database
+		Unit: Student_id matches url_id
+	
+	Feature: Update an existing student in the database
+		Unit: Change is made
+	
+	Feature: Delete a student in the database
+		Unit: Url_id has no Student_id match

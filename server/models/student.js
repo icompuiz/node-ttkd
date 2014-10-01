@@ -9,7 +9,7 @@ var mongoose = require('mongoose'),
 var studentSchema = new Schema({
 	firstName: String,
 	lastName: String,
-	emailAddress: String,
+	emailAddresses: [String],
 	emergencyContacts: [EmergencyContact.schema],
 	avatar: {
 		ref: 'File',
@@ -36,6 +36,22 @@ var studentSchema = new Schema({
 		type: Date,
 		default: Date.now
 	}
+});
+
+studentSchema.pre('remove', function(preRemoveDone) {
+
+	var _doc = this;
+
+	var ClassModel = mongoose.model('Class');
+
+	ClassModel.findOneAndUpdate({
+		students: _doc._id
+	}, {
+		$pull: {
+			students: _doc._id
+		}
+	}, preRemoveDone);
+
 });
 
 var Student = mongoose.model('Student', studentSchema);

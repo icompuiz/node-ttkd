@@ -29,16 +29,19 @@ var handleFileUpload = function(req, res, next) {
 
         var firstKey = keys[0];
         var tmpFile = req.files[firstKey];
+        var filename = req.body.name || tmpFile.name;
+
+        console.log(req.body.name);
 
         var copyData = {
             path: tmpFile.path,
-            name: tmpFile.name,
+            name: filename,
             type: tmpFile.type,
             size: tmpFile.size
         };
 
         var fileData = {
-            name: tmpFile.name,
+            name: filename,
             directory: directoryId
         };
 
@@ -101,6 +104,8 @@ var handleFileUpload = function(req, res, next) {
 
         });
 
+    } else {
+        res.send(400, 'No files specified');
     }
 };
 

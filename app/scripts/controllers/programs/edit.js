@@ -3,27 +3,35 @@ define(['../module'], function(controllers){
 	controllers.controller('EditProgramCtrl', ['$scope', '$state', '$stateParams', 'Restangular', 'ProgramSvc', 'ClassSvc', 'RankSvc', 
 		function($scope, $state, $stateParams, Restangular, ProgramSvc, ClassSvc, RankSvc) {
 			$scope.currentProgram = {};
-			$scope.newClass = {};
-			$scope.newRank = {};
 			$scope.removedRanks = [];
 			$scope.removedClasses = [];
 
+			$scope.programNames = [];
+
+			$scope.getPrograms = function(){
+				ProgramSvc.list().then(function(progs) {
+					$scope.programNames = _.map(progs, function(p){return p.name;});
+					$scope.programNames = _.without($scope.programNames, $scope.currentProgram.name);
+				});
+			};
+			$scope.getPrograms();
+
+			// Load current program if ProgramSvc has one
 			if (ProgramSvc.current && ProgramSvc.editing) {
 				$scope.currentProgram = ProgramSvc.current;
 
-				if (!ProgramSvc.removedClasses) {
-					$scope.removedClasses = [];
-				} else {
+				if (ProgramSvc.removedClasses) {
 					$scope.removedClasses = ProgramSvc.removedClasses;
 				}
 
-				if (!ProgramSvc.removedRanks) {
-					$scope.removedRanks = [];
-				} else {
+				if (ProgramSvc.removedRanks) {
 					$scope.removedRanks = ProgramSvc.removedRanks;
 				}
 			} else if ($stateParams.id) {
+				// Get class and rank objects and attach them to current program
 				var pClasses = [];
+				var pRanks = [];
+
 				ProgramSvc.read($stateParams.id, null, true).then(function(p) {
 					ProgramSvc.editing = true;
 					$scope.currentProgram = p;
@@ -32,7 +40,13 @@ define(['../module'], function(controllers){
 							pClasses.push(c);
 						});
 					});
+					_.each($scope.currentProgram.ranks, function(rId) {
+						RankSvc.read(rId, null, false).then(function(r) {
+							pRanks.push(r);
+						});
+					});
 					$scope.currentProgram.classObjs = pClasses;
+					$scope.currentProgram.rankObjs = pRanks;
 				});
 			}
 
@@ -49,28 +63,34 @@ define(['../module'], function(controllers){
 				$state.go('admin.programs.createclass', {id: $scope.currentProgram._id});
 			};
 
+			$scope.goToViewClass = function(row) {
+				ClassSvc.init(row.entity);
+				ClassSvc.startViewing();
+				$state.go('admin.programs.viewclass', {id: row.entity._id} );
+			};
+
 			$scope.goToEditClass = function(row) {
 				ClassSvc.init(row.entity);
 				ClassSvc.startEditing();
 				$state.go('admin.programs.editclass', { id: row.entity._id} );
 			};
 
-			$scope.removeClass = function(classToRemove) { 
-				var c = confirm('Are you sure you want to delete ' + classToRemove.name + '?');
-
-				if (c) {
-					$scope.currentProgram.classObjs = _.without($scope.currentProgram.classObjs, classToRemove);
-					$scope.removedClasses.push(classToRemove);
-				}
+			$scope.goToCreateRank = function() {
+				RankSvc.reset();
+				RankSvc.startCreating();
+				$state.go('admin.programs.createrank', {id: $scope.currentProgram._id});
 			};
 
-			$scope.removeRank = function(rankToRemove) { 
-				var c = confirm('Are you sure you want to delete ' + rankToRemove.name + '?');
+			$scope.goToViewRank = function(row) {
+				RankSvc.init(row.entity);
+				RankSvc.startViewing();
+				$state.go('admin.programs.viewrank', {id: row.entity._id} );
+			};
 
-				if (c) {
-					$scope.currentProgram.ranks = _.without($scope.currentProgram.ranks, rankToRemove);
-					$scope.removedRanks.push(rankToRemove);
-				}
+			$scope.goToEditRank = function(row) {
+				RankSvc.init(row.entity);
+				RankSvc.startEditing();
+				$state.go('admin.programs.editrank', { id: row.entity._id} );
 			};
 
 			$scope.saveProgram = function() {
@@ -132,6 +152,7 @@ define(['../module'], function(controllers){
 								RankSvc.read(rankItem._id, null, true).then(function(rnk) {
 									RankSvc.remove().then(function(removed) {
 										if (removed){
+
 											console.log('Rank ' + removed.name + ' successfully deleted');
 										}
 										RankSvc.reset();
@@ -147,21 +168,22 @@ define(['../module'], function(controllers){
 
 				//Add or update ranks
 				function addRanksToModel(callback, err) {
-					async.each($scope.currentProgram.ranks,
+					async.each($scope.currentProgram.rankObjs,
 						function(rankItem, callback) {
-							//Temporary... rank service will eventually be 
-							//	initialized and will save from its "Create" form
-							RankSvc.init(rankItem);
-							function beforeSave(r) {
-								r.name = rankItem.name;
-								r.rankOrder = rankItem.rankOrder;
-								r.intermediaryRanks = rankItem.intermediaryRanks;
-								r.program = $scope.currentProgram._id;
+
+							function beforeSave(c) {
+								c.name = rankItem.name;
+								c.rankOrder = rankItem.rankOrder;
+								c.intermediaryRanks = rankItem.intermediaryRanks;
+								c.program = $scope.currentProgram._id;
 							}
 
-							RankSvc.save(beforeSave).then(function(saved) {
+							RankSvc.init(rankItem);
+							RankSvc.save(beforeSave).then(function(r) {
+								rankIDs.push(r._id);
 								callback();
 							});
+												
 						},
 						function(err) {
 							callback();
@@ -171,6 +193,7 @@ define(['../module'], function(controllers){
 				(function(classIDs, rankIDs) {
 					async.parallel([
 						addClassesToModel,
+						addRanksToModel,
 						removeClassesFromModel,
 						removeRanksFromModel],
 						function(err) {
@@ -183,12 +206,11 @@ define(['../module'], function(controllers){
 
 							ProgramSvc.read($scope.currentProgram._id, null, true).then(function(p) {
 								ProgramSvc.save(beforeSave).then(function(added) {
-								console.log('Changes to program' + added.name + ' successful.');
-								ProgramSvc.reset();
-								$state.go('admin.programs.home');
+									console.log('Changes to program' + added.name + ' successful.');
+									ProgramSvc.reset();
+									$state.go('admin.programs.home');
+								});
 							});
-							})
-							
 							
 						}
 					);
@@ -207,7 +229,8 @@ define(['../module'], function(controllers){
 				if(remove) {
 					_($scope.classGridOptions.selectedItems).forEach(function(c) {
 						$scope.currentProgram.classObjs = _.without($scope.currentProgram.classObjs, c);
-						$scope.removedClasses.push(c);
+						$scope.removedClasses.push(c);						
+						$scope.classGridOptions.selectedItems.length = 0;
 					});
 					$scope.showRemoveClassesConfirm = false;
 				} else {
@@ -216,6 +239,41 @@ define(['../module'], function(controllers){
 			};
 
 			$scope.showRemoveClassesConfirm = false;
+
+            $scope.removeRankDisabled = function() {
+                return $scope.rankGridOptions.selectedItems.length == 0;
+            };
+
+			$scope.removeSelectedRanks = function() {
+				$scope.showRemoveRanksConfirm = true;
+			};
+
+			$scope.confirmRemoveRanks = function(remove) {
+				function shiftRankOrders() {
+					var sorted = _.sortBy($scope.currentProgram.rankObjs, 'rankOrder');
+
+					var i = 1;
+					_(sorted).forEach(function(r) {
+						r.rankOrder = i;
+						i++;
+					});
+
+					$scope.currentProgram.rankObjs = sorted;
+				}
+
+				if(remove) {
+					_($scope.rankGridOptions.selectedItems).forEach(function(r) {
+						$scope.currentProgram.rankObjs = _.without($scope.currentProgram.rankObjs, r);
+						$scope.removedRanks.push(r);
+						$scope.rankGridOptions.selectedItems.length = 0;
+					});
+					shiftRankOrders();
+					$scope.showRemoveRanksConfirm = false;
+				} else {
+					$scope.showRemoveRanksConfirm = false;
+				}
+			};
+			$scope.showRemoveRanksConfirm = false;
 
 /********************** Classes Grid Options *****************************/
 			$scope.classFilterOptions = {
@@ -264,8 +322,6 @@ define(['../module'], function(controllers){
                 }
             }, true);
 
-            $scope.classOptionsButton = '<button type="button" class="btn btn-default btn-sm viewBtn" ng-click="goToViewClass(row)" >View</button> <button type="button" class="btn btn-default btn-sm editBtn" ng-click="goToEditClass(row)" >Edit</button>';
-
             $scope.classGridOptions = {
             	data: 'myClassData',
                 rowHeight: 40,
@@ -293,17 +349,101 @@ define(['../module'], function(controllers){
                 sortInfo: { fields: ['name'], directions: ['asc'] },
                 columnDefs: [
                     { field: 'name', displayName: 'Class Name' },
-                    { cellTemplate: $scope.classOptionsButton, sortable: false, displayName: 'Actions'},
+                    { cellTemplate: '/partials/programs/classes/list/editOptionsButton', sortable: false, displayName: 'Actions'},
+                ]
+            };
+
+/********************** Ranks Grid Options *****************************/
+
+			$scope.rankFilterOptions = {
+				filterText: '',
+				useExternalFilter: true
+			};
+
+			$scope.rankTotalServerItems = 0;
+			
+			$scope.rankPagingOptions = {
+				pageSizes: [10, 25, 50],
+				pageSize: 10,
+				currentPage: 1
+			};
+
+			$scope.setRankPagingData = function(data, page, pageSize) {
+				var pagedData = data.slice((page - 1) * pageSize, page * pageSize);
+				$scope.myRankData = pagedData;
+				$scope.rankTotalServerItems = data.length;
+				if (!$scope.$$phase) {
+					$scope.$apply();
+				}
+			};
+
+			$scope.setRankGridData = function(pageSize, page, searchText) {
+				var data = [];
+				_.each($scope.currentProgram.rankObjs, function(c) {
+					data.push(c);
+				});
+				$scope.setRankPagingData(data, page, pageSize);
+			};
+
+            $scope.$watch('currentProgram.rankObjs', function () {
+			    $scope.setRankGridData($scope.rankPagingOptions.pageSize, $scope.rankPagingOptions.currentPage, $scope.rankFilterOptions.filterText);
+            }, true);
+
+            $scope.$watch('rankPagingOptions', function (newVal, oldVal) {
+                if (newVal !== oldVal && newVal.currentPage !== oldVal.currentPage) {
+                    $scope.setRankGridData($scope.rankPagingOptions.pageSize, $scope.rankPagingOptions.currentPage, $scope.rankFilterOptions.filterText);
+                }
+            }, true);
+
+            $scope.$watch('rankFilterOptions', function (newVal, oldVal) {
+                if (newVal !== oldVal) {
+                    $scope.setRankGridData($scope.rankPagingOptions.pageSize, $scope.rankPagingOptions.currentPage, $scope.rankFilterOptions.filterText);
+                }
+            }, true);
+
+            $scope.rankGridOptions = {
+            	data: 'myRankData',
+                rowHeight: 40,
+                enablePaging: true,
+                showFooter: true,
+                beforeSelectionChange: function (rowItem, event) {
+                    // check if one of the options buttons was clicked
+                    if(event.target.tagName === 'BUTTON') {
+                        return false;
+                    } else {
+                        return true;
+                    }
+                },
+                afterSelectionChange: function (rowItem, event) {
+                    // check if one of the options buttons was clicked
+                    if($scope.rankGridOptions.selectedItems.length === 0) {
+                        $scope.showRemoveConfirm = false;
+                    }
+                    return true;
+                },
+                totalServerItems: 'rankTotalServerItems',
+                pagingOptions: $scope.rankPagingOptions,
+                filterOptions: $scope.rankFilterOptions,
+                selectedItems: [],
+                sortInfo: { fields: ['name'], directions: ['asc'] },
+                columnDefs: [
+                    { field: 'name', displayName: 'Rank Name' },
+                    { field: 'rankOrder', displayName: 'Order' },
+                    { cellTemplate: '/partials/programs/ranks/list/editOptionsButton', sortable: false, displayName: 'Actions'},
                 ]
             };
 
 /********************** Form Validation **********************************/
-			function isEmpty(str) {
-				return (!str || 0 === str.length);				
-			}
+			$scope.isEmpty = function() {
+				return (!$scope.currentProgram.name || 0 === $scope.currentProgram.name.length);				
+			};
 
 			$scope.canSaveProgram = function() {
-				return !isEmpty($scope.currentProgram.name);
+				return !$scope.isEmpty() && !$scope.isDupName();
+			};
+
+			$scope.isDupName = function() {
+				return _.contains($scope.programNames, $scope.currentProgram.name);
 			};
 	}]);
 });	

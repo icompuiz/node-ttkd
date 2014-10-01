@@ -83,8 +83,6 @@ define(['../module'], function(controllers){
                 }
             }, true);
 
-            $scope.optionsButton = '<button type="button" class="btn btn-default btn-sm viewBtn" ng-click="goToViewProgram(row)" >View</button> <button type="button" class="btn btn-default btn-sm editBtn" ng-click="goToEditProgram(row)" >Edit</button>';
-
             $scope.gridOptions = {
             	data: 'myData',
                 rowHeight: 40,
@@ -113,8 +111,8 @@ define(['../module'], function(controllers){
                 columnDefs: [
                     { field: 'name', displayName: 'Program Name' },
                     { field: 'classNames', displayName: 'Classes', cellFilter: 'stringArray' },
-                    { field: 'rankNames', displayName: 'Ranks' },
-                    { cellTemplate: $scope.optionsButton, sortable: false, displayName: 'Actions'},
+                    { field: 'rankNames', displayName: 'Ranks', cellFilter: 'stringArray'},
+                    { cellTemplate: '/partials/programs/list/optionsButton', sortable: false, displayName: 'Actions'},
                 ]
             };
 /*************** End GridOptions******************************/
@@ -127,6 +125,7 @@ define(['../module'], function(controllers){
 					_($scope.gridOptions.selectedItems).forEach(function(program) {
 						$scope.removeProgram(program);
 					});
+					$scope.gridOptions.selectedItems.length = 0;
 					$scope.showRemoveConfirm = false;
 				} else {
 					$scope.showRemoveConfirm = false;

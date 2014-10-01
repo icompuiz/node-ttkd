@@ -22,16 +22,17 @@ table.table.borderless
 		td {{model.address.zip}}
 	tr
 		td Home Phone
-		td {{model.phone.home}}
+		td {{model.phone.home | phoneNumber}}
 	tr
 		td Cell Phone
-		td {{model.phone.cell}}
+		td {{model.phone.cell | phoneNumber}}
 	tr
 		td Email Address
-		td {{model.emailAddress}}
+		td
+			p(ng-repeat="email in model.tmpEmailAddresses") {{email.value}}
 	tr
 		td Birth Date
-		td {{model.birthday}}
+		td {{model.birthday | date: 'MM/dd/yyyy' }}
 
 h3 Emergency Contact
 table.table.borderless
@@ -40,7 +41,7 @@ table.table.borderless
 		td(style='width:50%') {{model.emergencyContacts[0].name}}
 	tr
 		td Primary Contact Phone
-		td {{model.emergencyContacts[0].phoneNumber}}
+		td {{model.emergencyContacts[0].phoneNumber | phoneNumber}}
 	tr
 		td Primary Contact Relationship
 		td {{model.emergencyContacts[0].relationship}}
@@ -49,7 +50,7 @@ table.table.borderless
 		td {{model.emergencyContacts[1].name}}
 	tr
 		td Secondary Contact Phone
-		td {{model.emergencyContacts[1].phoneNumber}}
+		td {{model.emergencyContacts[1].phoneNumber | phoneNumber}}
 	tr
 		td Secondary Contact Relationship
 		td {{model.emergencyContacts[1].relationship}}
