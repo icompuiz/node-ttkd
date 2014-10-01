@@ -19,6 +19,37 @@ define(['../module'], function(controllers) {
 
 			});
 
+
+			var mockStudent = {
+			    "emergencyContacts": [{
+			        "name": "sdssd",
+			        "phoneNumber": "5555555555",
+			        "relationship": "Mother"
+			    }, {
+			        "name": "dsdsd",
+			        "phoneNumber": "6666666666",
+			        "relationship": "Father"
+			    }],
+			    "class": "5428ae901ac91384234e306a",
+			    "firstName": "John",
+			    "lastName": "Smith",
+			    "address": {
+			        "street": "1 Lomb Memorial Drive",
+			        "city": "Rochester",
+			        "zip": "14623"
+			    },
+			    "phone": {
+			        "home": "1111111112",
+			        "cell": "2222222222"
+			    },
+			    "emailAddress": "ttkd@gmail.com",
+			    "birthday": "2014-09-12T04:00:00.000Z",
+			    "waiver": {
+			        "guardian": "dsdsd",
+			        "participant": "sddssd"
+			    },
+			};
+
 			initStudentObject();
 
 
@@ -81,6 +112,9 @@ define(['../module'], function(controllers) {
                     if (avatarId) {
                         $scope.model.avatar = avatarId;
                     }
+                    
+                    $scope.model.uploader.destroy();
+                    $scope.model.uploader = null;
 
                     StudentSvc.save().then(function(saved) {
 
@@ -96,8 +130,6 @@ define(['../module'], function(controllers) {
                 function afterWaterfall(err, student) {
                 	if (!err) {
 
-	                    $scope.model.uploader.destroy();
-	                    $scope.model.uploader = null;
 	                    StudentSvc.reset();
 	                    $state.go('admin.students.home');
 
@@ -130,7 +162,7 @@ define(['../module'], function(controllers) {
 				if (!StudentSvc.current) {
 					// There may be an existing student id so try and load
 					if (_.isEmpty($stateParams.id)) {
-					    $scope.model = StudentSvc.init({});
+					    $scope.model = StudentSvc.init(mockStudent || {});
 					    $scope.isNew = true;
 					    initEContacts(); // Init e-contact
 					    initWizardObject(); // Init wizard
@@ -154,6 +186,11 @@ define(['../module'], function(controllers) {
 
 			// Wizard init
 			function initWizardObject() {
+
+				if ($stateParams.classId) {
+					$scope.model.class = $stateParams.classId;
+				}
+
 				var wizardId = 'admin.students.create';
 
 				if(!$scope.isNew) {
