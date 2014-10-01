@@ -65,19 +65,23 @@ div.form-group
 			span.glyphicon.glyphicon-ok(ng-show="createStudent.cellPhoneNumber.$valid")
 	p.text-muted.error(ng-show="createStudent.cellPhoneNumber.$invalid && !createStudent.cellPhoneNumber.$pristine") Student's cell phone number must be a valid 10 digit number. E.g. 555-555-5555
 
-.form-group(ng-repeat="currentEmail in model.emailAddresses")
+.form-group(ng-repeat="currentEmail in model.tmpEmailAddresses")
 	.input-group
 		span.input-group-btn
 			button.btn.btn-danger(type='button', ng-show='currentEmail.isRemovable', ng-click='removeEmail($index)')
 				i.glyphicon.glyphicon-minus
 			button.btn.btn-success(type='button', ng-hide='currentEmail.isRemovable', ng-click='insertNewEmail()')
 				i.glyphicon.glyphicon-plus
-		input.form-control(type='email', name="{{currentEmail.id}}", placeholder='{{currentEmail.placeholder}}',ng-model="currentEmail.value", required)
+		input.form-control(type='email', name="{{currentEmail.id}}", placeholder='{{currentEmail.placeholder}}',ng-model="currentEmail.value", required, ng-change="currentEmail.isPristine = false")
 		span.input-group-addon
-			span.glyphicon.glyphicon-asterisk(ng-show="createStudent[currentEmail.id].$invalid && createStudent[currentEmail.id].$pristine")
-			span.glyphicon.glyphicon-remove(ng-show="createStudent[currentEmail.id].$invalid && !createStudent[currentEmail.id].$pristine")
-			span.glyphicon.glyphicon-ok(ng-show="createStudent[currentEmail.id].$valid")
-	p.text-muted.error(ng-show="createStudent[currentEmail.id].$invalid && !createStudent[currentEmail.id].$pristine") Secondary email address must be a valid email address.
+			span.glyphicon.glyphicon-asterisk(ng-show="!isEmailFieldValid(currentEmail) && currentEmail.isPristine")
+			span.glyphicon.glyphicon-remove(ng-show="!isEmailFieldValid(currentEmail) && !currentEmail.isPristine")
+			span.glyphicon.glyphicon-ok(ng-show="isEmailFieldValid(currentEmail)")
+	p.text-muted.error(ng-show="!isEmailFieldValid(currentEmail) && !currentEmail.isPristine && !currentEmail.isRemovable") Primary email address must be in a valid email address format (e.g. email@address.com)
+	p.text-muted.error(ng-show="!isEmailFieldValid(currentEmail) && !currentEmail.isPristine && currentEmail.isRemovable") Additional email address must be in a valid email address format (e.g. email@address.com)
+
+
+
 
 div.form-group
 	div.input-group

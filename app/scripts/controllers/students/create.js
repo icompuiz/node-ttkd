@@ -209,6 +209,12 @@ define(['../module'], function(controllers) {
 					return false;
 				}
 
+				//convert emails
+				$scope.model.emailAddresses = [];
+				for(var i=0; i<$scope.model.tmpEmailAddresses.length; i++) {
+					$scope.model.emailAddresses[i] = $scope.model.tmpEmailAddresses[i].value;
+				}
+
 				if (!$scope.wizard.current.isFinalStep) {
 					$scope.wizard.goFoward();
 				} else {
