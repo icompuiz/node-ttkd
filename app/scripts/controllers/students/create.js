@@ -20,37 +20,6 @@ define(['../module'], function(controllers) {
 			});
 
 
-			var mockStudent = {
-			    "emergencyContacts": [{
-			        "name": "sdssd",
-			        "phoneNumber": "5555555555",
-			        "relationship": "Mother"
-			    }, {
-			        "name": "dsdsd",
-			        "phoneNumber": "6666666666",
-			        "relationship": "Father"
-			    }],
-			    "class": "5428ae901ac91384234e306a",
-			    "firstName": "John",
-			    "lastName": "Smith",
-			    "address": {
-			        "street": "1 Lomb Memorial Drive",
-			        "city": "Rochester",
-			        "zip": "14623"
-			    },
-			    "phone": {
-			        "home": "1111111112",
-			        "cell": "2222222222"
-			    },
-			    "emailAddress": "ttkd@gmail.com",
-			    "birthday": "2014-09-12T04:00:00.000Z",
-			    "waiver": {
-			        "guardian": "dsdsd",
-			        "participant": "sddssd"
-			    },
-			};
-
-
 			/**
 			 * The following code is used for controller level validation logic
 			 */
@@ -181,7 +150,7 @@ define(['../module'], function(controllers) {
 				if (!StudentSvc.current) {
 					// There may be an existing student id so try and load
 					if (_.isEmpty($stateParams.id)) {
-					    $scope.model = StudentSvc.init(mockStudent || {});
+					    $scope.model = StudentSvc.init({});
 					    initWizardObject(); // Init wizard
 					} else {
 					    StudentSvc.read($stateParams.id, {}, true).then(
