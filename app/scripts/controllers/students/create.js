@@ -50,7 +50,6 @@ define(['../module'], function(controllers) {
 			    // },
 			};
 
-
 			/**
 			 * The following code is used for controller level validation logic
 			 */
@@ -181,7 +180,7 @@ define(['../module'], function(controllers) {
 				if (!StudentSvc.current) {
 					// There may be an existing student id so try and load
 					if (_.isEmpty($stateParams.id)) {
-					    $scope.model = StudentSvc.init(mockStudent || {});
+					    $scope.model = StudentSvc.init({});
 					    initWizardObject(); // Init wizard
 					} else {
 					    StudentSvc.read($stateParams.id, {}, true).then(
