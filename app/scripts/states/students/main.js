@@ -49,8 +49,7 @@ define(['../module'], function (states) {
         });
 
         $stateProvider.state('admin.students.create', {
-            url: '/students/create/:classId',
-            
+            url: '/students/create?classId',
             views: {
                 'section-body': {
                     templateUrl: 'partials/students/create',
