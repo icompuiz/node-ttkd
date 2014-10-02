@@ -11,8 +11,7 @@ Scenario: CRUD Workshops
 				Reject: !@&&$*(@_)_"?><.,
 				Test for error status code
 			Unit: workshop name is between 2 and 64 characters
-		Unit: workshop has a valid student list
-		Unit: workshop has a valid list of meeting times
+		Unit: workshop has a valid list of classes
 	
 	Feature: Read a workshop from the database
 		Unit: workshop_id matches url_id
