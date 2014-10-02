@@ -1,7 +1,7 @@
 define(['../../module'], function(controllers){
 	'use strict';
-	controllers.controller('EditRankCtrl', ['$scope', '$state', '$stateParams', 'Restangular', 'RankSvc', 'ProgramSvc',
-		function($scope, $state, $stateParams, Restangular, RankSvc, ProgramSvc) {
+	controllers.controller('EditRankCtrl', ['$rootScope', '$scope', '$state', '$stateParams', 'Restangular', 'RankSvc', 'ProgramSvc',
+		function($rootScope, $scope, $state, $stateParams, Restangular, RankSvc, ProgramSvc) {
 			$scope.rank = {};
 			$scope.swapRank = {};
 			$scope.dropdown = {
@@ -90,13 +90,14 @@ define(['../../module'], function(controllers){
 			};
 
 			function goToPrevState() {
-				if (ProgramSvc.editing) {
-					$state.go('admin.programs.edit', {id: $scope.rank.program});
-				} else if (ProgramSvc.creating) {
-					$state.go('admin.programs.create');
-				} else {
-					$state.go('admin.programs.home');
-				}
+				$state.go($rootScope.previousState);
+				// if (ProgramSvc.editing) {
+				// 	$state.go('admin.programs.edit', {id: $scope.rank.program});
+				// } else if (ProgramSvc.creating) {
+				// 	$state.go('admin.programs.create');
+				// } else {
+				// 	$state.go('admin.programs.home');
+				// }
 			}
 
 

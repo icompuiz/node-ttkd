@@ -1,7 +1,7 @@
 define(['../../module'], function(controllers){
 	'use strict';
-	controllers.controller('ViewClassCtrl', ['$scope', '$state', '$stateParams','$log', 'Restangular', 'ProgramSvc', 'ClassSvc','StudentSvc',
-		function($scope, $state, $stateParams,$log, Restangular, ProgramSvc, ClassSvc, StudentSvc) {
+	controllers.controller('ViewClassCtrl', ['$rootScope', '$scope', '$state', '$stateParams','$log', 'Restangular', 'ProgramSvc', 'ClassSvc','StudentSvc',
+		function($rootScope, $scope, $state, $stateParams,$log, Restangular, ProgramSvc, ClassSvc, StudentSvc) {
 			$scope.currentClass = {};
 
 			if (ClassSvc.current && ClassSvc.viewing) {
@@ -13,13 +13,14 @@ define(['../../module'], function(controllers){
 			}
 
 	       $scope.goBack = function() {
-                if (ProgramSvc.editing) {
-                    $state.go('admin.programs.edit', { id: ProgramSvc.current._id });
-                } else if (ProgramSvc.creating) {
-                    $state.go('admin.programs.create');
-                } else {
-                    $state.go('admin.programs.home');
-                }
+                $state.go($rootScope.previousState);
+                // if (ProgramSvc.editing) {
+                //     $state.go('admin.programs.edit', { id: ProgramSvc.current._id });
+                // } else if (ProgramSvc.creating) {
+                //     $state.go('admin.programs.create');
+                // } else {
+                //     $state.go('admin.programs.home');
+                // }
             };
 			            
             $scope.filterOptions = {

@@ -31,6 +31,13 @@ define(['../module'], function(controllers){
 				if (ProgramSvc.removedRanks) {
 					$scope.removedRanks = ProgramSvc.removedRanks;
 				}
+
+				if (!$scope.currentProgram.rankObjs) {
+					$scope.currentProgram.rankObjs = [];
+				}
+				if (!$scope.currentProgram.classObjs) {
+					$scope.currentProgram.classObjs = [];
+				}
 			} else if ($stateParams.id) {
 				// Get class and rank objects and attach them to current program
 				var pClasses = [];
@@ -146,30 +153,6 @@ define(['../module'], function(controllers){
 						});
 				}
 
-				//Send deletions to the model for ranks that were removed from the program
-				function updateRankRemovals(callback, err) {
-					async.each($scope.removedRanks,
-						function(rankItem, callback) {
-							if (!rankItem._id) {
-								callback();
-							} else {
-								RankSvc.read(rankItem._id, null, true).then(function(rnk) {
-									RankSvc.remove().then(function(removed) {
-										if (removed){
-
-											console.log('Rank ' + removed.name + ' successfully deleted');
-										}
-										RankSvc.reset();
-										callback();
-									});
-								});
-							}
-						},
-						function(err) {
-							callback();
-						});
-				}
-
 				//Add or update ranks
 				function updateRanks(callback, err) {
 					async.each($scope.currentProgram.rankObjs,
@@ -188,6 +171,30 @@ define(['../module'], function(controllers){
 								callback();
 							});
 												
+						},
+						function(err) {
+							callback();
+						});
+				}
+
+				//Send deletions to the model for ranks that were removed from the program
+				function updateRankRemovals(callback, err) {
+					async.each($scope.removedRanks,
+						function(rankItem, callback) {
+							if (!rankItem._id) {
+								callback();
+							} else {
+								RankSvc.read(rankItem._id, null, true).then(function(rnk) {
+									RankSvc.remove().then(function(removed) {
+										if (removed){
+
+											console.log('Rank ' + removed.name + ' successfully deleted');
+										}
+										RankSvc.reset();
+										callback();
+									});
+								});
+							}
 						},
 						function(err) {
 							callback();

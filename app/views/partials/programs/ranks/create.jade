@@ -9,6 +9,7 @@ form.form-group
 			span(ng-show='!isEmpty(rank.name) && !isDupName()', class='glyphicon glyphicon-ok input-valid')
 			span(ng-show='isEmpty(rank.name) || isDupName()', class='glyphicon glyphicon-remove input-invalid')
 	p.text-muted.error(ng-show='isDupName()') Rank name must be unique!
+
 	h2 Order
 	.dropdown
 		button.btn.btn-default.dropdown-toggle(type='button' data-toggle='dropdown')

@@ -1,7 +1,7 @@
 define(['../../module'], function(controllers){
 	'use strict';
-	controllers.controller('EditClassCtrl', ['$scope', '$state', '$stateParams', '$log', 'Restangular', 'StudentSvc', 'ClassSvc', 'ProgramSvc',
-		function($scope, $state, $stateParams, $log, Restangular, StudentSvc, ClassSvc, ProgramSvc) {
+	controllers.controller('EditClassCtrl', ['$rootScope', '$scope', '$state', '$stateParams', '$log', 'Restangular', 'StudentSvc', 'ClassSvc', 'ProgramSvc',
+		function($rootScope, $scope, $state, $stateParams, $log, Restangular, StudentSvc, ClassSvc, ProgramSvc) {
 			$scope.currentClass = {};
 			var currentProgram = null,
 				orig = null;
@@ -49,13 +49,14 @@ define(['../../module'], function(controllers){
 			}
 
 			function goToPrevState() {
-				if (ProgramSvc.editing) {
-					$state.go('admin.programs.edit', { id: currentProgram._id});
-				} else if (ProgramSvc.creating) {
-					$state.go('admin.programs.create');
-				} else {
-					$state.go('admin.programs.home');
-				}
+                $state.go($rootScope.previousState);
+				// if (ProgramSvc.editing) {
+				// 	$state.go('admin.programs.edit', { id: currentProgram._id});
+				// } else if (ProgramSvc.creating) {
+				// 	$state.go('admin.programs.create');
+				// } else {
+				// 	$state.go('admin.programs.home');
+				// }
 			}
 
 			$scope.saveClass = function() {

@@ -1,7 +1,7 @@
 define(['../module'], function(controllers){
 	'use strict';
-	controllers.controller('ViewProgramCtrl', ['$scope', '$state', '$stateParams', 'Restangular', 'ProgramSvc', 'ClassSvc', 'RankSvc',
-		function($scope, $state, $stateParams, Restangular, ProgramSvc, ClassSvc, RankSvc) {
+	controllers.controller('ViewProgramCtrl', ['$rootScope', '$scope', '$state', '$stateParams', 'Restangular', 'ProgramSvc', 'ClassSvc', 'RankSvc',
+		function($rootScope, $scope, $state, $stateParams, Restangular, ProgramSvc, ClassSvc, RankSvc) {
 			$scope.currentProgram = {};
 
 			if (ProgramSvc.current && ProgramSvc.viewing) {
@@ -169,7 +169,7 @@ define(['../module'], function(controllers){
 
 			$scope.backToHome = function() {
 				ProgramSvc.reset();
-				$state.go('admin.programs.home');
+				$state.go($rootScope.previousState);
 			};
 
 	}]);
