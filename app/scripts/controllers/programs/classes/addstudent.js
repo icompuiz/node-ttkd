@@ -1,25 +1,28 @@
 define(['../../module'], function(controllers){
 	'use strict';
-	controllers.controller('ViewClassCtrl', ['$scope', '$state', '$stateParams','$log', 'Restangular', 'ClassSvc','StudentSvc',
-		function($scope, $state, $stateParams,$log, Restangular, ClassSvc, StudentSvc) {
+	controllers.controller('AddStudentCtrl', ['$scope', '$state', '$stateParams', '$log', 'Restangular', 'ClassSvc',
+		function($scope, $state, $stateParams, $log, Restangular, ClassSvc) {
 			$scope.currentClass = {};
 
-			if (ClassSvc.current && ClassSvc.viewing) {
+			if (ClassSvc.current && ClassSvc.editing) {
 				$scope.currentClass = ClassSvc.current;
 			} else if ($stateParams.id) {
-				ClassSvc.read($stateParams.id, null, true).then(function(_class) {
-					$scope.currentClass = _class;
+				ClassSvc.read($stateParams.id, null, true).then(function(c) {
+					$scope.currentClass = c;
 				});
 			}
 
-			$scope.goBack = function() {
+			$scope.back = function() {
+				if (ClassSvc.editing) {
+					$state.go('admin.programs.editclass', { id: $scope.currentClass._id});
+				} else if (ClassSvc.creating) {
+					$state.go('admin.programs.createclass');
+				} else {
+					$state.go('admin.programs.viewclass', { id: $scope.currentClass._id});
+				}
+			}
 
-				ClassSvc.reset();
-
-				$state.go('admin.programs.view', {id: $scope.currentClass.program} );
-			};
-			            
-            $scope.filterOptions = {
+			$scope.filterOptions = {
                 filterText: '',
                 useExternalFilter: true
             };
@@ -82,6 +85,8 @@ define(['../../module'], function(controllers){
                 rowHeight: 40,
                 enablePaging: true,
                 showFooter: true,
+                beforeSelectionChange: function(){},
+                afterSelectionChange: function(){},
                 // beforeSelectionChange: function (rowItem, event) {
                 //     // check if one of the options buttons was clicked
                 //     if(event.target.tagName === 'BUTTON') {
@@ -105,72 +110,12 @@ define(['../../module'], function(controllers){
                     { cellTemplate: '/partials/students/list/studentAvatar', sortable: false, width: 70, height: 70, cellClass: 'grid-student-list-icon-cell' },
                     { field: 'firstName', displayName: 'First Name' },
                     { field: 'lastName', displayName: 'Last Name' },
-                    { field: 'age', displayName: 'Age' },
-                    { cellTemplate: '/partials/students/list/viewButton', sortable: false },
+                    { field: 'age', displayName: 'Age' }
                 ]
             };
 
-            $scope.view = function(row){
-                console.log('View student id: ' + row.entity._id);
-                $state.go('admin.students.view', {id: row.entity._id});
+            $scope.addDisabled = function() {
+                return $scope.gridOptions.selectedItems.length === 0;
             };
-
-            // $scope.removeDisabled = function() {
-            //     return $scope.gridOptions.selectedItems.length === 0;
-            // };
-
-            // $scope.remove = function() {
-            //     $scope.showRemoveConfirm = true;
-            // };
-
-            // $scope.confirmRemove = function(remove) {
-            //     if(remove) {
-            //         $log.log('Removing selected students...');
-
-            //         _($scope.gridOptions.selectedItems).forEach(function(student) {
-            //         	if (!student) {
-            //         		return;
-            //         	}
-
-            //             $log.log(' |_ Removing student: ' + student.firstName + ' ' + student.lastName + ' ' + student._id);
-            //             // removeStudentData(student);
-
-            //             $scope.currentClass.students = $scope.currentClass.students.filter(function(filterStudent) {
-            //             	return filterStudent._id !== student._id
-            //             });
-            //         });
-
-            //         completeRemove();
-
-            //         // empty selection
-            //         $scope.gridOptions.selectedItems.length = 0;
-
-            //         $scope.showRemoveConfirm = false;
-            //     } else {
-            //         $scope.showRemoveConfirm = false;
-            //     }
-            // };
-
-            // $scope.showRemoveConfirm = false;
-
-            // function completeRemove() {
-            //     //Remove Students
-            //     function beforeSave(_class)  {
-            //     	_class.students = _class.students.map(function(student) {
-            //     		if (student) {
-            //     			return student._id;
-            //     		}
-            //     	}).filter(function(filterStudent) {
-            //     		return filterStudent;
-            //     	});
-
-            //     	return _class;
-            //     }
-
-            //     ClassSvc.save(beforeSave).then(function() {
-            //         $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage);
-            //     });
-            // }
-
 	}]);
 });	

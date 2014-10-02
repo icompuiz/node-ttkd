@@ -12,7 +12,7 @@ form.form-group
 	h2 Students
 	.row
 	.col-md-12
-		div.gridStyle(ng-grid='classGridOptions')
+		div.gridStyle(ng-grid='gridOptions')
 
 	input.btn.btn-primary.pull-right(ng-disabled='!canCreateClass()', type='submit', value='Create Class', ng-click="createClass()")
 	input.btn.btn-warning.pull-right(type='reset', value='Cancel', ng-click='cancelCreate()')

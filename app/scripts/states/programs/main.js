@@ -117,6 +117,26 @@ define(['../module'], function (states) {
                 }
             }
         });
+
+        $stateProvider.state('admin.programs.addstudenttype', {
+            url: '/programs/classes/addstudent',
+            views: {
+                'section-body': {
+                    templateUrl: 'partials/programs/classes/addstudent/studentType',
+                    controller: 'EditClassCtrl'
+                }
+            }
+        });
+
+        $stateProvider.state('admin.programs.addstudent', {
+            url: '/programs/classes/addstudent/:id',
+            views: {
+                'section-body': {
+                    templateUrl: 'partials/programs/classes/addstudent/existing',
+                    controller: 'AddStudentCtrl'
+                }
+            }
+        });
     }]);
 
 });

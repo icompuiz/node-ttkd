@@ -1,0 +1,17 @@
+h1 {{currentClass.name}}
+h2 Add Student
+
+.row.row-margin-bottom-10
+	.col-md-12
+		.btn-toolbar.pull-left
+			a.btn.btn-primary(ng-click='addSelected()', ng-disabled='addDisabled()') Add Selected
+.row
+	.col-md-12
+		div.gridStyle(ng-grid="gridOptions")
+.row
+	.col-md-12
+		.btn-toolbar
+			button.btn.btn-warning.pull-right(type='button', ng-click='back()')
+				| Back to Class
+
+div(class='clearfix')

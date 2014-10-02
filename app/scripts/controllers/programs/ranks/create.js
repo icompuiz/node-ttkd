@@ -92,6 +92,9 @@ define(['../../module'], function(controllers){
 			};
 
 			$scope.createRank = function() {
+				if (!program.rankObjs) {
+					program.rankObjs = [];
+				}
 
 				//Perform the rank order swap if necessary
 				if ($scope.showOrderWarning) {

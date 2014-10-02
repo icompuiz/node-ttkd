@@ -1,7 +1,7 @@
 define(['../module'], function(controllers){
 	'use strict';
-	controllers.controller('EditProgramCtrl', ['$scope', '$state', '$stateParams', 'Restangular', 'ProgramSvc', 'ClassSvc', 'RankSvc', 
-		function($scope, $state, $stateParams, Restangular, ProgramSvc, ClassSvc, RankSvc) {
+	controllers.controller('EditProgramCtrl', ['$scope', '$state', '$stateParams', 'WizardService', 'Restangular', 'ProgramSvc', 'ClassSvc', 'RankSvc', 
+		function($scope, $state, $stateParams, WizardService, Restangular, ProgramSvc, ClassSvc, RankSvc) {
 			$scope.currentProgram = {};
 			$scope.removedRanks = [];
 			$scope.removedClasses = [];
@@ -15,6 +15,10 @@ define(['../module'], function(controllers){
 				});
 			};
 			$scope.getPrograms();
+
+			if (!WizardService.get($scope.currentProgram._id)) {
+				WizardService.create($scope.currentProgram._id, true);
+			}
 
 			// Load current program if ProgramSvc has one
 			if (ProgramSvc.current && ProgramSvc.editing) {

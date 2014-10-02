@@ -1,0 +1,8 @@
+.container
+	.row.row-margin-bottom-10.row-centered
+		.col.col-centered
+			a.btn.btn-primary(ui-sref='admin.programs.addstudent({ id: currentClass._id })') Add Existing Student
+	.row.row-centered
+		.col.col-centered
+			a.btn.btn-primary(ui-sref='admin.students.create({ classId: currentClass._id })' ng-click='doStuff()') Create New Student
+		
