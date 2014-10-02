@@ -1,7 +1,7 @@
 define(['../../module'], function(controllers){
 	'use strict';
-	controllers.controller('AddStudentCtrl', ['$scope', '$state', '$stateParams', '$log', 'Restangular', 'ClassSvc',
-		function($scope, $state, $stateParams, $log, Restangular, ClassSvc) {
+	controllers.controller('AddStudentCtrl', ['$scope', '$state', '$stateParams', '$log', 'Restangular', 'ClassSvc', 'StudentSvc',
+		function($scope, $state, $stateParams, $log, Restangular, ClassSvc, StudentSvc) {
 			$scope.currentClass = {};
 
 			if (ClassSvc.current && ClassSvc.editing) {
@@ -12,6 +12,10 @@ define(['../../module'], function(controllers){
 				});
 			}
 
+            if (!$scope.currentClass.students) {
+                $scope.currentClass.students = [];
+            }
+
 			$scope.back = function() {
 				if (ClassSvc.editing) {
 					$state.go('admin.programs.editclass', { id: $scope.currentClass._id});
@@ -20,7 +24,7 @@ define(['../../module'], function(controllers){
 				} else {
 					$state.go('admin.programs.viewclass', { id: $scope.currentClass._id});
 				}
-			}
+			};
 
 			$scope.filterOptions = {
                 filterText: '',
@@ -33,6 +37,25 @@ define(['../../module'], function(controllers){
                 pageSizes: [25, 50, 100, 250, 500, 1000],
                 pageSize: 25,
                 currentPage: 1
+            };
+
+            $scope.addSelected = function() {
+                $log.log('Removing selected students...');
+
+                _($scope.gridOptions.selectedItems).forEach(function(student) {
+                    if (!student) {
+                        return;
+                    }
+
+                    $log.log(' |_ Adding student: ' + student.firstName + ' ' + student.lastName + ' ' + student._id + ' to class ' + $scope.currentClass.name);
+
+                    $scope.currentClass.students.push(student._id);
+                    $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage);
+                });
+
+                // empty selection
+                $scope.gridOptions.selectedItems.length = 0;
+            
             };
 
             $scope.setPagingData = function(data, page, pageSize){
@@ -48,8 +71,8 @@ define(['../../module'], function(controllers){
                 setTimeout(function () {
                     var data = [];
 
-                    ClassSvc.read($stateParams.id, {populate: 'students'}, false).then(function(_class) {
-						var students = _class.students;
+                    StudentSvc.list().then(function(allStudents) {
+						var students = allStudents;
                         _(students).forEach(function(student){
                             // data.push({
                             //     'firstName': student.firstName,
@@ -57,7 +80,11 @@ define(['../../module'], function(controllers){
                             //     'age': $filter('age')(student.birthday),
                             //     '_id': student._id
                             // })
-                            data.push(student);
+
+                            // Display students who are not already in the class
+                            if (!_.find($scope.currentClass.students, function(id){ return id === student._id;})) {
+                                data.push(student);
+                            }
                         });
 
 
@@ -85,8 +112,8 @@ define(['../../module'], function(controllers){
                 rowHeight: 40,
                 enablePaging: true,
                 showFooter: true,
-                beforeSelectionChange: function(){},
-                afterSelectionChange: function(){},
+                //beforeSelectionChange: function(){},
+                //afterSelectionChange: function(){},
                 // beforeSelectionChange: function (rowItem, event) {
                 //     // check if one of the options buttons was clicked
                 //     if(event.target.tagName === 'BUTTON') {

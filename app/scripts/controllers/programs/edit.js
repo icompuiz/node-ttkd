@@ -102,14 +102,14 @@ define(['../module'], function(controllers){
 					rankIDs = [];
 
 				//Add or update classes
-				function addClassesToModel(callback, err) {
+				function updateClasses(callback, err) {
 					async.each($scope.currentProgram.classObjs,
 						function(classItem, callback) {
 
 							function beforeSave(c) {
 								c.name = classItem.name;
 								c.meetingTimes = classItem.meetingTimes;
-								c.studentList = classItem.studentList;
+								c.students = classItem.students;
 								c.program = $scope.currentProgram._id;
 							}
 
@@ -126,7 +126,7 @@ define(['../module'], function(controllers){
 				}
 
 				//Send deletions to the model for classes that were removed from the program
-				function removeClassesFromModel(callback, err) {
+				function updateClassRemovals(callback, err) {
 					async.each($scope.removedClasses,
 						function(classItem, callback) {
 							if (!classItem._id) {
@@ -147,7 +147,7 @@ define(['../module'], function(controllers){
 				}
 
 				//Send deletions to the model for ranks that were removed from the program
-				function removeRanksFromModel(callback, err) {
+				function updateRankRemovals(callback, err) {
 					async.each($scope.removedRanks,
 						function(rankItem, callback) {
 							if (!rankItem._id) {
@@ -171,7 +171,7 @@ define(['../module'], function(controllers){
 				}
 
 				//Add or update ranks
-				function addRanksToModel(callback, err) {
+				function updateRanks(callback, err) {
 					async.each($scope.currentProgram.rankObjs,
 						function(rankItem, callback) {
 
@@ -196,10 +196,10 @@ define(['../module'], function(controllers){
 
 				(function(classIDs, rankIDs) {
 					async.parallel([
-						addClassesToModel,
-						addRanksToModel,
-						removeClassesFromModel,
-						removeRanksFromModel],
+						updateClasses,
+						updateRanks,
+						updateClassRemovals,
+						updateRankRemovals],
 						function(err) {
 
 							function beforeSave(program) {

@@ -1,7 +1,7 @@
 define(['../module'], function(controllers){
 	'use strict';
-	controllers.controller('ViewProgramCtrl', ['$scope', '$state', '$stateParams', 'Restangular', 'ProgramSvc', 'ClassSvc',
-		function($scope, $state, $stateParams, Restangular, ProgramSvc, ClassSvc) {
+	controllers.controller('ViewProgramCtrl', ['$scope', '$state', '$stateParams', 'Restangular', 'ProgramSvc', 'ClassSvc', 'RankSvc',
+		function($scope, $state, $stateParams, Restangular, ProgramSvc, ClassSvc, RankSvc) {
 			$scope.currentProgram = {};
 
 			if (ProgramSvc.current && ProgramSvc.viewing) {

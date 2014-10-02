@@ -1,7 +1,7 @@
 define(['../../module'], function(controllers){
 	'use strict';
-	controllers.controller('ViewClassCtrl', ['$scope', '$state', '$stateParams','$log', 'Restangular', 'ClassSvc','StudentSvc',
-		function($scope, $state, $stateParams,$log, Restangular, ClassSvc, StudentSvc) {
+	controllers.controller('ViewClassCtrl', ['$scope', '$state', '$stateParams','$log', 'Restangular', 'ProgramSvc', 'ClassSvc','StudentSvc',
+		function($scope, $state, $stateParams,$log, Restangular, ProgramSvc, ClassSvc, StudentSvc) {
 			$scope.currentClass = {};
 
 			if (ClassSvc.current && ClassSvc.viewing) {
@@ -12,12 +12,15 @@ define(['../../module'], function(controllers){
 				});
 			}
 
-			$scope.goBack = function() {
-
-				ClassSvc.reset();
-
-				$state.go('admin.programs.view', {id: $scope.currentClass.program} );
-			};
+	       $scope.goBack = function() {
+                if (ProgramSvc.editing) {
+                    $state.go('admin.programs.edit', { id: ProgramSvc.current._id });
+                } else if (ProgramSvc.creating) {
+                    $state.go('admin.programs.create');
+                } else {
+                    $state.go('admin.programs.home');
+                }
+            };
 			            
             $scope.filterOptions = {
                 filterText: '',
@@ -42,25 +45,17 @@ define(['../../module'], function(controllers){
             };
 
             $scope.getPagedDataAsync = function (pageSize, page) {
-                setTimeout(function () {
-                    var data = [];
-
-                    ClassSvc.read($stateParams.id, {populate: 'students'}, false).then(function(_class) {
-						var students = _class.students;
-                        _(students).forEach(function(student){
-                            // data.push({
-                            //     'firstName': student.firstName,
-                            //     'lastName': student.lastName,
-                            //     'age': $filter('age')(student.birthday),
-                            //     '_id': student._id
-                            // })
-                            data.push(student);
+                var data = [];
+                async.each($scope.currentClass.students,
+                    function(id, callback) {
+                        StudentSvc.read(id, null, false).then(function(s) {
+                            data.push(s);
+                            callback();
                         });
-
-
+                    },
+                    function(err) {
                         $scope.setPagingData(data,page,pageSize);
-					});
-                }, 100);
+                });                 
             };
 
             $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage);

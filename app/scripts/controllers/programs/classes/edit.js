@@ -1,10 +1,10 @@
 define(['../../module'], function(controllers){
 	'use strict';
-	controllers.controller('EditClassCtrl', ['$scope', '$state', '$stateParams', '$log', 'Restangular', 'ClassSvc', 'ProgramSvc',
-		function($scope, $state, $stateParams, $log, Restangular, ClassSvc, ProgramSvc) {
+	controllers.controller('EditClassCtrl', ['$scope', '$state', '$stateParams', '$log', 'Restangular', 'StudentSvc', 'ClassSvc', 'ProgramSvc',
+		function($scope, $state, $stateParams, $log, Restangular, StudentSvc, ClassSvc, ProgramSvc) {
 			$scope.currentClass = {};
-			var currentProgram = null;
-			var orig = null;
+			var currentProgram = null,
+				orig = null;
 
 			if (ClassSvc.current && ClassSvc.editing) {
 				$scope.currentClass = ClassSvc.current;
@@ -13,7 +13,7 @@ define(['../../module'], function(controllers){
 				if (!ClassSvc.orig) {
 					ClassSvc.orig = {
 						name: ClassSvc.current.name,
-						studentList: ClassSvc.current.studentList
+						students: ClassSvc.current.students
 					};
 				}
 				orig = ClassSvc.orig;
@@ -22,7 +22,7 @@ define(['../../module'], function(controllers){
 					$scope.currentClass = c;
 					ClassSvc.orig = {
 						name: c.name,
-						studentList: c.studentList
+						students: c.students
 					};
 					orig = ClassSvc.orig;
 					ProgramSvc.read($scope.currentClass.program, null, true).then(function(p) {
@@ -40,7 +40,12 @@ define(['../../module'], function(controllers){
 								currentProgram.populated = true;
 							});
 					});
+					ClassSvc.editing = true;
 				});
+			}
+
+			if (!$scope.currentClass.students) {
+				$scope.currentClass.students = [];
 			}
 
 			function goToPrevState() {
@@ -101,39 +106,31 @@ define(['../../module'], function(controllers){
                 }
             };
 
-            $scope.getPagedDataAsync = function (pageSize, page) {
-                setTimeout(function () {
-                    var data = [];
-
-                    ClassSvc.read($stateParams.id, {populate: 'students'}, false).then(function(_class) {
-						var students = _class.students;
-                        _(students).forEach(function(student){
-                            // data.push({
-                            //     'firstName': student.firstName,
-                            //     'lastName': student.lastName,
-                            //     'age': $filter('age')(student.birthday),
-                            //     '_id': student._id
-                            // })
-                            data.push(student);
-                        });
-
-
-                        $scope.setPagingData(data,page,pageSize);
-					});
-                }, 100);
+            $scope.getPagedData = function (pageSize, page) {
+                var data = [];
+                async.each($scope.currentClass.students,
+                	function(id, callback) {
+                		StudentSvc.read(id, null, false).then(function(s) {
+							data.push(s);
+							callback();
+						});
+                	},
+                	function(err) {
+                		$scope.setPagingData(data,page,pageSize);
+            	});	                
             };
 
-            $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage);
+           	$scope.getPagedData($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage);
 
             $scope.$watch('pagingOptions', function (newVal, oldVal) {
                 if (newVal !== oldVal && newVal.currentPage !== oldVal.currentPage) {
-                    $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage, $scope.filterOptions.filterText);
+                    $scope.getPagedData($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage, $scope.filterOptions.filterText);
                 }
             }, true);
 
             $scope.$watch('filterOptions', function (newVal, oldVal) {
                 if (newVal !== oldVal) {
-                    $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage, $scope.filterOptions.filterText);
+                    $scope.getPagedData($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage, $scope.filterOptions.filterText);
                 }
             }, true);
 
@@ -205,11 +202,12 @@ define(['../../module'], function(controllers){
                         // removeStudentData(student);
 
                         $scope.currentClass.students = $scope.currentClass.students.filter(function(filterStudent) {
-                        	return filterStudent._id !== student._id;
+                        	return filterStudent !== student._id;
                         });
                     });
 
-                    completeRemove();
+                    //completeRemove();
+                    $scope.getPagedData($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage);
 
                     // empty selection
                     $scope.gridOptions.selectedItems.length = 0;
@@ -236,9 +234,9 @@ define(['../../module'], function(controllers){
                 	return _class;
                 }
 
-                ClassSvc.save(beforeSave).then(function() {
-                    $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage);
-                });
+                // ClassSvc.save(beforeSave).then(function() {
+                //     $scope.getPagedData($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage);
+                // });
             }
 
 /********************** Form Validation **********************************/
