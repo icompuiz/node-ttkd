@@ -99,7 +99,6 @@ function removeFiles(doneRemovingFiles) {
 
 }
 
-
 function removeAssets(doneRemovingAssets) {
 
     var Asset = $mongoose.model('Route');
@@ -146,6 +145,36 @@ function removeStudents(doneRemovingStudents){
 
         console.log('loadData::removeStudents::success');
         doneRemovingStudents();
+    });
+}
+
+function removeRanks(doneRemovingRanks){
+    var Rank = $mongoose.model('Rank');
+    console.log('loadData::removeRanks::enter');
+
+    Rank.remove({}, function(err) {
+        if(err) {
+            console.log('loadData::removeRanks::fail', err);
+            return doneRemovingRanks(err);
+        }
+
+        console.log('loadData::removeRanks::success');
+        doneRemovingRanks();
+    });
+}
+
+function removeEmergencyContacts(doneRemovingEmergencyContacts){
+    var EmergencyContact = $mongoose.model('EmergencyContact');
+    console.log('loadData::removeEmergencyContacts::enter');
+
+    EmergencyContact.remove({}, function(err) {
+        if(err) {
+            console.log('loadData::removeEmergencyContacts::fail', err);
+            return doneRemovingEmergencyContacts(err);
+        }
+
+        console.log('loadData::removeEmergencyContacts::success');
+        doneRemovingEmergencyContacts();
     });
 }
 
@@ -464,6 +493,8 @@ function addAssets(doneAddingAssets) {
 var tasks = {
     removeUsers: removeUsers,
     removeStudents: removeStudents,
+    removeRanks: removeRanks,
+    removeEmergencyContacts: removeEmergencyContacts,
     removeGroups: removeGroups,
     removeDirectories: removeDirectories,
     removeFiles: removeFiles,

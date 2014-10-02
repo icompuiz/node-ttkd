@@ -8,7 +8,7 @@ var express = require('express'),
     otFuzzer = require('ot-fuzzer'),
     EmergencyContact = require('../../../server/models/emergencyContact');
 
-    describe('Workshops', function() {
+    describe('Workshop Attendance Lists', function() {
         var app;
 
         before(function(beforeDone) {
@@ -53,12 +53,12 @@ var express = require('express'),
 
         });
     
-    var classes = [];
+    var students = [];
     var work;
     describe('Post Data', function(postDone){
-        it('should post class 1', function(class1Done){
+        it('should post student 1', function(student1Done){
             request(app)
-            .post('/api/classes')
+            .post('/api/students')
             .send({
                 name: otFuzzer.randomWord()
             })
@@ -66,14 +66,14 @@ var express = require('express'),
             .set('Cookie', cookie)
             .set('Content-Type', 'application/json')
             .expect(function(res){
-                classes.push(res.body._id);
+                students.push(res.body._id);
             })
-            .expect(201,class1Done)
+            .expect(201,student1Done)
         });
 
-        it('should post class 2', function(class2Done){
+        it('should post student 2', function(student2Done){
             request(app)
-            .post('/api/classes')
+            .post('/api/students')
             .send({
                 name: otFuzzer.randomWord()
             })
@@ -81,17 +81,17 @@ var express = require('express'),
             .set('Cookie', cookie)
             .set('Content-Type', 'application/json')
             .expect(function(res){
-                classes.push(res.body._id);
+                students.push(res.body._id);
             })
-            .expect(201,class2Done)
+            .expect(201,student2Done)
         });
 
-        it('should post workshops', function(workshopsPostDone){
+        it('should post workshop Attendance list', function(workshopAttListPostDone){
                 request(app)
                 .post('/api/workshops')
                 .send({
-                    name: otFuzzer.randomWord(),
-                    workshops: classes
+                    students: students,
+                    workshopDate: Date.now()
                 })
                 .set('Accept', 'application/json')
                 .set('Cookie', cookie)
@@ -99,49 +99,45 @@ var express = require('express'),
                 .expect(function(res){
                     work = res.body;
                 })
-                .expect(201,workshopsPostDone)
+                .expect(201,workshopAttListPostDone)
             });
     });
 
-    describe('CRUD Workshops', function() {
+    describe('CRUD Workshop Attendance list', function() {
 
-        describe('Create a Workshop', function() {
-
-            it('should have a valid name', function(nameDone) {
+        describe('Create a Workshop Attendance List', function() {
+            
+            it('should have a valid list of students', function(studentListDone) {
                 request(app)
                     request(app)
-                    .get('/api/workshops/'+work._id)
+                    .get('/api/workshopattendancelists/'+work._id)
                     .set('Accept', 'application/json')
                     .set('Cookie', cookie)
                     .set('Content-Type', 'application/json')
                     .expect(function(res) {
-                        res.body.name.should.be.type('string');
-                        res.body.name.should.match(/[a-zA-Z0-9]/);
-                        res.body.name.should.not.match(/[!@#$%^&*()_+={},.<>|?`~]/);
-                        res.body.name.length.should.not.be.below(2);
-                        res.body.name.length.should.not.be.above(64);
-                        res.body.name.should.match(work.name);
+                        res.body.students.should.be.type('array');
                     })
-                    .expect(200, nameDone);
+                    .expect(200, studentListDone);
             });
 
-            it('should have a valid list of classes', function(classListDone) {
+            it('should have a valid list date', function(dateDone) {
                 request(app)
                     request(app)
-                    .get('/api/workshops/'+work._id)
+                    .get('/api/workshopattendancelists/'+work._id)
                     .set('Accept', 'application/json')
                     .set('Cookie', cookie)
                     .set('Content-Type', 'application/json')
                     .expect(function(res) {
-                        (res.body.workshops instanceof Array).should.be.true;                    })
-                    .expect(200, classListDone);
+                        res.body.workshopDate.should.be.type('date');
+                    })
+                    .expect(200, dateDone);
             });
         });
 
-        describe('Read a workshop from the database', function() {
-            it('should be that url_id matches workshops_id', function(readDone) {
+        describe('Read a workshop Attendance list from the database', function() {
+            it('should be that url_id matches workshopattendancelist_id', function(readDone) {
                 request(app)
-                    .get('/api/workshops/'+work._id)
+                    .get('/api/workshopattendancelists/'+work._id)
                     .set('Accept', 'application/json')
                     .set('Cookie', cookie)
                     .set('Content-Type', 'application/json')
@@ -153,23 +149,24 @@ var express = require('express'),
         });
         
         describe('Update an existing workshop', function() {
-            it('should change workshops name', function(nameChangeDone){
+            it('should remove a student', function(removeeDone){
+                students.pop();
                 request(app)
-                    .get('/api/workshops'+work._id)
+                    .get('/api/workshopattendancelists'+work._id)
                     .put({
-                        name: otFuzzer.randomWord()
+                        students: students
                     })
                     .expect(function(res){
-                        res.body.name.should.not.match(work.name);
+                        res.body.students.length.should.be.below(2);
                     })
-                    .expect(201,nameChangeDone);
+                    .expect(201,removeDone);
             });
         });
 
-        describe('List all workshops', function(listDone){
+        describe('List all workshop Attendance lists', function(listDone){
                 it('should be a list', function(shouldListDone) {
                     request(app)
-                        .get('/api/workshops')
+                        .get('/api/workshopattendancelists')
                         .set('Accept', 'application/json')
                         .set('Cookie', cookie)
                         .set('Content-Type', 'application/json')
@@ -180,10 +177,10 @@ var express = require('express'),
                 });
             });
 
-        describe('Delete an existing workshop', function() {
+        describe('Delete an existing workshop Attendance list', function() {
             it('should be that url_id has no matching workshop_id', function(deleteDone) {
                 request(app)
-                    .delete('/api/workshops/'+work._id)
+                    .delete('/api/workshopattendancelists/'+work._id)
                     .set('Accept', 'application/json')
                     .set('Cookie', cookie)
                     .set('Content-Type', 'application/json')
