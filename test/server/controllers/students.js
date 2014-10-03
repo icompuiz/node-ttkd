@@ -469,7 +469,7 @@ var express = require('express'),
                     emailAddresses: [otFuzzer.randomWord(),otFuzzer.randomWord()],
                     emergencyContacts: [mom,dad],
                     // avatar: new File(),
-                    birthday: new Date('02/23/1992'),
+                    birthday: new Date(1+otFuzzer.randomInt(11)+'/'+1+otFuzzer.randomInt(27)+'/'+1980+otFuzzer.randomInt(30)),
                     address: {
                         street: otFuzzer.randomWord(),
                         city: otFuzzer.randomWord(),
