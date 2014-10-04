@@ -9,6 +9,7 @@ form.form-group
 			span(ng-show='!isEmpty(rank.name) && !isDupName()', class='glyphicon glyphicon-ok input-valid')
 			span(ng-show='isEmpty(rank.name) || isDupName()', class='glyphicon glyphicon-remove input-invalid')
 	p.text-muted.error(ng-show='isDupName()') Rank name must be unique!
+	
 	h2 Order
 	.dropdown
 		button.btn.btn-default.dropdown-toggle(type='button' data-toggle='dropdown')
@@ -17,7 +18,11 @@ form.form-group
 		ul.dropdown-menu(role='menu')
 			li(ng-repeat='i in dropdown.items' role='presentation')
 				a.dropdown-toggle(href='#' role='menuitem' tabindex='-1' ng-click='setRankOrder(i)') {{i}}
-	p.text-muted.error(ng-show='showOrderWarning') Changing this rank's order to {{rank.rankOrder}} will change the order of rank {{swapRank.name}} to {{swapRankOrder}}
+	p.text-muted.error(ng-show='showOrderWarning') Changing this rank's order to {{rank.rankOrder}} will change the order of rank {{swapRank.name}} to {{swapRank.newRankOrder}}
+
+	h3 Color
+	.color-tile(ng-click='pickColor()')
+		|None
 
 	input.btn.btn-primary.pull-right(ng-disabled='!canSaveRank()', type='submit', value='Save Rank', ng-click="saveRank()")
 	input.btn.btn-warning.pull-right(type='reset', value='Cancel', ng-click='cancelEdit()')

@@ -15,11 +15,6 @@ define(['../../module'], function(controllers){
 				var ordered = _.sortBy(program.rankObjs, 'rankOrder');
 				var orders = _.map(ordered, function(r){return r.rankOrder;});
 
-				if (orders.length === 0) {
-					$scope.rank.rankOrder = 1;
-					orders.push($scope.rank.rankOrder);
-				}
-
 				$scope.dropdown.items = orders;
 			}
 
@@ -34,6 +29,7 @@ define(['../../module'], function(controllers){
 					orig = RankSvc.orig;
 				}
 				program.populated = true;
+				setDropdownItems();
 			// Otherwise get them from db
 			} else if ($stateParams.id) { 
 				RankSvc.read($stateParams.id, null, true).then(function(r) {
@@ -56,6 +52,7 @@ define(['../../module'], function(controllers){
 								program = p;
 								program.rankObjs = rankObjs;
 								program.populated = true;
+								setDropdownItems();
 							}
 						);
 					});
@@ -68,14 +65,14 @@ define(['../../module'], function(controllers){
 			}
 
 			$scope.setRankOrder = function(newVal) {
-				if (!$scope.oldVal) {
-					$scope.oldVal = $scope.rank.rankOrder;
+				if (!$scope.origRankOrder) {
+					$scope.origRankOrder = $scope.rank.rankOrder;
 				}
 
 				var found = _.find(program.rankObjs, function(o){return o.rankOrder === newVal;});
-				if (found) {
+				if (found && found.name !== orig.name) {
 					$scope.swapRank = found;
-					$scope.swapRankOrder = $scope.oldVal;
+					$scope.swapRank.newRankOrder = $scope.origRankOrder;
 					$scope.showOrderWarning = true;
 				} else {
 					$scope.showOrderWarning = false;
@@ -90,14 +87,13 @@ define(['../../module'], function(controllers){
 			};
 
 			function goToPrevState() {
-				$state.go($rootScope.previousState);
-				// if (ProgramSvc.editing) {
-				// 	$state.go('admin.programs.edit', {id: $scope.rank.program});
-				// } else if (ProgramSvc.creating) {
-				// 	$state.go('admin.programs.create');
-				// } else {
-				// 	$state.go('admin.programs.home');
-				// }
+				if (!$rootScope.previousState) {
+					$state.go('admin.programs.edit', {id: $scope.rank.program});
+				} else if ($rootScope.previousParams) {
+					$state.go($rootScope.previousState, $rootScope.previousParams);
+				} else {
+					$state.go($rootScope.previousState);
+				}
 			}
 
 
@@ -118,6 +114,11 @@ define(['../../module'], function(controllers){
 					program.rankObjs[i] = $scope.rank;
 				} else {
 					program.rankObjs.push($scope.rank);
+				}
+
+				//Perform the rank order swap if necessary
+				if ($scope.showOrderWarning) {
+					$scope.swapRank.rankOrder = $scope.swapRank.newRankOrder;
 				}
 
 				RankSvc.reset();
