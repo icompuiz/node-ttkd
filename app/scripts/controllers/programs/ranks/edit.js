@@ -52,6 +52,7 @@ define(['../../module'], function(controllers){
 								program = p;
 								program.rankObjs = rankObjs;
 								program.populated = true;
+								$scope.getData();
 								setDropdownItems();
 							}
 						);
@@ -85,6 +86,134 @@ define(['../../module'], function(controllers){
 				// after the initial selection
 				$('[data-toggle="dropdown"]').parent().removeClass('open');
 			};
+
+			$scope.filterOptions = {
+                filterText: '',
+                useExternalFilter: true
+            };
+
+            $scope.totalServerItems = 0;
+
+            $scope.pagingOptions = {
+                pageSizes: [25, 50, 100, 250, 500, 1000],
+                pageSize: 25,
+                currentPage: 1
+            };
+
+            $scope.setPagingData = function(data){
+                $scope.myData = data;
+                $scope.totalServerItems = data.length;
+                if (!$scope.$$phase) {
+                    $scope.$apply();
+                }
+            };
+
+            $scope.getData = function () {
+                var data = [];
+                _($scope.rank.intermediaryRanks).forEach(function(r) {
+                	data.push(r);
+                });
+                $scope.setPagingData(data);                
+            };
+
+           	$scope.getData();
+
+            $scope.$watch('filterOptions', function (newVal, oldVal) {
+                if (newVal !== oldVal) {
+                    $scope.getData();
+                }
+            }, true);
+
+            $scope.gridOptions = {
+                data: 'myData',
+                rowHeight: 40,
+                enableCellSelection: true,
+                enableRowSelection: false,
+                enableCellEdit: true,
+                beforeSelectionChange: function (rowItem, event) {
+                    // check if one of the options buttons was clicked
+                    if(event.target.tagName === 'BUTTON') {	
+                        return false;
+                    } else {
+                        return true;
+                    }
+                },
+                afterSelectionChange: function () {
+                    if($scope.gridOptions.selectedItems.length === 0) {
+                        $scope.showRemoveConfirm = false;
+                    }
+                    return true;
+                },
+                totalServerItems: 'totalServerItems',
+                filterOptions: $scope.filterOptions,
+                selectedItems: [],
+                sortInfo: { fields: ['lastName', 'firstname'], directions: ['asc', 'asc'] },
+                columnDefs: [
+                    { cellTemplate: '/partials/programs/ranks/subranks/rankCheckbox', width: 50, sortable: false, enableCellEdit: false },                	
+                    { field: 'name', displayName: 'Rank Name' },
+                    { field: 'rankOrder', displayName: 'Order' }
+                ]
+            };
+
+            $scope.selectRank = function(row) {
+            	_($scope.rank.intermediaryRanks).forEach(function(r){
+            		if(r.rankOrder === row.entity.rankOrder) {
+            			r.isSelected = !r.isSelected;
+
+            			if(r.isSelected) {
+            				$scope.gridOptions.selectedItems.length += 1;
+            			} else {
+            				$scope.gridOptions.selectedItems.length -= 1;
+            			}
+            		}
+            	});
+            };
+
+            $scope.addSubrank = function() {
+            	if(!$scope.rank.intermediaryRanks) {
+            		$scope.rank.intermediaryRanks = [];
+            	}
+
+            	var newRankOrder = $scope.rank.intermediaryRanks.length + 1;
+
+            	var newRank = {
+            		name: '<Name>',
+            		rankOrder: newRankOrder
+            	};
+
+            	$scope.rank.intermediaryRanks.push(newRank);
+            	$scope.getData();
+            };
+
+            $scope.removeDisabled = function() {
+                return $scope.gridOptions.selectedItems.length === 0;
+            };
+
+            $scope.remove = function() {
+                $scope.showRemoveConfirm = true;
+            };
+
+            $scope.confirmRemove = function(remove) {
+                if(remove) {
+
+                    _($scope.rank.intermediaryRanks).forEach(function(rank) {
+                    	if(rank.isSelected) {
+                    		$scope.rank.intermediaryRanks = _.without($scope.rank.intermediaryRanks, rank);
+                    	}
+                    });
+
+                    $scope.getData();
+
+                    // empty selection
+                    $scope.gridOptions.selectedItems.length = 0;
+
+                    $scope.showRemoveConfirm = false;
+                } else {
+                    $scope.showRemoveConfirm = false;
+                }
+            };
+
+            $scope.showRemoveConfirm = false;
 
 			function goToPrevState() {
 				if (!$rootScope.previousState) {
@@ -128,16 +257,24 @@ define(['../../module'], function(controllers){
 				
 			};
 
-
-
-/********************** Form Validation **********************************/
-
+/********************** Validation **********************************/
 			$scope.isEmpty = function(str) {
 				return (!str || 0 === str.length);
 			};
 
 			$scope.canSaveRank = function() {
-				return !$scope.isEmpty($scope.rank.name) && !$scope.isDupName();
+
+				// Validate name
+				if ($scope.isEmpty($scope.rank.name) || $scope.isDupName()) {
+					return false;
+				}
+
+				// Validate sub-ranks
+				if ($scope.showSubrankNameMessage() || $scope.showSubrankOrderMessage()) {
+					return false;
+				}
+
+				return true;
 			};
 
 			$scope.isDupName = function() {
@@ -148,6 +285,42 @@ define(['../../module'], function(controllers){
 				}
 
 				return _.contains(names, $scope.rank.name);
+			};
+
+			$scope.showSubrankNameMessage = function() {
+				var names = [],
+					uniq = [];
+				if ($scope.rank.intermediaryRanks) {
+					names = _.map($scope.rank.intermediaryRanks, function(r){return r.name;});
+					uniq = _.uniq(names);
+					return (names.length !== uniq.length);
+				}
+				return false;
+			};
+
+			$scope.showSubrankOrderMessage = function() {
+				var orders = [],
+					uniq = [];
+				if ($scope.rank.intermediaryRanks && $scope.rank.intermediaryRanks.length > 0) {
+					orders = _.map($scope.rank.intermediaryRanks, function(r){return r.rankOrder;});
+
+					// Check for duplicates
+					uniq = _.uniq(orders);
+					if (uniq.length !== orders.length) {
+						return true;
+					}
+
+					// Make sure ordering starts at 1
+					if (!_.contains(orders, 1)) {
+						return true;
+					}
+
+					// Make sure they increment by 1
+					if (_.max(orders) != $scope.rank.intermediaryRanks.length) {
+						return true;
+					}
+				}
+				return false;
 			};
 	}]);
 });	

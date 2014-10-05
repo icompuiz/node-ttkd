@@ -13,12 +13,12 @@ define(['../../module'], function(controllers){
 			}
 
 	       $scope.goBack = function() {
-                if (ProgramSvc.editing) {
-                    $state.go('admin.programs.edit', { id: ProgramSvc.current._id });
-                } else if (ProgramSvc.creating) {
-                    $state.go('admin.programs.create');
-                } else {
+                if (!$rootScope.previousState) {
                     $state.go('admin.programs.home');
+                } else if ($rootScope.previousParams) {
+                    $state.go($rootScope.previousState, $rootScope.previousParams);
+                } else {
+                    $state.go($rootScope.previousState);
                 }
             };
 			            

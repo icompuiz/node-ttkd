@@ -185,10 +185,6 @@ define(['../../module'], function(controllers){
                 $scope.showRemoveConfirm = true;
             };
 
-            $scope.doStuff = function() {
-            	var c = $scope.currentClass;
-            };
-
             $scope.confirmRemove = function(remove) {
                 if(remove) {
                     $log.log('Removing selected students...');
@@ -206,7 +202,6 @@ define(['../../module'], function(controllers){
                         });
                     });
 
-                    //completeRemove();
                     $scope.getPagedData($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage);
 
                     // empty selection
@@ -220,24 +215,6 @@ define(['../../module'], function(controllers){
 
             $scope.showRemoveConfirm = false;
 
-            function completeRemove() {
-                //Remove Students
-                function beforeSave(_class)  {
-                	_class.students = _class.students.map(function(student) {
-                		if (student) {
-                			return student._id;
-                		}
-                	}).filter(function(filterStudent) {
-                		return filterStudent;
-                	});
-
-                	return _class;
-                }
-
-                // ClassSvc.save(beforeSave).then(function() {
-                //     $scope.getPagedData($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage);
-                // });
-            }
 
 /********************** Form Validation **********************************/
 

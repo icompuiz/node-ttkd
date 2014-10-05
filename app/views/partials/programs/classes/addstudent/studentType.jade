@@ -1,8 +1,11 @@
 .container
 	.row.row-margin-bottom-10.row-centered
 		.col.col-centered
-			a.btn.btn-primary(ui-sref='admin.programs.addstudent({ id: currentClass._id })') Add Existing Student
+			a.btn.btn-primary.btn-add-student(ui-sref='admin.programs.addstudent({ id: currentClass._id })') Add Existing Student
+	.row.row-margin-bottom-10.row-centered
+		.col.col-centered
+			a.btn.btn-primary.btn-add-student(ui-sref='admin.students.create({ classId: currentClass._id })') Create New Student
 	.row.row-centered
 		.col.col-centered
-			a.btn.btn-primary(ui-sref='admin.students.create({ classId: currentClass._id })' ng-click='doStuff()') Create New Student
+			a.btn.btn-warning.btn-add-student(ng-click='back()') Cancel
 		
