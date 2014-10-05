@@ -17,12 +17,12 @@ define(['../../module'], function(controllers){
             }
 
 			$scope.back = function() {
-				if (ClassSvc.editing) {
-					$state.go('admin.programs.editclass', { id: $scope.currentClass._id});
+				if (ClassSvc.viewing) {
+					$state.go('admin.programs.viewclass', { id: $scope.currentClass._id});
 				} else if (ClassSvc.creating) {
 					$state.go('admin.programs.createclass');
 				} else {
-					$state.go('admin.programs.viewclass', { id: $scope.currentClass._id});
+					$state.go('admin.programs.editclass', { id: $scope.currentClass._id});
 				}
 			};
 
@@ -144,5 +144,6 @@ define(['../../module'], function(controllers){
             $scope.addDisabled = function() {
                 return $scope.gridOptions.selectedItems.length === 0;
             };
+
 	}]);
 });	

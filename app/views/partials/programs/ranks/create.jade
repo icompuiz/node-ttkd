@@ -18,7 +18,7 @@ form.form-group
 		ul.dropdown-menu(role='menu')
 			li(ng-repeat='i in dropdown.items' role='presentation')
 				a.dropdown-toggle(href='#' role='menuitem' tabindex='-1' ng-click='setRankOrder(i)') {{i}}
-	p.text-muted.error(ng-show='showOrderWarning') Changing this rank's order to {{rank.rankOrder}} will change the order of rank {{swapRank.name}} to {{swapRankOrder}}
+	p.text-muted.error(ng-show='showOrderWarning') Changing this rank's order to {{rank.rankOrder}} will change the order of rank {{swapRank.name}} to {{swapRank.newRankOrder}}
 
 	input.btn.btn-primary.pull-right(ng-disabled='!canCreateRank()', type='submit', value='Create Rank', ng-click="createRank()")
 	input.btn.btn-warning.pull-right(type='reset', value='Cancel', ng-click='cancelCreate()')

@@ -149,6 +149,7 @@ define(['../module'], function(controllers){
                 sortInfo: { fields: ['name'], directions: ['asc'] },
                 columnDefs: [
                     { field: 'name', displayName: 'Rank Name' },
+                    { field: 'rankOrder', displayName: 'Order'},
                     { cellTemplate: '/partials/programs/ranks/list/viewOptionsButton', sortable: false, displayName: 'Actions'}
                 ]
             };
@@ -167,9 +168,9 @@ define(['../module'], function(controllers){
 				$state.go('admin.programs.viewrank', {id: row.entity._id});
 			};
 
-			$scope.backToHome = function() {
+			$scope.back = function() {
 				ProgramSvc.reset();
-				$state.go($rootScope.previousState);
+				$state.go('admin.programs.home');
 			};
 
 	}]);

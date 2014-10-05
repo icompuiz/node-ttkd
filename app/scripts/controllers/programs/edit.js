@@ -337,7 +337,7 @@ define(['../module'], function(controllers){
             	data: 'myClassData',
                 rowHeight: 40,
                 enablePaging: true,
-                showFooter: true,
+               // showFooter: true,
                 beforeSelectionChange: function (rowItem, event) {
                     // check if one of the options buttons was clicked
                     if(event.target.tagName === 'BUTTON') {
@@ -416,7 +416,7 @@ define(['../module'], function(controllers){
             	data: 'myRankData',
                 rowHeight: 40,
                 enablePaging: true,
-                showFooter: true,
+                //showFooter: true,
                 beforeSelectionChange: function (rowItem, event) {
                     // check if one of the options buttons was clicked
                     if(event.target.tagName === 'BUTTON') {

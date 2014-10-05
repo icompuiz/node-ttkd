@@ -52,14 +52,14 @@ define(['../../module'], function(controllers){
 			} 
 
 			$scope.setRankOrder = function(newVal) {
-				if (!$scope.oldVal) {
-					$scope.oldVal = $scope.rank.rankOrder;
+				if (!$scope.origRankOrder) {
+					$scope.origRankOrder = $scope.rank.rankOrder;
 				}
 
 				var found = _.find(program.rankObjs, function(o){return o.rankOrder === newVal;});
 				if (found) {
 					$scope.swapRank = found;
-					$scope.swapRankOrder = $scope.oldVal;
+					$scope.swapRank.newRankOrder = $scope.origRankOrder;
 					$scope.showOrderWarning = true;
 				} else {
 					$scope.showOrderWarning = false;
@@ -98,7 +98,7 @@ define(['../../module'], function(controllers){
 
 				//Perform the rank order swap if necessary
 				if ($scope.showOrderWarning) {
-					$scope.swapRank.rankOrder = $scope.swapRankOrder;
+					$scope.swapRank.rankOrder = $scope.swapRank.newRankOrder;
 				}
 
 				program.rankObjs.push($scope.rank);

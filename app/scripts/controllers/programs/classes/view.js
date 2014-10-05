@@ -13,14 +13,13 @@ define(['../../module'], function(controllers){
 			}
 
 	       $scope.goBack = function() {
-                $state.go($rootScope.previousState);
-                // if (ProgramSvc.editing) {
-                //     $state.go('admin.programs.edit', { id: ProgramSvc.current._id });
-                // } else if (ProgramSvc.creating) {
-                //     $state.go('admin.programs.create');
-                // } else {
-                //     $state.go('admin.programs.home');
-                // }
+                if (!$rootScope.previousState) {
+                    $state.go('admin.programs.home');
+                } else if ($rootScope.previousParams) {
+                    $state.go($rootScope.previousState, $rootScope.previousParams);
+                } else {
+                    $state.go($rootScope.previousState);
+                }
             };
 			            
             $scope.filterOptions = {
@@ -59,7 +58,9 @@ define(['../../module'], function(controllers){
                 });                 
             };
 
-            $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage);
+            if ($scope.currentClass.students) {
+                $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage);
+            }
 
             $scope.$watch('pagingOptions', function (newVal, oldVal) {
                 if (newVal !== oldVal && newVal.currentPage !== oldVal.currentPage) {

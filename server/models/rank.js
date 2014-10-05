@@ -2,7 +2,8 @@
 
 var mongoose = require('mongoose'),
 	Schema = mongoose.Schema,
-	ObjectId = mongoose.Schema.Types.ObjectId;
+	ObjectId = mongoose.Schema.Types.ObjectId,
+	Rank = require('./rank.js');
 
 var rankSchema = new Schema({
 	program: {
@@ -11,10 +12,11 @@ var rankSchema = new Schema({
 	},
 	rankOrder: Number,
 	name: String,
-	intermediaryRanks: [{
+	intermediaryRanks: [Rank.schema], 
+	parentRank: {
 		ref: 'Rank',
 		type: ObjectId
-	}]
+	}
 });
 
 var Rank = mongoose.model('Rank', rankSchema);

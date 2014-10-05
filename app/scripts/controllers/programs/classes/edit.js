@@ -1,7 +1,7 @@
 define(['../../module'], function(controllers){
 	'use strict';
-	controllers.controller('EditClassCtrl', ['$rootScope', '$scope', '$state', '$stateParams', '$log', 'Restangular', 'StudentSvc', 'ClassSvc', 'ProgramSvc',
-		function($rootScope, $scope, $state, $stateParams, $log, Restangular, StudentSvc, ClassSvc, ProgramSvc) {
+	controllers.controller('EditClassCtrl', ['$scope', '$state', '$stateParams', '$log', 'Restangular', 'StudentSvc', 'ClassSvc', 'ProgramSvc',
+		function($scope, $state, $stateParams, $log, Restangular, StudentSvc, ClassSvc, ProgramSvc) {
 			$scope.currentClass = {};
 			var currentProgram = null,
 				orig = null;
@@ -49,14 +49,13 @@ define(['../../module'], function(controllers){
 			}
 
 			function goToPrevState() {
-                $state.go($rootScope.previousState);
-				// if (ProgramSvc.editing) {
-				// 	$state.go('admin.programs.edit', { id: currentProgram._id});
-				// } else if (ProgramSvc.creating) {
-				// 	$state.go('admin.programs.create');
-				// } else {
-				// 	$state.go('admin.programs.home');
-				// }
+				if (ProgramSvc.editing) {
+					$state.go('admin.programs.edit', { id: currentProgram._id});
+				} else if (ProgramSvc.creating) {
+					$state.go('admin.programs.create');
+				} else {
+					$state.go('admin.programs.home');
+				}
 			}
 
 			$scope.saveClass = function() {
@@ -186,10 +185,6 @@ define(['../../module'], function(controllers){
                 $scope.showRemoveConfirm = true;
             };
 
-            $scope.doStuff = function() {
-            	var c = $scope.currentClass;
-            };
-
             $scope.confirmRemove = function(remove) {
                 if(remove) {
                     $log.log('Removing selected students...');
@@ -207,7 +202,6 @@ define(['../../module'], function(controllers){
                         });
                     });
 
-                    //completeRemove();
                     $scope.getPagedData($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage);
 
                     // empty selection
@@ -221,24 +215,6 @@ define(['../../module'], function(controllers){
 
             $scope.showRemoveConfirm = false;
 
-            function completeRemove() {
-                //Remove Students
-                function beforeSave(_class)  {
-                	_class.students = _class.students.map(function(student) {
-                		if (student) {
-                			return student._id;
-                		}
-                	}).filter(function(filterStudent) {
-                		return filterStudent;
-                	});
-
-                	return _class;
-                }
-
-                // ClassSvc.save(beforeSave).then(function() {
-                //     $scope.getPagedData($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage);
-                // });
-            }
 
 /********************** Form Validation **********************************/
 

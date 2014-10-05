@@ -1,0 +1,38 @@
+h1 {{rank.name}}
+
+.row
+	.col-md-12
+		h3
+			b
+				|Program: 
+			{{program.name}}
+.row
+	.col-md-12
+		h3(ng-show='rank.parentRank')
+			b
+				|Parent Rank: 
+			{{parentRankName}}
+.row
+	.col-md-12
+		h3
+			b
+				|Order: 
+			{{rank.rankOrder}}
+.row(ng-show='rank.color')
+	.col-md-12
+		h3
+			b
+				|Color:
+			.color-tile
+
+.row(ng-show='rank.parentRank')
+	.col-md-12
+		h3
+			b
+				|Sub-ranks
+		div.gridStyle(ng-grid='gridOptions')
+
+
+button.btn.btn-warning.pull-right(type='button', ng-click='back()') Back
+
+div(class='clearfix')

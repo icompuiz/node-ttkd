@@ -11,5 +11,6 @@ define([
 	'./classes/edit',
 	'./classes/addstudent',
 	'./ranks/create',
-	'./ranks/edit'
+	'./ranks/edit',
+	'./ranks/view'
 ], function () {});
