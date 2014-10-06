@@ -335,7 +335,7 @@ var express = require('express'),
                             .set('Cookie', cookie)
                             .set('Content-Type', 'application/json')
                             .expect(function(res) {
-                                res.body.address.zip.should.match(/[0-9]/);
+                                res.body.address.zip.should.match(/[0-9]{5}/);
                                 res.body.address.zip.should.have.length(5);  
                             })
                             .expect(200, zipDone);
@@ -665,7 +665,7 @@ var express = require('express'),
                             .set('Cookie', cookie)
                             .set('Content-Type', 'application/json')
                             .expect(function(res) {
-                                res.body.address.zip.should.match(/[0-9]/);
+                                res.body.address.zip.should.match(/[0-9]{5}/);
                                 res.body.address.zip.should.have.length(5);  
                             })
                             .expect(200, zipDone);
