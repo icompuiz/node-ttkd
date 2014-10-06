@@ -31,12 +31,7 @@ define(['../module'], function(controllers) {
                     StudentSvc.list().then(function(students){
                         // add students to new array for ng-grid outputting
                         _(students).forEach(function(student){
-                            // data.push({
-                            //     'firstName': student.firstName,
-                            //     'lastName': student.lastName,
-                            //     'age': $filter('age')(student.birthday),
-                            //     '_id': student._id
-                            // })
+                            student.age = $filter('age')(student.birthday);
                             data.push(student);
                         });
 
