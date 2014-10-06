@@ -1,53 +1,54 @@
 h1 Create Rank
 br
-	
-h2 Name
-form.form-group
-	.input-group
-		input(type='text', class='form-control', placeholder='Rank name' ng-model="rank.name")
-		span(class='input-group-addon')
-			span(ng-show='!isEmpty(rank.name) && !isDupName()', class='glyphicon glyphicon-ok input-valid')
-			span(ng-show='isEmpty(rank.name) || isDupName()', class='glyphicon glyphicon-remove input-invalid')
-	p.text-muted.error(ng-show='isDupName()') Rank name must be unique!
 
-h2 Order
-.row
-	.col-md-12
-		.dropdown
-			button.btn.btn-default.dropdown-toggle(type='button' data-toggle='dropdown')
-				{{rank.rankOrder}}
-				span.caret
-			ul.dropdown-menu(role='menu')
-				li(ng-repeat='i in dropdown.items' role='presentation')
-					a.dropdown-toggle(href='#' role='menuitem' tabindex='-1' ng-click='setRankOrder(i)') {{i}}
-		p.text-muted.error(ng-show='showOrderWarning') Changing this rank's order to {{rank.rankOrder}} will change the order of rank {{swapRank.name}} to {{swapRank.newRankOrder}}
+form
+	h2 Name
+	.form-group
+		.input-group
+			input(type='text', class='form-control', placeholder='Rank name' ng-model="rank.name")
+			span(class='input-group-addon')
+				span(ng-show='!isEmpty(rank.name) && !isDupName()', class='glyphicon glyphicon-ok input-valid')
+				span(ng-show='isEmpty(rank.name) || isDupName()', class='glyphicon glyphicon-remove input-invalid')
+		p.text-muted.error(ng-show='isDupName()') Rank name must be unique!
 
-h2 Color
-.row
-	.col-md-12
-		button.btn.btn-default.rank-color.color-tile(colorpicker='hex' type='button' ng-model='rank.color')
+	h2 Order
+	.row
+		.col-md-12
+			.dropdown
+				button.btn.btn-default.dropdown-toggle(type='button' data-toggle='dropdown')
+					{{rank.rankOrder}}
+					span.caret
+				ul.dropdown-menu(role='menu')
+					li(ng-repeat='i in dropdown.items' role='presentation')
+						a.dropdown-toggle(href='#' role='menuitem' tabindex='-1' ng-click='setRankOrder(i)') {{i}}
+			p.text-muted.error(ng-show='showOrderWarning') Changing this rank's order to {{rank.rankOrder}} will change the order of rank {{swapRank.name}} to {{swapRank.newRankOrder}}
 
-h2 Sub-ranks
-.row.row-margin-bottom-10
-	.col-md-12
-		.btn-toolbar.pull-left
-			button.btn.btn-primary(type='button', ng-click='addSubrank()') Add Sub-rank
-			button.btn.btn-danger(type='button', ng-disabled='removeDisabled()', ng-show='!showRemoveConfirm', ng-click='remove({ rank: rank })') Remove Selected Sub-ranks
-		.pull-left.margin-left-10(ng-show='showRemoveConfirm && getNumSelected() > 0')
-			.btn-toolbar
-				span.text-muted(ng-show='getNumSelected() > 1') Are you sure you wish to remove the {{getNumSelected()}} selected ranks?
-				span.text-muted(ng-show='getNumSelected() == 1') Are you sure you wish to remove the selected ranks?
-				button.btn.btn-danger(type='button', ng-click='confirmRemove(true)') Yes
-				button.btn.btn-success(type='button', ng-click='confirmRemove(false)') No
-.row
-	.col-md-12
-		p.text-muted.error(ng-show='showSubrankNameMessage()') Sub-rank names must be unique.
-		p.text-muted.error(ng-show='showSubrankOrderMessage()') Sub-rank ordering must be incremental and begin at 1.
-.row
-	.col-md-12
-		div.gridStyle.grid-short(ng-grid='gridOptions')
+	h2 Color
+	.row
+		.col-md-12
+			button.btn.btn-default.rank-color.color-tile(colorpicker='hex' type='button' ng-model='rank.color')
 
-input.btn.btn-primary.pull-right(ng-disabled='!canCreateRank()', type='submit', value='Create Rank', ng-click="createRank()")
-input.btn.btn-warning.pull-right(type='reset', value='Cancel', ng-click='cancelCreate()')
+	h2 Sub-ranks
+	.row.row-margin-bottom-10
+		.col-md-12
+			.btn-toolbar.pull-left
+				button.btn.btn-primary(type='button', ng-click='addSubrank()') Add Sub-rank
+				button.btn.btn-danger(type='button', ng-disabled='removeDisabled()', ng-show='!showRemoveConfirm', ng-click='remove({ rank: rank })') Remove Selected Sub-ranks
+			.pull-left.margin-left-10(ng-show='showRemoveConfirm && getNumSelected() > 0')
+				.btn-toolbar
+					span.text-muted.error(ng-show='getNumSelected() > 1') Are you sure you wish to remove the {{getNumSelected()}} selected ranks?
+					span.text-muted.error(ng-show='getNumSelected() == 1') Are you sure you wish to remove the selected ranks?
+					button.btn.btn-danger(type='button', ng-click='confirmRemove(true)') Yes
+					button.btn.btn-success(type='button', ng-click='confirmRemove(false)') No
+	.row
+		.col-md-12
+			p.text-muted.error(ng-show='showSubrankNameMessage()') Sub-rank names must be unique.
+			p.text-muted.error(ng-show='showSubrankOrderMessage()') Sub-rank ordering must be incremental and begin at 1.
+	.row
+		.col-md-12
+			div.gridStyle.grid-short(ng-grid='gridOptions')
+
+	input.btn.btn-primary.pull-right(ng-disabled='!canCreateRank()', type='submit', value='Create Rank', ng-click="createRank()")
+	input.btn.btn-warning.pull-right(type='reset', value='Cancel', ng-click='cancelCreate()')
 
 div(class='clearfix')
