@@ -60,9 +60,14 @@ define(['../../module'], function(controllers){
 				});					
 			}
 
-			// For new ranks, initialize to the last rankOrder for the program
+			// Initialize to the last rankOrder for the program
 			if (!$scope.rank.rankOrder && program.rankObjs) {
 				$scope.rank.rankOrder = program.rankObjs.length + 1;
+			}
+
+			$scope.getNumSelected = function() {
+				var selected = _.where($scope.rank.intermediaryRanks, {isSelected: true});
+				return selected.length;
 			}
 
 			$scope.setRankOrder = function(newVal) {
@@ -108,6 +113,10 @@ define(['../../module'], function(controllers){
                 }
             };
 
+            $scope.clearColor = function() {
+            	$scope.rank.color = '';
+            };
+
             $scope.getData = function () {
                 var data = [];
                 _($scope.rank.intermediaryRanks).forEach(function(r) {
@@ -122,6 +131,16 @@ define(['../../module'], function(controllers){
                 if (newVal !== oldVal) {
                     $scope.getData();
                 }
+            }, true);
+
+            $scope.$watch('rank.color', function (newVal, oldVal) {
+            	if ($scope.rank.color === '') {
+            		$('.rank-color').css('background', '#FFFFFF');
+            		$('.rank-color').text('None');
+            	} else {
+                	$('.rank-color').css('background', newVal);
+            		$('.rank-color').text('');
+            	}
             }, true);
 
             $scope.gridOptions = {
@@ -155,20 +174,6 @@ define(['../../module'], function(controllers){
                 ]
             };
 
-            $scope.selectRank = function(row) {
-            	_($scope.rank.intermediaryRanks).forEach(function(r){
-            		if(r.rankOrder === row.entity.rankOrder) {
-            			r.isSelected = !r.isSelected;
-
-            			if(r.isSelected) {
-            				$scope.gridOptions.selectedItems.length += 1;
-            			} else {
-            				$scope.gridOptions.selectedItems.length -= 1;
-            			}
-            		}
-            	});
-            };
-
             $scope.addSubrank = function() {
             	if(!$scope.rank.intermediaryRanks) {
             		$scope.rank.intermediaryRanks = [];
@@ -186,7 +191,8 @@ define(['../../module'], function(controllers){
             };
 
             $scope.removeDisabled = function() {
-                return $scope.gridOptions.selectedItems.length === 0;
+            	var selected = _.where($scope.rank.intermediaryRanks, {isSelected: true});
+                return selected.length === 0;
             };
 
             $scope.remove = function() {
@@ -196,16 +202,16 @@ define(['../../module'], function(controllers){
             $scope.confirmRemove = function(remove) {
                 if(remove) {
 
-                    _($scope.rank.intermediaryRanks).forEach(function(rank) {
-                    	if(rank.isSelected) {
-                    		$scope.rank.intermediaryRanks = _.without($scope.rank.intermediaryRanks, rank);
+                    _($scope.rank.intermediaryRanks).forEach(function(r) {
+                    	if(r.isSelected) {
+                    		$scope.rank.intermediaryRanks = _.without($scope.rank.intermediaryRanks, r);
                     	}
                     });
 
                     $scope.getData();
 
                     // empty selection
-                    $scope.gridOptions.selectedItems.length = 0;
+                    $scope.gridOptions.selectedItems = [];
 
                     $scope.showRemoveConfirm = false;
                 } else {
@@ -311,7 +317,7 @@ define(['../../module'], function(controllers){
 					}
 
 					// Make sure ordering starts at 1
-					if (!_.contains(orders, 1)) {
+					if (!_.contains(orders, 1) && !_.contains(orders, '1')) {
 						return true;
 					}
 

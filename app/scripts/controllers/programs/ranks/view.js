@@ -4,25 +4,27 @@ define(['../../module'], function(controllers){
 		function($rootScope, $scope, $state, $stateParams, Restangular, RankSvc, ProgramSvc) {
 			$scope.rank = {};
 			$scope.program = {};
+            $scope.intermediaryRankNames = [];
 
 			// load current program and rank if available from services
 			if (RankSvc.current && RankSvc.viewing) {
 				$scope.rank = RankSvc.current;
 				$scope.program = ProgramSvc.current;
-				if ($scope.rank.parentRank) {
-					RankSvc.read($scope.rank.parentRank, null, false).then(function(r) {
-						$scope.parentRankName = r.name;
-					});
-				}
+                $scope.intermediaryRankNames = _.map($scope.rank.intermediaryRanks, function(r) {return r.name;});
 			// Otherwise get them from db
 			} else if ($stateParams.id) { 
 				RankSvc.read($stateParams.id, null, true).then(function(r) {
 					$scope.rank = RankSvc.current;
+                    $scope.intermediaryRankNames = _.map($scope.rank.intermediaryRanks, function(r) {return r.name;});
 					ProgramSvc.read(r.program, null, true).then(function(p) {
 						$scope.program = p;
 					});
 				});					
 			}
+
+            if ($scope.rank.intermediaryRanks) {
+                
+            }
 
 			if ($scope.rank.color) {
 				$('.color-tile').css('background', $scope.rank.color);

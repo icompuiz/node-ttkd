@@ -163,6 +163,7 @@ define(['../module'], function(controllers){
 								c.rankOrder = rankItem.rankOrder;
 								c.intermediaryRanks = rankItem.intermediaryRanks;
 								c.program = $scope.currentProgram._id;
+								c.color = rankItem.color;
 							}
 
 							RankSvc.init(rankItem);

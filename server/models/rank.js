@@ -13,10 +13,7 @@ var rankSchema = new Schema({
 	rankOrder: Number,
 	name: String,
 	intermediaryRanks: [Rank.schema], 
-	parentRank: {
-		ref: 'Rank',
-		type: ObjectId
-	}
+	color: String
 });
 
 var Rank = mongoose.model('Rank', rankSchema);

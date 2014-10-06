@@ -1,37 +1,30 @@
 h1 {{rank.name}}
+.col-md-12
+	.row
+		.col-md-12
+			span
+				b
+					|Program: 
+				{{program.name}}
+	.row
+		.col-md-12
+			span
+				b
+					|Order: 
+				{{rank.rankOrder}}
+	.row(ng-show='rank.color')
+		.col-md-12
+			span
+				b
+					|Color:
+				.color-tile
 
-.row
-	.col-md-12
-		h3
-			b
-				|Program: 
-			{{program.name}}
-.row
-	.col-md-12
-		h3(ng-show='rank.parentRank')
-			b
-				|Parent Rank: 
-			{{parentRankName}}
-.row
-	.col-md-12
-		h3
-			b
-				|Order: 
-			{{rank.rankOrder}}
-.row(ng-show='rank.color')
-	.col-md-12
-		h3
-			b
-				|Color:
-			.color-tile
-
-.row(ng-show='rank.parentRank')
-	.col-md-12
-		h3
-			b
-				|Sub-ranks
-		div.gridStyle(ng-grid='gridOptions')
-
+	.row(ng-show='rank.intermediaryRanks && rank.intermediaryRanks.length > 0')
+		.col-md-12
+			span
+				b
+					|Sub-ranks: 
+				{{intermediaryRankNames | stringArray}}
 
 button.btn.btn-warning.pull-right(type='button', ng-click='back()') Back
 
