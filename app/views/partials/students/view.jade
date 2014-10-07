@@ -16,7 +16,7 @@
 			// birthday
 			p
 				span.glyphicon.glyphicon-calendar &nbsp;
-				| {{currentStudent.birthday | date: 'MM/dd/yyyy' }}
+				| {{currentStudent.birthday | date: 'MM/dd/yyyy' }}&nbsp;&nbsp;(Age: {{currentStudent.birthday | age}})
 				br
 				span.glyphicon.glyphicon-envelope(ng-repeat='email in currentStudent.emailAddresses') &nbsp;{{email}} &nbsp; 
 				br
