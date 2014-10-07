@@ -13,12 +13,18 @@ define(['../../module'], function(controllers){
 			}
 
 	       $scope.goBack = function() {
-                if (!$rootScope.previousState) {
-                    $state.go('admin.programs.home');
-                } else if ($rootScope.previousParams) {
+                if (ProgramSvc.editing) {
+                    $state.go('admin.programs.edit', {id: ProgramSvc.current._id});
+                } else if (ProgramSvc.creating) {
+                    $state.go('admin.programs.create', {id: ProgramSvc.current._id});
+                } else if (ProgramSvc.viewing) {
+                    $state.go('admin.programs.view', {id: ProgramSvc.current._id});
+                } else if ($rootScope.previousState && $rootScope.previousParams) {
                     $state.go($rootScope.previousState, $rootScope.previousParams);
-                } else {
+                } else if ($rootScope.previousState) {
                     $state.go($rootScope.previousState);
+                } else { // Default to the programs home page
+                    $state.go('admin.programs.home'); 
                 }
             };
 			            

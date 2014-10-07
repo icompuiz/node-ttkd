@@ -18,6 +18,7 @@ define(['../module'], function(controllers){
 						$scope.currentProgram.rankObjs = _.where(ranks, {program: $scope.currentProgram._id});
 					});
 				});
+				ProgramSvc.startViewing();
 			}
 			
 			if (ProgramSvc.current && ProgramSvc.viewing) {
