@@ -36,6 +36,14 @@
 		.well {{currentStudent.emergencyContacts[1].name}} ({{currentStudent.emergencyContacts[1].relationship}})<br />{{currentStudent.emergencyContacts[1].phoneNumber | phoneNumber}}
 
 .row
+	h2.col-md-12 Waiver Information
+	.col-md-12
+		p Participant: {{currentStudent.signaturedata.participant}}
+		p Guardian: {{currentStudent.signaturedata.guardian}}
+	.col-md-12
+		img(src="{{currentStudent.signaturedata.data}}")
+
+.row
 	h2.col-md-12 Student Ranks
 	.btn-toolbar.pull-left
 		button.btn.btn-default(type='button', ng-click='backToHome()') Back

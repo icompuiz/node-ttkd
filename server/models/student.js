@@ -35,6 +35,11 @@ var studentSchema = new Schema({
 	modified: {
 		type: Date,
 		default: Date.now
+	},
+	signaturedata: {
+		participant: String,
+		guardian: String,
+		data: String
 	}
 });
 
