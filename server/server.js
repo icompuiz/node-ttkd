@@ -55,59 +55,64 @@ function main(app, config, argument2, argument3) {
 	app.use($express.query());
 	app.use($express.methodOverride());
 
+	app.configure('development', function() {
+		app.use($express.static($path.join(__dirname, '..', '.tmp')));
+	})
 
-	app.set('views', $path.join(__dirname,'..','app', 'views'));
-	app.set('view engine', 'jade');
-	app.set('view options', {
-		layout: false
+	app.configure(function() {
+
+		app.set('views', $path.join(__dirname,'..','app', 'views'));
+		app.set('view engine', 'jade');
+		app.set('view options', {
+			layout: false
+		});
+
+
+
+		var modelsPath = $path.join(__dirname, 'models');
+		$fs.readdirSync(modelsPath).forEach(function(file) {
+			require($path.join(modelsPath, file));
+		});
+
+		var User = $mongoose.model('User');
+
+		// setup $passport authentication
+		app.use($passport.initialize());
+		app.use($passport.session());
+
+		app.use($express.static($path.join(__dirname, '..', 'app')));
+		app.use(app.router);
+
+
+		$passport.use(new LocalStrategy(User.authenticate()));
+		$passport.serializeUser(User.serializeUser());
+		$passport.deserializeUser(User.deserializeUser());
+
+		app.all('*',function (req, res, next) {
+			
+			if (!req.isAuthenticated()) {
+				console.log('server::app.all::not authenticated::', 'setting current user to public');
+				var userQuery = User.findOne({ username: 'public' });
+				userQuery.select('_id username fullname');
+				return userQuery.exec(function(err, user) {
+					
+					if (err || !user) {
+						return res.send(500, 'Error finding public user. Request failed');
+					}
+
+					console.log('Making request as ', user.username);
+
+					$toastySession.user = user;
+					next();
+				});
+			}
+
+			$toastySession.user = req.user;
+			console.log('server::app.all::authenticated::', 'current user is', $toastySession.user.username);
+			next();
+		});
+
 	});
-
-
-
-	var modelsPath = $path.join(__dirname, 'models');
-	$fs.readdirSync(modelsPath).forEach(function(file) {
-		require($path.join(modelsPath, file));
-	});
-
-	var User = $mongoose.model('User');
-
-	// setup $passport authentication
-	app.use($passport.initialize());
-	app.use($passport.session());
-
-	app.use($express.static($path.join(__dirname, '..', '.tmp')));
-	app.use($express.static($path.join(__dirname, '..', 'app')));
-	app.use(app.router);
-
-
-	$passport.use(new LocalStrategy(User.authenticate()));
-	$passport.serializeUser(User.serializeUser());
-	$passport.deserializeUser(User.deserializeUser());
-	
-	app.all('*',function (req, res, next) {
-		
-		if (!req.isAuthenticated()) {
-			console.log('server::app.all::not authenticated::', 'setting current user to public');
-			var userQuery = User.findOne({ username: 'public' });
-			userQuery.select('_id username fullname');
-			return userQuery.exec(function(err, user) {
-				
-				if (err || !user) {
-					return res.send(500, 'Error finding public user. Request failed');
-				}
-
-				console.log('Making request as ', user.username);
-
-				$toastySession.user = user;
-				next();
-			});
-		}
-
-		$toastySession.user = req.user;
-		console.log('server::app.all::authenticated::', 'current user is', $toastySession.user.username);
-		next();
-	});
-
 
 	function connect(err) {
 

@@ -16,10 +16,10 @@
 			// birthday
 			p
 				span.glyphicon.glyphicon-calendar &nbsp;
-				| {{currentStudent.birthday | date: 'MM/dd/yyyy' }}
+				| {{currentStudent.birthday | date: 'MM/dd/yyyy' }}&nbsp;&nbsp;(Age: {{currentStudent.birthday | age}})
 				br
-				span.glyphicon.glyphicon-envelope(ng-repeat='email in currentStudent.emailAddresses') &nbsp; {{email}}
-					br
+				span.glyphicon.glyphicon-envelope(ng-repeat='email in currentStudent.emailAddresses') &nbsp;{{email}} &nbsp; 
+				br
 				span.glyphicon.glyphicon-home &nbsp;
 				| {{currentStudent.phone.home | phoneNumber}}
 				br
@@ -34,6 +34,14 @@
 	.col-md-5(ng-show='showEContact2()')
 		h3 Secondary Contact
 		.well {{currentStudent.emergencyContacts[1].name}} ({{currentStudent.emergencyContacts[1].relationship}})<br />{{currentStudent.emergencyContacts[1].phoneNumber | phoneNumber}}
+
+.row
+	h2.col-md-12 Waiver Information
+	.col-md-12
+		p Participant: {{currentStudent.signaturedata.participant}}
+		p Guardian: {{currentStudent.signaturedata.guardian}}
+	.col-md-12
+		img(src="{{currentStudent.signaturedata.data}}")
 
 .row
 	h2.col-md-12 Student Ranks

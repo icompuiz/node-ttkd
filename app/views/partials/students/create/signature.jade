@@ -4,7 +4,7 @@ div.well
 
 div.form-group
 	div.input-group
-		input.form-control(type='text', name='participantName', placeholder='Full name of participant', ng-model="model.waiver.participant", required, ng-minlength='2', ng-maxlength='128')
+		input.form-control(type='text', name='participantName', placeholder='Full name of participant', ng-model="model.signaturedata.participant", required, ng-minlength='2', ng-maxlength='128')
 		span.input-group-addon
 			span.glyphicon.glyphicon-asterisk(ng-show="createStudent.participantName.$invalid && createStudent.participantName.$pristine")
 			span.glyphicon.glyphicon-remove(ng-show="createStudent.participantName.$invalid && !createStudent.participantName.$pristine")
@@ -13,7 +13,7 @@ div.form-group
 
 div.form-group
 	div.input-group
-		input.form-control(type='text', name='guardianName', placeholder='Full name of parent/guardian', ng-model="model.waiver.guardian", required, ng-minlength='2', ng-maxlength='128')
+		input.form-control(type='text', name='guardianName', placeholder='Full name of parent/guardian', ng-model="model.signaturedata.guardian", required, ng-minlength='2', ng-maxlength='128')
 		span.input-group-addon
 			span.glyphicon.glyphicon-asterisk(ng-show="createStudent.guardianName.$invalid && createStudent.guardianName.$pristine")
 			span.glyphicon.glyphicon-remove(ng-show="createStudent.guardianName.$invalid && !createStudent.guardianName.$pristine")

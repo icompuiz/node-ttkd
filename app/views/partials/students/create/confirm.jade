@@ -66,10 +66,10 @@ h3 Waiver
 table.table.borderless
 	tr
 		td(style='width:50%') Participant
-		td(style='width:50%') {{model.waiver.participant}}
+		td(style='width:50%') {{model.signaturedata.participant}}
 	tr
 		td Guardian
-		td {{model.waiver.guardian}}
+		td {{model.signaturedata.guardian}}
 	tr
 		td Signed?
 		td(ng-show='model.signaturedata.errors && model.signaturedata.errors != null') No

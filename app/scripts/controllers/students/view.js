@@ -1,7 +1,7 @@
 define(['../module'], function(controllers){
 	'use strict';
-	controllers.controller('ViewStudentCtrl', ['$scope', '$log', '$state', '$stateParams', 'StudentSvc',
-		function($scope, $log, $state, $stateParams, StudentSvc) {
+	controllers.controller('ViewStudentCtrl', ['$rootScope', '$scope', '$log', '$state', '$stateParams', 'StudentSvc',
+		function($rootScope, $scope, $log, $state, $stateParams, StudentSvc) {
 			$scope.currentStudent = {};
 
 			if (StudentSvc.current && StudentSvc.viewing) {
@@ -18,7 +18,14 @@ define(['../module'], function(controllers){
 
 			$scope.backToHome = function() {
 				StudentSvc.reset();
-				$state.go('admin.students.home');
+
+				if ($rootScope.previousState && $rootScope.previousParams) {
+					$state.go($rootScope.previousState, $rootScope.previousParams);
+				} else if ($rootScope.previousState) {
+					$state.go($rootScope.previousState);
+				} else {
+					$state.go('admin.students.home');
+				}
 			};
 
 			$scope.showEContact1 = function() {

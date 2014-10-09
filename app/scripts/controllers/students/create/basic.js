@@ -83,7 +83,7 @@ define(['../../module'], function(controllers) {
 			// use email id counter so the names are always unique
 			var emailIdCounter = $scope.model.tmpEmailAddresses.length;
 
-			if($scope.model.emailAddresses) {
+			if($scope.model.emailAddresses && _.isEmpty($scope.model.tmpEmailAddresses)) {
 				//populate existing
 				for(var i=0; i<$scope.model.emailAddresses.length; i++) {
 					var tmpObj = {};

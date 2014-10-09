@@ -1,7 +1,7 @@
 define(['../../module'], function(controllers){
 	'use strict';
-	controllers.controller('ViewClassCtrl', ['$scope', '$state', '$stateParams','$log', 'Restangular', 'ClassSvc','StudentSvc',
-		function($scope, $state, $stateParams,$log, Restangular, ClassSvc, StudentSvc) {
+	controllers.controller('ViewClassCtrl', ['$rootScope', '$scope', '$state', '$stateParams','$log', 'Restangular', 'ProgramSvc', 'ClassSvc','StudentSvc',
+		function($rootScope, $scope, $state, $stateParams,$log, Restangular, ProgramSvc, ClassSvc, StudentSvc) {
 			$scope.currentClass = {};
 
 			if (ClassSvc.current && ClassSvc.viewing) {
@@ -12,18 +12,29 @@ define(['../../module'], function(controllers){
 				});
 			}
 
-			$scope.goBack = function() {
-
-				ClassSvc.reset();
-
-				$state.go('admin.programs.view', {id: $scope.currentClass.program} );
-			};
-			            $scope.filterOptions = {
+	       $scope.goBack = function() {
+                if (ProgramSvc.editing) {
+                    $state.go('admin.programs.edit', {id: ProgramSvc.current._id});
+                } else if (ProgramSvc.creating) {
+                    $state.go('admin.programs.create', {id: ProgramSvc.current._id});
+                } else if (ProgramSvc.viewing) {
+                    $state.go('admin.programs.view', {id: ProgramSvc.current._id});
+                } else if ($rootScope.previousState && $rootScope.previousParams) {
+                    $state.go($rootScope.previousState, $rootScope.previousParams);
+                } else if ($rootScope.previousState) {
+                    $state.go($rootScope.previousState);
+                } else { // Default to the programs home page
+                    $state.go('admin.programs.home'); 
+                }
+            };
+			            
+            $scope.filterOptions = {
                 filterText: '',
                 useExternalFilter: true
             };
 
             $scope.totalServerItems = 0;
+
             $scope.pagingOptions = {
                 pageSizes: [25, 50, 100, 250, 500, 1000],
                 pageSize: 25,
@@ -40,28 +51,23 @@ define(['../../module'], function(controllers){
             };
 
             $scope.getPagedDataAsync = function (pageSize, page) {
-                setTimeout(function () {
-                    var data = [];
-
-                    ClassSvc.read($stateParams.id, {populate: 'students'}, false).then(function(_class) {
-						var students = _class.students;
-                        _(students).forEach(function(student){
-                            // data.push({
-                            //     'firstName': student.firstName,
-                            //     'lastName': student.lastName,
-                            //     'age': $filter('age')(student.birthday),
-                            //     '_id': student._id
-                            // })
-                            data.push(student);
+                var data = [];
+                async.each($scope.currentClass.students,
+                    function(id, callback) {
+                        StudentSvc.read(id, null, false).then(function(s) {
+                            data.push(s);
+                            callback();
                         });
-
-
+                    },
+                    function(err) {
                         $scope.setPagingData(data,page,pageSize);
-					});
-                }, 100);
+                });                 
             };
 
-            $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage);
+            if ($scope.currentClass.students) {
+                $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage);
+            }
+
             $scope.$watch('pagingOptions', function (newVal, oldVal) {
                 if (newVal !== oldVal && newVal.currentPage !== oldVal.currentPage) {
                     $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage, $scope.filterOptions.filterText);
@@ -74,27 +80,25 @@ define(['../../module'], function(controllers){
                 }
             }, true);
 
-
             $scope.gridOptions = {
                 data: 'myData',
                 rowHeight: 40,
                 enablePaging: true,
                 showFooter: true,
-                beforeSelectionChange: function (rowItem, event) {
-                    // check if one of the options buttons was clicked
-                    if(event.target.tagName === 'BUTTON') {
-                        return false;
-                    } else {
-                        return true;
-                    }
-                },
-                afterSelectionChange: function () {
-                    // check if one of the options buttons was clicked
-                    if($scope.gridOptions.selectedItems.length === 0) {
-                        $scope.showRemoveConfirm = false;
-                    }
-                    return true;
-                },
+                // beforeSelectionChange: function (rowItem, event) {
+                //     // check if one of the options buttons was clicked
+                //     if(event.target.tagName === 'BUTTON') {
+                //         return false;
+                //     } else {
+                //         return true;
+                //     }
+                // },
+                // afterSelectionChange: function () {
+                //     if($scope.gridOptions.selectedItems.length === 0) {
+                //         $scope.showRemoveConfirm = false;
+                //     }
+                //     return true;
+                // },
                 totalServerItems: 'totalServerItems',
                 pagingOptions: $scope.pagingOptions,
                 filterOptions: $scope.filterOptions,
@@ -105,13 +109,8 @@ define(['../../module'], function(controllers){
                     { field: 'firstName', displayName: 'First Name' },
                     { field: 'lastName', displayName: 'Last Name' },
                     { field: 'age', displayName: 'Age' },
-                    { cellTemplate: '/partials/students/list/optionsButton', sortable: false },
+                    { cellTemplate: '/partials/students/list/viewButton', sortable: false },
                 ]
-            };
-
-            $scope.edit = function(row){
-                console.log('Edit student id: ' + row.entity._id);
-                $state.go('admin.students.edit', {id: row.entity._id});
             };
 
             $scope.view = function(row){
@@ -119,65 +118,62 @@ define(['../../module'], function(controllers){
                 $state.go('admin.students.view', {id: row.entity._id});
             };
 
-            $scope.removeDisabled = function() {
-                return $scope.gridOptions.selectedItems.length === 0;
-            };
+            // $scope.removeDisabled = function() {
+            //     return $scope.gridOptions.selectedItems.length === 0;
+            // };
 
-            $scope.remove = function() {
-                $scope.showRemoveConfirm = true;
-            };
+            // $scope.remove = function() {
+            //     $scope.showRemoveConfirm = true;
+            // };
 
+            // $scope.confirmRemove = function(remove) {
+            //     if(remove) {
+            //         $log.log('Removing selected students...');
 
+            //         _($scope.gridOptions.selectedItems).forEach(function(student) {
+            //         	if (!student) {
+            //         		return;
+            //         	}
 
-            $scope.confirmRemove = function(remove) {
-                if(remove) {
-                    $log.log('Removing selected students...');
+            //             $log.log(' |_ Removing student: ' + student.firstName + ' ' + student.lastName + ' ' + student._id);
+            //             // removeStudentData(student);
 
-                    _($scope.gridOptions.selectedItems).forEach(function(student) {
-                    	if (!student) {
-                    		return;
-                    	}
+            //             $scope.currentClass.students = $scope.currentClass.students.filter(function(filterStudent) {
+            //             	return filterStudent._id !== student._id
+            //             });
+            //         });
 
-                        $log.log(' |_ Removing student: ' + student.firstName + ' ' + student.lastName + ' ' + student._id);
-                        // removeStudentData(student);
+            //         completeRemove();
 
-                        $scope.currentClass.students = $scope.currentClass.students.filter(function(filterStudent) {
-                        	return filterStudent._id !== student._id
-                        });
-                    });
+            //         // empty selection
+            //         $scope.gridOptions.selectedItems.length = 0;
 
-                    completeRemove();
+            //         $scope.showRemoveConfirm = false;
+            //     } else {
+            //         $scope.showRemoveConfirm = false;
+            //     }
+            // };
 
-                    // empty selection
-                    $scope.gridOptions.selectedItems.length = 0;
+            // $scope.showRemoveConfirm = false;
 
-                    $scope.showRemoveConfirm = false;
-                } else {
-                    $scope.showRemoveConfirm = false;
-                }
-            };
+            // function completeRemove() {
+            //     //Remove Students
+            //     function beforeSave(_class)  {
+            //     	_class.students = _class.students.map(function(student) {
+            //     		if (student) {
+            //     			return student._id;
+            //     		}
+            //     	}).filter(function(filterStudent) {
+            //     		return filterStudent;
+            //     	});
 
-            $scope.showRemoveConfirm = false;
+            //     	return _class;
+            //     }
 
-
-            function completeRemove() {
-                //Remove Students
-                function beforeSave(_class)  {
-                	_class.students = _class.students.map(function(student) {
-                		if (student) {
-                			return student._id;
-                		}
-                	}).filter(function(filterStudent) {
-                		return filterStudent;
-                	});
-
-                	return _class;
-                }
-
-                ClassSvc.save(beforeSave).then(function() {
-                    $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage);
-                });
-            }
+            //     ClassSvc.save(beforeSave).then(function() {
+            //         $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage);
+            //     });
+            // }
 
 	}]);
 });	

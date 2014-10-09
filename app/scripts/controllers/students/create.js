@@ -83,14 +83,15 @@ define(['../module'], function(controllers) {
 
                 function mapEmailAddressesTask(mapEmailAddressesTaskDone) {
 					//convert emails
-					
+
+					/*
 					$scope.model.emailAddresses = $scope.model.tmpEmailAddresses.map(function(emailObj) {
 						return emailObj.value;
 					});
+					*/
 
-					// for(var i=0; i<$scope.model.tmpEmailAddresses.length; i++) {
-					// 	$scope.model.emailAddresses[i] = $scope.model.tmpEmailAddresses[i].value;
-					// }
+					// the following flattens the email objects and then gets unique array
+					$scope.model.emailAddresses = _.uniq(_.flatten($scope.model.tmpEmailAddresses, 'value'));
 
 					return mapEmailAddressesTaskDone(null);
                 }

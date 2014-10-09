@@ -56,6 +56,13 @@ define(['./module'], function (directives) {
             }
           });
 
+          // fix to format the input control's value displayed when the model is loaded up 
+          ngModelCtrl.$formatters.push(function(value) {
+            if (value) {
+              return $filter('phoneNumber')(value);
+            }
+          });
+
           // This runs when the model gets updated on the scope directly and keeps our view in sync
           ngModelCtrl.$render = function() {
             $element.val($filter('phoneNumber')(ngModelCtrl.$viewValue));
