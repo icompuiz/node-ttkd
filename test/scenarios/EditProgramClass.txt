@@ -1,0 +1,10 @@
+Scenario: Admin: Edit a program class
+
+	Feature: Change name of class
+		Unit: Name is changed
+	
+	Feature: Add students to class
+		Unit: Student is in class's list of students
+		
+	Feature: Remove students from class
+		Unit: Student is no longer in list of students

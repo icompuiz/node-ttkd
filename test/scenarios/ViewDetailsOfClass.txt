@@ -1,0 +1,11 @@
+Scenario: Admin: View details of a program class
+
+	Feature: View class name
+		Unit: Class name is displayed
+	
+	Feature: View list of students in class
+		Unit: Lists students first name
+		Unit: Lists students last name
+		Unit: lists students age
+		Unit: lists students rank level
+		Unit: lists students recent attendance

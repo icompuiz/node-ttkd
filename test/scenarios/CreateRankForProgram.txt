@@ -1,0 +1,13 @@
+Scenario: Admin: Create a rank for a program
+
+	Feature: Rank is created for a program
+		Unit: Rank is in program's list of ranks
+		Unit: Rank has valid name
+		Unit: Rank has valid order
+		Unit: Rank has valid color
+		
+	Feature: Rank can have subranks
+		Unit: Subrank is in rank's list of subranks
+		Unit: SubRank has valid name
+		Unit: SubRank has valid order
+		Unit: SubRank has valid color

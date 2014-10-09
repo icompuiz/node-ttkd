@@ -1,0 +1,42 @@
+Scenario: Admin: Register a student
+
+	Feature: Enter student's basic information
+		Unit: First name field accepts valid information
+		Unit: Last name field accepts valid information
+		Unit: Address field accepts valid information
+		Unit: City field accepts valid information
+		Unit: State dropdown has the 50 states
+		Unit: Zip code field accepts valid information
+		Unit: Home phone number field accepts valid information
+		Unit: Cell phone field accepts valid information
+		Unit: Primary email address accepts valid information
+		Unit: Multiple email addresses are optional
+		Unit: Secondary email addresses accepts valid information
+		Unit: Date of Birth date picker formats date
+		
+	Feature: Enter student's two emergency contacts
+		Unit: Name field accepts valid information
+		Unit: Number field accepts valid information
+		Unit: Relationship field accepts valid information
+		Unit: Relationship field predicts common responses
+	
+	Feature: Take and Upload picture of student
+		Unit: Choose a file from device
+		Unit: Take a picture from device's front camera
+		Unit: Picture is optional
+	
+	Feature: Obtain waiver signature from guardian
+		Unit: Waiver is displayed
+		Unit: Name of participant field accepts valid information
+		Unit: Name of guardian field accepts valid information
+		Unit: Signature pad can be cleared
+		Unit: Signature pad accepts guardian's signature
+	
+	Feature: Review all information
+		Unit: Basic information is shown
+		Unit: Emergency contact information is shown
+		Unit: Photo is shown if attached
+		Unit: Waiver information is shown
+	
+	Feature: Add student to system
+		Unit: Student_id matches url_id

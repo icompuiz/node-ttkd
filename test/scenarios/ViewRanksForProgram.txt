@@ -1,0 +1,12 @@
+Scenario: Admin: View ranks for a program
+
+	Feature: View details about the program rank
+		Unit: Rank name is displayed
+		Unit: Rank order is displayed
+		Unit: Rank color is shown
+		Unit: Rank's subranks are listed
+		
+	Feature: View details about the subrank
+		Unit: subrank name is displayed
+		Unit: subrank order is displayed
+		Unit: subrank color is shown

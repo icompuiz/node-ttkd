@@ -1,0 +1,10 @@
+Scenario: Admin: Edit emergency contact
+
+	Feature: Change emergency contact name
+		Unit: Emergency contact name is saved as something different
+	
+	Feature: Change emergency contact number
+		Unit: Emergency contact number is saved as something different
+		
+	Feature: Change emergency contact relationship
+		Unit: Emergency contact relationship is saved as something different

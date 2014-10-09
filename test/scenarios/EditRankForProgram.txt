@@ -1,0 +1,11 @@
+Scenario: Admin: Edit a rank for a program
+
+	Feature: Rank is edited for a program
+		Unit: Rank has a new valid name
+		Unit: Rank has a new valid order
+		Unit: Rank has a new valid color
+		
+	Feature: Rank's subranks are edited
+		Unit: SubRank has a new valid name
+		Unit: SubRank has a new valid order
+		Unit: SubRank has a new valid color

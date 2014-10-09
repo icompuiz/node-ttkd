@@ -1,0 +1,6 @@
+Scenario: Admin: View emergency contact
+
+	Feature: View details about emergency contact
+		Unit: EC name is displayed
+		Unit: EC relationship is displayed
+		Unit: EC number is displayed
