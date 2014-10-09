@@ -1,0 +1,29 @@
+{
+    "db": {
+        "connectionString": "",
+        "username": "",
+        "password": "",
+        "hostname": "localhost",
+        "port": "",
+        "database": "toastycms",
+        "options": ""
+    },
+    "test": {
+        "connectionString": "",
+        "username": "",
+        "password": "",
+        "hostname": "localhost",
+        "port": "",
+        "database": "toastycms-test",
+        "options": ""
+    },
+    "security": {
+    	"cookieSecret": "yds93NzWnp0In64DJDGi",
+    	"sessionSecret": "BricWayvEVMIQ8eFqr5i",
+    	"sessionKey": "Toasty Session Key",
+    	"sessionStore": {
+    		"hostname": "localhost",
+    		"database": "toastycms-session"
+    	}
+    }
+}

@@ -1,0 +1,99 @@
+div.form-group
+	div.input-group
+		input.form-control(type='text', name='firstName', placeholder='First name', ng-model="model.firstName", required, ng-minlength='2', ng-maxlength='64')
+		span.input-group-addon
+			span.glyphicon.glyphicon-asterisk(ng-show="createStudent.firstName.$invalid && createStudent.firstName.$pristine")
+			span.glyphicon.glyphicon-remove(ng-show="createStudent.firstName.$invalid && !createStudent.firstName.$pristine")
+			span.glyphicon.glyphicon-ok(ng-show="createStudent.firstName.$valid")
+	p.text-muted.error(ng-show="createStudent.firstName.$invalid && !createStudent.firstName.$pristine") Student's first name must be between 2 and 64 characters long.
+
+div.form-group
+	div.input-group
+		input.form-control(type='text', name='lastName', placeholder='Last name', ng-model="model.lastName", required, ng-minlength='2', ng-maxlength='64')
+		span.input-group-addon
+			span.glyphicon.glyphicon-asterisk(ng-show="createStudent.lastName.$invalid && createStudent.lastName.$pristine")
+			span.glyphicon.glyphicon-remove(ng-show="createStudent.lastName.$invalid && !createStudent.lastName.$pristine")
+			span.glyphicon.glyphicon-ok(ng-show="createStudent.lastName.$valid")
+	p.text-muted.error(ng-show="createStudent.lastName.$invalid && !createStudent.lastName.$pristine") Student's last name must be between 2 and 64 characters long.
+
+div.form-group
+	div.input-group
+		input.form-control(type='text', name='address', placeholder='Address', ng-model="model.address.street", required, ng-minlength='2', ng-maxlength='128')
+		span.input-group-addon
+			span.glyphicon.glyphicon-asterisk(ng-show="createStudent.address.$invalid && createStudent.address.$pristine")
+			span.glyphicon.glyphicon-remove(ng-show="createStudent.address.$invalid && !createStudent.address.$pristine")
+			span.glyphicon.glyphicon-ok(ng-show="createStudent.address.$valid")
+	p.text-muted.error(ng-show="createStudent.address.$invalid && !createStudent.address.$pristine") Student's address must be between 2 and 128 characters long and include both the number and street.
+
+div.form-group.row
+	div.col-md-5
+		div.input-group
+			input.form-control(type='text', name="city", placeholder='City', ng-model="model.address.city", required, ng-minlength='2', ng-maxlength='64')
+			span.input-group-addon
+				span.glyphicon.glyphicon-asterisk(ng-show="createStudent.city.$invalid && createStudent.city.$pristine")
+				span.glyphicon.glyphicon-remove(ng-show="createStudent.city.$invalid && !createStudent.city.$pristine")
+				span.glyphicon.glyphicon-ok(ng-show="createStudent.city.$valid")
+		p.text-muted.error(ng-show="createStudent.city.$invalid && !createStudent.city.$pristine") Student's city must be between 2 and 64 characters long.
+
+	div.col-md-3
+		select.form-control(ng-model='model.address.state')
+			option(ng-repeat='state in states', ng-selected='state==model.address.state', value='{{state}}') {{state}}
+	div.col-md-4
+		div.input-group
+			input.form-control(type='text', name="zipcode", placeholder='Zip code', ng-model="model.address.zip", required, ng-minlength='5', ng-maxlength='5', maxlength='5')
+			span.input-group-addon
+				span.glyphicon.glyphicon-asterisk(ng-show="createStudent.zipcode.$invalid && createStudent.zipcode.$pristine")
+				span.glyphicon.glyphicon-remove(ng-show="createStudent.zipcode.$invalid && !createStudent.zipcode.$pristine")
+				span.glyphicon.glyphicon-ok(ng-show="createStudent.zipcode.$valid")
+		p.text-muted.error(ng-show="createStudent.zipcode.$invalid && !createStudent.zipcode.$pristine") Student's zip code must be exactly 5 characters long.
+
+div.form-group
+	div.input-group
+		input.form-control(type='tel', name="homePhoneNumber", phone-number-input, placeholder='Home phone number', ng-model="model.phone.home", ng-pattern='/^[0-9]{10}$/', maxlength='12', required)
+		span.input-group-addon
+			span.glyphicon.glyphicon-asterisk(ng-show="createStudent.homePhoneNumber.$invalid && createStudent.homePhoneNumber.$pristine")
+			span.glyphicon.glyphicon-remove(ng-show="createStudent.homePhoneNumber.$invalid && !createStudent.homePhoneNumber.$pristine")
+			span.glyphicon.glyphicon-ok(ng-show="createStudent.homePhoneNumber.$valid")
+	p.text-muted.error(ng-show="createStudent.homePhoneNumber.$invalid && !createStudent.homePhoneNumber.$pristine") Student's home phone number must be a valid 10 digit number. E.g. 555-555-5555
+
+div.form-group
+	div.input-group
+		input.form-control(type='tel', name="cellPhoneNumber", phone-number-input, placeholder='Cell phone number (optional)',ng-model="model.phone.cell", ng-pattern='/^[0-9]{10}$/', maxlength='12')
+		span.input-group-addon
+			//span.glyphicon.glyphicon-asterisk(ng-show="createStudent.cellPhoneNumber.$invalid && createStudent.cellPhoneNumber.$pristine")
+			span.glyphicon.glyphicon-remove(ng-show="createStudent.cellPhoneNumber.$invalid && !createStudent.cellPhoneNumber.$pristine")
+			span.glyphicon.glyphicon-ok(ng-show="createStudent.cellPhoneNumber.$valid")
+	p.text-muted.error(ng-show="createStudent.cellPhoneNumber.$invalid && !createStudent.cellPhoneNumber.$pristine") Student's cell phone number must be a valid 10 digit number. E.g. 555-555-5555
+
+div.form-group
+	div.input-group
+		span.input-group-btn
+			button.btn.btn-success(type='button', ng-click='insertNewEmail()')
+				i.glyphicon.glyphicon-plus
+		input.form-control(type='email', name="primaryEmailAddress", placeholder='Primary email address',ng-model="model.primaryEmailAddress", required)
+		span.input-group-addon
+			span.glyphicon.glyphicon-asterisk(ng-show="createStudent.primaryEmailAddress.$invalid && createStudent.primaryEmailAddress.$pristine")
+			span.glyphicon.glyphicon-remove(ng-show="createStudent.primaryEmailAddress.$invalid && !createStudent.primaryEmailAddress.$pristine")
+			span.glyphicon.glyphicon-ok(ng-show="createStudent.primaryEmailAddress.$valid")
+	p.text-muted.error(ng-show="createStudent.primaryEmailAddress.$invalid && !createStudent.primaryEmailAddress.$pristine") Primary email address must be a valid email address.
+
+div.form-group(ng-repeat="additionalEmailIndex in additionalEmailAddressesIndices")
+	div.input-group
+		span.input-group-btn
+			button.btn.btn-danger(type='button', ng-click='removeEmail(additionalEmailIndex)')
+				i.glyphicon.glyphicon-minus
+		input.form-control(type='email', name="emailAddress_extra[{{$index}}]", placeholder='Additional email address',ng-model="model.additionalEmailAddresses[$index]", required)
+		span.input-group-addon
+			span.glyphicon.glyphicon-asterisk(ng-show="createStudent.emailAddress_extra[{{$index}}].$invalid && createStudent.emailAddress_extra[{{$index}}].$pristine")
+			span.glyphicon.glyphicon-remove(ng-show="createStudent.emailAddress_extra[{{$index}}].$invalid && !createStudent.emailAddress_extra[{{$index}}].$pristine")
+			span.glyphicon.glyphicon-ok(ng-show="createStudent.emailAddress_extra[{{$index}}].$valid")
+	p.text-muted.error(ng-show="createStudent.emailAddress_extra[{{$index}}].$invalid && !createStudent.emailAddress_extra[{{$index}}].$pristine") Secondary email address must be a valid email address.
+
+div.form-group
+	div.input-group
+		input.form-control(type='text', ng-focus="open($event)", placeholder='Enter date of birth', datepicker-popup="{{format}}", ng-model="model.birthday", is-open="opened", datepicker-options="dateOptions", min-date="minDate", date-disabled="disabled(date, mode)", ng-required="true", close-text="Close")
+		span.input-group-btn
+			button.btn.btn-default(type='button', ng-click="open($event)")
+				i.glyphicon.glyphicon-calendar
+
+div(class='clearfix')

@@ -1,0 +1,17 @@
+h1 Edit Class
+br
+
+form.form-group
+	h2 Name
+	.input-group
+		input(type='text', class='form-control', placeholder='Class name', value='{{currentClass.name}}', ng-model="currentClass.name")
+		span(class='input-group-addon')
+			span(ng-show='!isEmpty(currentClass.name) && !isDupName()', class='glyphicon glyphicon-ok input-valid')
+			span(ng-show='isEmpty(currentClass.name) || isDupName()', class='glyphicon glyphicon-remove input-invalid')
+	p.text-muted.error(ng-show='isDupName()') Class name must be unique!
+	h2 Students
+
+	input.btn.btn-primary.pull-right(ng-disabled='!canSaveClass()', type='submit', value='Save Class', ng-click="saveClass()")
+	input.btn.btn-warning.pull-right(type='reset', value='Cancel', ng-click='cancelEdit()')
+
+	div(class='clearfix')

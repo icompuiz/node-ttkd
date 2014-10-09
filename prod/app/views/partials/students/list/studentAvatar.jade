@@ -1,0 +1,3 @@
+doctype html
+img.thumbnail.thumbnail-student-list(ng-if="row.entity.avatar", src="/api/fs/files/{{row.entity.avatar}}/download")
+img.thumbnail.thumbnail-student-list(ng-if="!row.entity.avatar", src="http://placehold.it/32x32.png")

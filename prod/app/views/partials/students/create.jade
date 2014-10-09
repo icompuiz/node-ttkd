@@ -1,0 +1,26 @@
+h1 Register Student - Enter {{wizard.current.name}}
+
+div.row
+	div.col-md-3
+		ul.nav.nav-pills.nav-stacked.wizard-steps
+			li(ng-repeat="step in wizard.steps", ng-class="{'active': wizard.current.id === step.id, 'disabled': !step.enabled}")
+				a(ng-click='step.enabled && wizard.goTo(step)') {{step.name}}
+
+	div.col-md-9
+		form(name="createStudent", ng-submit="submit()", autocomplete="off")
+			div.wizard_body.panel(ui-view="create-student-wzd-body")
+
+			div.form-controls.pull-left(ng-show='isNew')
+				button.btn.btn-danger(type='button', ng-show='!showResetConfirm', ng-click='reset()') Reset Registration Form
+
+				.btn-toolbar(ng-show='showResetConfirm')
+					span.text-muted Are you sure you wish to reset form?
+					button.btn.btn-danger(type='button', ng-click='confirmReset(true)') Yes
+					button.btn.btn-success(type='button', ng-click='confirmReset(false)') No
+
+			div.form_controls.pull-right
+				button.btn.btn-default(type='button', ng-click='wizard.goBack()', ng-show='displayPreviousBtn()') Previous
+				button.btn.btn-primary(type='submit', ng-show="!wizard.current.isFinalStep && wizard.current.id !== 'admin.students.create.signature'", ng-disabled='createStudent.$invalid') Continue
+				button.btn.btn-default(type='button', ng-show="wizard.current.id === 'admin.students.create.signature'", ng-disabled='submitBtnDisabled', data-action='clearsigpad') Clear Signature
+				button.btn.btn-primary(type='submit', ng-show="wizard.current.id === 'admin.students.create.signature'", ng-disabled='createStudent.$invalid', data-action='savesigpad') Continue
+				button.btn.btn-success(type='submit', ng-show='wizard.current.isFinalStep', ng-disabled='createStudent.$invalid || submitBtnDisabled', data-action='savesigpad') {{submitBtnContent}}

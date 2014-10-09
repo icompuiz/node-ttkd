@@ -1,0 +1,13 @@
+doctype html
+form
+	.form-group(ng-hide="uploader.queue.length")
+		label(for="student-avatar")
+			| Upload a Picture &nbsp;
+			i.glyphicon.glyphicon-camera 
+		input.form-control(name="student-avatar", type="file", nv-file-select, uploader="uploader", accept="image/*;capture=camera")
+.row
+	.col-md-12(ng-repeat="item in uploader.queue")
+		label 
+			a.btn.text-danger(ng-click="item.remove()") 
+				span.glyphicon.glyphicon-trash
+			| {{item.file.name}}

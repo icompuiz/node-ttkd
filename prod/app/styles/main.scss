@@ -1,0 +1,243 @@
+$icon-font-path: "/bower_components/bootstrap-sass-official/vendor/assets/fonts/bootstrap/";
+
+@import 'bootstrap-sass-official/vendor/assets/stylesheets/bootstrap';
+
+// bower:scss
+@import "../bower_components/bootstrap-sass-official/vendor/assets/stylesheets/bootstrap.scss";
+// endbower
+
+.browsehappy {
+    margin: 0.2em 0;
+    background: #ccc;
+    color: #000;
+    padding: 0.2em 0;
+}
+
+/* Space out content a bit */
+body {
+    // padding-top: 20px;
+    // padding-bottom: 20px;
+}
+
+/* Everything but the jumbotron gets side spacing for mobile first views */
+.header,
+.marketing,
+.footer {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* Custom page header */
+.header {
+    border-bottom: 1px solid #e5e5e5;
+}
+
+/* Make the masthead heading the same height as the navigation */
+.header h3 {
+    margin-top: 0;
+    margin-bottom: 0;
+    line-height: 40px;
+    padding-bottom: 19px;
+}
+
+/* Custom page footer */
+.footer {
+    padding-top: 19px;
+    color: #777;
+    border-top: 1px solid #e5e5e5;
+}
+
+.container-narrow > hr {
+    margin: 30px 0;
+}
+
+/* Main marketing message and sign up button */
+.jumbotron {
+    text-align: center;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.jumbotron .btn {
+    font-size: 21px;
+    padding: 14px 24px;
+}
+
+/* Supporting marketing content */
+.marketing {
+    margin: 40px 0;
+}
+
+.marketing p + h4 {
+    margin-top: 28px;
+}
+
+/* Responsive: Portrait tablets and up */
+@media screen and (min-width: 768px) {
+    .container {
+        max-width: 730px;
+    }
+
+    /* Remove the padding we set earlier */
+    .header,
+    .marketing,
+    .footer {
+        padding-left: 0;
+        padding-right: 0;
+    }
+    /* Space out the masthead */
+    .header {
+        margin-bottom: 30px;
+    }
+    /* Remove the bottom border on the jumbotron for visual effect */
+    .jumbotron {
+        border-bottom: 0;
+    }
+}
+
+
+@import url(http://fonts.googleapis.com/css?family=Bree+Serif|Open+Sans|Open+Sans+Condensed:300|Open+Sans+Condensed:700);
+
+$sidebar-width: 253px;
+$sidebar-font-size: 1.2em;
+$sidebar-item-height: 50px;
+$sidebar-separator-color: #333;
+$navbar-height: 50px;
+$tdark: #191818;
+$bootstrap-blue: #2a6496;
+$light-border-color: #e7e7e7;
+$tarea-padding-top: 15px;
+
+body {
+    font-family: "Open Sans";
+    background: #f8f8f8;
+}
+
+.banner-login {
+    text-align: center;
+    margin: 25px 0;
+}
+
+.navbar-brand {
+    font-size: 2em;
+    text-align: center;
+    width: 100px;
+    font-family: "Bree Serif";
+}
+
+.btn-logout {
+    cursor: pointer;
+}
+
+.glyphicon-remove {
+    color: red;
+}
+
+.glyphicon-ok {
+    color: green;
+}
+
+
+
+form .glyphicon-asterisk {
+    color: red;
+}
+form .text-muted.error {
+    color: red;
+}
+
+.wizard_body.panel {
+    padding: 1em;
+}
+
+.form_controls button {
+    margin: 0 0 0 1em;
+}
+.form_controls button:first-child {
+    margin: 0;
+}
+
+
+/*.form_controls button:last-child {
+    margin-right: 0;
+}*/
+
+.wizard_body .select-photo {
+    text-align: center;
+    width: 300px;
+    margin-left: auto;
+    margin-right: auto;
+}
+.wizard_body .select-photo i.glyphicon-camera {
+    font-size: 250px;
+    line-height: 290px;
+}
+.wizard-body .select-photo a.thumbnail {
+    margin-bottom: 0;
+}
+
+.plus_button {
+    width: 60px;
+}
+
+.gridStyle {
+    border: 1px solid rgb(212,212,212);
+    width: 100%;
+    height: 500px;
+}
+
+.btn.editBtn, .btn.viewBtn {
+    margin: 5px;
+}
+
+.ngCellText {
+    line-height: 30px;
+}
+
+.ngVerticalBarVisible {
+    line-height: 40px;
+}
+
+.row-margin-bottom-10 {
+    margin-bottom: 10px;
+}
+
+.margin-left-10 {
+    margin-left: 10px;
+}
+
+.my-drop-zone { border: dotted 3px lightgray; }
+.nv-file-over { border: dotted 3px red; } /* Default class applied to drop zones on over */
+.another-file-over-class { border: dotted 3px green; }
+
+canvas {
+    background-color: #f3f3f3;
+    -webkit-box-shadow: 3px 3px 3px 0 #e3e3e3;
+    -moz-box-shadow: 3px 3px 3px 0 #e3e3e3;
+    box-shadow: 3px 3px 3px 0 #e3e3e3;
+    border: 1px solid #c3c3c3;
+    height: 100px;
+    margin: 6px 0 0 6px;
+}
+
+.thumbnail-student-list {
+    width: 40px;
+    height: 40px;
+    padding: 2px;
+    border-radius: 2px;
+    margin: 0 auto;
+}
+
+.thumbnail-view-student {
+    width: 50%;
+    height: auto;
+    margin: 0 auto;
+}
+
+.grid-student-list-icon-cell {
+    text-align: center;
+}
+
+canvas.sigpad {
+    width: 100%;
+    height: 80px;
+}
