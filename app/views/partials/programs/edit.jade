@@ -23,7 +23,7 @@ form.form-group
 					button.btn.btn-success(type='button', ng-click='confirmRemoveClasses(false)') No
 	.row
 		.col-md-12
-			div.gridStyle(ng-grid='classGridOptions')
+			div.gridStyle.grid-med(ng-grid='classGridOptions')
 	h2 Ranks
 	.row.row-margin-bottom-10
 		.col-md-12
@@ -38,7 +38,7 @@ form.form-group
 					button.btn.btn-success(type='button', ng-click='confirmRemoveRanks(false)') No
 	.row
 		.col-md-12
-			div.gridStyle(ng-grid='rankGridOptions')
+			div.gridStyle.grid-med(ng-grid='rankGridOptions')
 
 
 	input.btn.btn-primary.pull-right(ng-disabled='!canSaveProgram()' type='submit', value='Save Program', ng-click='saveProgram()')

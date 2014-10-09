@@ -1,13 +1,23 @@
 h1 {{currentClass.name}}
-br
-
-
 h2 Students
+//- .row.row-margin-bottom-10
+//- 	.col-md-12
+//- 		.btn-toolbar.pull-left
+//- 			a.btn.btn-primary(ui-sref='admin.students.create({ classId: currentClass._id })') Add Student to Class
+//- 			button.btn.btn-danger(type='button', ng-disabled='removeDisabled()', ng-show='!showRemoveConfirm', ng-click='remove({ class: currentClass })') Remove Selected From Class
+//- 		.pull-left.margin-left-10(ng-show='showRemoveConfirm && gridOptions.selectedItems.length > 0')
+//- 			.btn-toolbar
+//- 				span.text-muted(ng-show='gridOptions.selectedItems.length > 1') Are you sure you wish to remove the {{gridOptions.selectedItems.length}} selected students from {{currentClass.name}}?
+//- 				span.text-muted(ng-show='gridOptions.selectedItems.length == 1') Are you sure you wish to remove the selected student from {{currentClass.name}}?
+//- 				button.btn.btn-danger(type='button', ng-click='confirmRemove(true)') Yes
+//- 				button.btn.btn-success(type='button', ng-click='confirmRemove(false)') No
 .row
 	.col-md-12
-		div.gridStyle
-
-button.btn.btn-warning.pull-right(type='button', ng-click='goBack()')
-	| Back
+		div.gridStyle(ng-grid="gridOptions")
+.row
+	.col-md-12
+		.btn-toolbar
+			button.btn.btn-warning.pull-right(type='button', ng-click='goBack()')
+				| Back to Program
 
 div(class='clearfix')

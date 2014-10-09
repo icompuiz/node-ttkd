@@ -76,44 +76,69 @@ define(['../../module'], function(controllers) {
 			}
 
 			//add support for multiple email addresses
-			if(!$scope.model.emailAddresses) {
-				$scope.model.emailAddresses = [];
+			if(!$scope.model.tmpEmailAddresses) {
+				$scope.model.tmpEmailAddresses = [];
 			}
 
-			var allEmails = _.clone($scope.model.emailAddresses);
-			$scope.model.primaryEmailAddress = allEmails[0];
-			$scope.model.additionalEmailAddresses = allEmails;
-			$scope.model.additionalEmailAddresses.splice(0,1);
-			$scope.additionalEmailAddressesIndices = [];
+			// use email id counter so the names are always unique
+			var emailIdCounter = $scope.model.tmpEmailAddresses.length;
 
-			for(var i=0; i<$scope.model.additionalEmailAddresses.length; i++) {
-				$scope.additionalEmailAddressesIndices[i] = i;
+			if($scope.model.emailAddresses && _.isEmpty($scope.model.tmpEmailAddresses)) {
+				//populate existing
+				for(var i=0; i<$scope.model.emailAddresses.length; i++) {
+					var tmpObj = {};
+					tmpObj.id = 'email_' + emailIdCounter++;
+					tmpObj.value = $scope.model.emailAddresses[i];
+					tmpObj.isPristine = true;
+
+					if(i===0) {
+						tmpObj.placeholder = 'Primary email address';
+						tmpObj.isRemovable = false;
+					} else {
+						tmpObj.placeholder = 'Additional email address';
+						tmpObj.isRemovable = true;
+					}
+
+					// need to add the email address to the array of tmp email addresses
+					$scope.model.tmpEmailAddresses.push(tmpObj);
+				}
+			}
+
+			if($scope.model.tmpEmailAddresses.length < 1) {
+				// initialize with primary email
+				$scope.model.tmpEmailAddresses.push({
+					id: 'email_' + emailIdCounter++,
+					value: '',
+					isRemovable: false,
+					placeholder: 'Primary email address',
+					isPristine: true
+				});
 			}
 
 			$scope.insertNewEmail = function() {
-				$scope.additionalEmailAddressesIndices.push($scope.additionalEmailAddressesIndices.length);
+				$scope.model.tmpEmailAddresses.push({
+					id: 'email_' + $scope.model.tmpEmailAddresses.length+1,
+					value: '',
+					isRemovable: true,
+					placeholder: 'Additional email address',
+					isPristine: true
+				});
 			};
 
 			$scope.removeEmail = function(index) {
-				$log.log('removing additional email field with index:' + index);
-				$scope.additionalEmailAddressesIndices.splice($scope.additionalEmailAddressesIndices.length-1, 1);
-				$scope.model.additionalEmailAddresses.splice(index, 1);
+				$scope.model.tmpEmailAddresses.splice(index, 1);
 			};
 
-			$scope.$watchCollection('model.additionalEmailAddresses', function(newNames, oldNames) {
-				performEmailChange(newNames);
-  			});
+  			$scope.isEmailFieldValid = function(emailField) {
+  				var field = createStudent[emailField.id];
 
-			$scope.$watch('model.primaryEmailAddress', function(newNames, oldNames) {
-				performEmailChange(newNames);
-  			});
+  				if(field) {
+  					return field.validity.valid;
+  				} else {
+  					return false;
+  				}
+  			};
 
-  			function performEmailChange(newNames) {
-    			$scope.model.emailAddresses = [];
-    			$scope.model.emailAddresses.push($scope.model.primaryEmailAddress);
-    			$scope.model.emailAddresses = $scope.model.emailAddresses.concat(newNames);
-    			$log.log($scope.model.emailAddresses);
-  			}
 		}
 	]);
 

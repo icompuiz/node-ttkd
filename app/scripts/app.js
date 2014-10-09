@@ -11,6 +11,7 @@ define('app', [
     'ngGrid',
     'restangular',
     'sigPad',
+    'swiper',
     './controllers/index',
     './directives/index',
     './factories/index',
@@ -62,6 +63,16 @@ define('app', [
             id: '_id',
           });
 
+        $rootScope.$on('$stateChangeSuccess', function(ev, to, toParams, from, fromParams) {
+            $rootScope.previousState = from.name;
+            $rootScope.previousParams = fromParams;
+            $rootScope.currentState = to.name;
+            $rootScope.currentParams = toParams;
+            console.log('Previous state:'+$rootScope.previousState)
+            console.log('Current state:'+$rootScope.currentState)
+        });
+
         $state.go('login');
+
       });
   });

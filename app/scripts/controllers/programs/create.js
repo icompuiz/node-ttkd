@@ -48,6 +48,12 @@ define(['../module'], function(controllers){
 				$state.go('admin.programs.editclass');
 			};
 
+			$scope.goToViewClass = function(row) {
+				ClassSvc.init(row.entity);
+				ClassSvc.startViewing();
+				$state.go('admin.programs.viewclass');
+			};
+
 			$scope.goToCreateRank = function() {
 				RankSvc.reset();
 				RankSvc.startCreating();

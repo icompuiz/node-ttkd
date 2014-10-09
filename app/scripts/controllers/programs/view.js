@@ -1,7 +1,7 @@
 define(['../module'], function(controllers){
 	'use strict';
-	controllers.controller('ViewProgramCtrl', ['$scope', '$state', '$stateParams', 'Restangular', 'ProgramSvc', 'ClassSvc',
-		function($scope, $state, $stateParams, Restangular, ProgramSvc, ClassSvc) {
+	controllers.controller('ViewProgramCtrl', ['$rootScope', '$scope', '$state', '$stateParams', 'Restangular', 'ProgramSvc', 'ClassSvc', 'RankSvc',
+		function($rootScope, $scope, $state, $stateParams, Restangular, ProgramSvc, ClassSvc, RankSvc) {
 			$scope.currentProgram = {};
 
 			if (ProgramSvc.current && ProgramSvc.viewing) {
@@ -18,6 +18,7 @@ define(['../module'], function(controllers){
 						$scope.currentProgram.rankObjs = _.where(ranks, {program: $scope.currentProgram._id});
 					});
 				});
+				ProgramSvc.startViewing();
 			}
 			
 			if (ProgramSvc.current && ProgramSvc.viewing) {
@@ -149,6 +150,7 @@ define(['../module'], function(controllers){
                 sortInfo: { fields: ['name'], directions: ['asc'] },
                 columnDefs: [
                     { field: 'name', displayName: 'Rank Name' },
+                    { field: 'rankOrder', displayName: 'Order'},
                     { cellTemplate: '/partials/programs/ranks/list/viewOptionsButton', sortable: false, displayName: 'Actions'}
                 ]
             };
@@ -167,7 +169,7 @@ define(['../module'], function(controllers){
 				$state.go('admin.programs.viewrank', {id: row.entity._id});
 			};
 
-			$scope.backToHome = function() {
+			$scope.back = function() {
 				ProgramSvc.reset();
 				$state.go('admin.programs.home');
 			};
