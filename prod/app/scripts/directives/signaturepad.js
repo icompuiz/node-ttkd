@@ -32,6 +32,10 @@ define(['./module'], function (directives) {
               canvas.width = canvas.offsetWidth * ratio;
               canvas.height = canvas.offsetHeight * ratio;
               canvas.getContext('2d').scale(ratio, ratio);
+
+              if(scope.data.data && scope.data.data !== null) {
+                signaturePad.fromDataURL(scope.data.data);
+              }
             }
 
           window.onresize = resizeCanvas;

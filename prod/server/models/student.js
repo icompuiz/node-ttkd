@@ -35,7 +35,28 @@ var studentSchema = new Schema({
 	modified: {
 		type: Date,
 		default: Date.now
+	},
+	signaturedata: {
+		participant: String,
+		guardian: String,
+		data: String
 	}
+});
+
+studentSchema.pre('remove', function(preRemoveDone) {
+
+	var _doc = this;
+
+	var ClassModel = mongoose.model('Class');
+
+	ClassModel.findOneAndUpdate({
+		students: _doc._id
+	}, {
+		$pull: {
+			students: _doc._id
+		}
+	}, preRemoveDone);
+
 });
 
 var Student = mongoose.model('Student', studentSchema);
