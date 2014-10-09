@@ -11,6 +11,7 @@ define('app', [
     'ngGrid',
     'restangular',
     'sigPad',
+    'swiper',
     './controllers/index',
     './directives/index',
     './factories/index',

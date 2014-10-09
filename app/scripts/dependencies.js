@@ -19,7 +19,8 @@ requirejs.config({
         'restangular':'../bower_components/restangular/dist/restangular.min',
         'angular-bootstrap-tmpls': '../bower_components/angular-bootstrap/ui-bootstrap-tpls',
         'ngGrid': '../bower_components/ng-grid/ng-grid-2.0.13.min',
-        'sigPad': '../bower_components/signature_pad/signature_pad'
+        'sigPad': '../bower_components/signature_pad/signature_pad',
+        'swiper': '../bower_components/idangerous-swiper/dist/idangerous.swiper'
       },
 
     /**
@@ -56,6 +57,9 @@ requirejs.config({
           },
           'sigPad':{
             deps: ['$']
+          },
+          'swiper':{
+            deps: []
           }
         },
 
