@@ -1,5 +1,6 @@
 dist
 bin
+prod
 daemon
 .tmp
 .sass-cache
