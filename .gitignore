@@ -1,5 +1,6 @@
 dist
-prod
+bin
+daemon
 .tmp
 .sass-cache
 app/bower_components
