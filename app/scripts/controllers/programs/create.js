@@ -66,8 +66,6 @@ define(['../module'], function(controllers){
 				$state.go('admin.programs.editrank');
 			};
 
-
-
 			$scope.createProgram = function() {
 				var programToAdd = {
 					name: $scope.newProgram.name

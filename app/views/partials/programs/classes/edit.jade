@@ -13,7 +13,10 @@ h2 Students
 	.col-md-12
 		.btn-toolbar.pull-left
 			a.btn.btn-primary(ui-sref='admin.programs.addstudenttype') Add Student to Class
-			button.btn.btn-danger(type='button', ng-disabled='removeDisabled()', ng-show='!showRemoveConfirm', ng-click='remove({ class: currentClass })') Remove Selected From Class
+			button.btn.btn-danger(type='button', ng-disabled='removeDisabled()', ng-show='!showRemoveConfirm', ng-click='remove({ class: currentClass })') Remove Selected
+		.btn-toolbar.pull-right
+			button.btn.btn-default(type='button', ng-click='generateEmailDistList()')
+				.glyphicon.glyphicon-envelope
 		.pull-left.margin-left-10(ng-show='showRemoveConfirm && gridOptions.selectedItems.length > 0')
 			.btn-toolbar
 				span.text-muted(ng-show='gridOptions.selectedItems.length > 1') Are you sure you wish to remove the {{gridOptions.selectedItems.length}} selected students from {{currentClass.name}}?

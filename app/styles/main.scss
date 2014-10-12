@@ -537,3 +537,16 @@ none-colorpicker {
 .swiper-container.nested, .swiper-wrapper.nested, .swiper-wrapper.nested .swiper-slide {
   height: inherit;
 }
+
+.anchor-bottom-right {
+  position: absolute;
+  right:    0;
+  bottom:   0;
+  padding-bottom: 15px; 
+  padding-right: 15px;
+}
+
+.valign-items {
+  display: flex;
+  align-items: center;
+}

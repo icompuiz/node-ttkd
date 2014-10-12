@@ -6,12 +6,13 @@ var mongoose = require('mongoose'),
 
 var workshopSchema = new Schema({
 	name: String,
-	workshops: [{
-		ref: 'Class',
+	attendanceList: [{
+		ref: 'Student',
 		type: ObjectId
-	}]
+	}],
+	workshopDate: Date
 });
 
-var Workshops = mongoose.model('Workshops', workshopSchema);
+var Workshop = mongoose.model('Workshop', workshopSchema);
 
-module.exports = Workshops;
+module.exports = Workshop;

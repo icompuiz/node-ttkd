@@ -28,6 +28,36 @@ define(['../module'], function (states) {
             }
         });
 
+        $stateProvider.state('admin.workshops.create', {
+            url: '/workshops/create',
+            views: {
+                'section-body': {
+                    templateUrl: 'partials/workshops/create',
+                    controller: 'CreateWorkshopCtrl'
+                }
+            }
+        });
+
+        $stateProvider.state('admin.workshops.view', {
+            url: '/workshops/view/:id',
+            views: {
+                'section-body': {
+                    templateUrl: 'partials/workshops/view',
+                    controller: 'ViewWorkshopCtrl'
+                }
+            }
+        });
+
+        $stateProvider.state('admin.workshops.edit', {
+            url: '/workshops/edit/:id',
+            views: {
+                'section-body': {
+                    templateUrl: 'partials/workshops/edit',
+                    controller: 'EditWorkshopCtrl'
+                }
+            }
+        });
+
     }]);
 
 });

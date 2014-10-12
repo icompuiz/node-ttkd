@@ -1,0 +1,13 @@
+h1 {{workshop.name}}
+.row
+	.col-md-12
+		span
+			b
+				|Date: 
+			{{workshop.workshopDate | date:"shortDate"}}
+			| 
+			{{workshop.workshopDate | date:"shortTime"}}
+
+button.btn.btn-warning.pull-right(type='button', ng-click='back()') Back
+
+div(class='clearfix')
