@@ -456,7 +456,7 @@ none-colorpicker {
 .swiper-wrapper {
   height: inherit;
 }
-.swiper-nested-1, .swiper-nested-2 {
+.swiper-container.nested {
   width: 100%;
 }
 .red-slide {
@@ -480,7 +480,7 @@ none-colorpicker {
   margin-bottom: 0;
   /*line-height: 250px;*/
 }
-.swiper-nested-1 .swiper-slide, .swiper-nested-2 .swiper-slide {
+.swiper-container.nested .swiper-slide {
   /*line-height: 125px;*/
   font-size: 21px
 }
@@ -536,4 +536,17 @@ none-colorpicker {
 
 .swiper-container.nested, .swiper-wrapper.nested, .swiper-wrapper.nested .swiper-slide {
   height: inherit;
+}
+
+.swiper-container h2.title {
+  color: #999;
+}
+
+.swiper-wrapper.nested > .swiper-slide {
+  display: table;
+}
+
+.swiper-slide > .class {
+  display: table-cell;
+  vertical-align: middle;
 }
