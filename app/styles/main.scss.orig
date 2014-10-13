@@ -538,18 +538,7 @@ none-colorpicker {
   height: inherit;
 }
 
-.swiper-container h2.title {
-  color: #999;
-}
-
-.swiper-wrapper.nested > .swiper-slide {
-  display: table;
-}
-
-.swiper-slide > .class {
-  display: table-cell;
-  vertical-align: middle;
-}
+<<<<<<< HEAD
 .anchor-bottom-right {
   position: absolute;
   right:    0;
@@ -561,4 +550,17 @@ none-colorpicker {
 .valign-items {
   display: flex;
   align-items: center;
+=======
+.swiper-container h2.title {
+  color: #999;
+}
+
+.swiper-wrapper.nested > .swiper-slide {
+  display: table;
+}
+
+.swiper-slide > .class {
+  display: table-cell;
+  vertical-align: middle;
+>>>>>>> f33a8487ec03527c6d41503b1745b4adc4116456
 }
