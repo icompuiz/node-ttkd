@@ -37,12 +37,18 @@ define(['../module'], function (controllers) {
 
 				//create a parent swiper for vertical movement
 				var lateralSwiperWrapper = swiperParent.createSlide('<div class="swiper-container nested '+slideClassName+'"><div class="swiper-wrapper nested"></div></div>', 'swiper-slide');
+				var rowTitle = document.createElement('h2');
+				rowTitle.innerText = program.name;
+				rowTitle.className = 'title';
+				swiperParent.container.firstElementChild.appendChild(rowTitle);
+
 				lateralSwiperWrapper.append();
 				var newLateralSwiper = new Swiper('.' + slideClassName, {
 					mode: 'horizontal',
 					slidesPerView: 4,
 					centeredSlides: true,
-					watchActiveIndex: true
+					watchActiveIndex: true,
+					resistance: '100%'
 				});
 				lateralSwipersNested.push(newLateralSwiper);
 
@@ -51,7 +57,9 @@ define(['../module'], function (controllers) {
 				}
 
 				for(var j=0; j<program.classObjs.length; j++) {
-					var newHSlide = newLateralSwiper.createSlide('Horizontal ' + i, 'swiper-slide red-slide');
+					var button = '<button type="button" class="btn btn-primary btn-lg">Large button</button>';
+
+					var newHSlide = newLateralSwiper.createSlide('<div class="class"><div class="name">'+program.classObjs[j].name+'</div><div class="button">'+button+'</div></div>', 'swiper-slide red-slide');
 					newHSlide.append();
 					resizeLateralSlides(newLateralSwiper, lateralHeight);
 				}
