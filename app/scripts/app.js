@@ -56,7 +56,7 @@ define('app', [
               });
           }
         ]).run(function($state, $rootScope, Restangular) {
-
+            
         Restangular.setBaseUrl('/api');
 
         Restangular.setRestangularFields({

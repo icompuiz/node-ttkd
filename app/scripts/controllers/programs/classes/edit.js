@@ -1,13 +1,29 @@
 define(['../../module'], function(controllers){
 	'use strict';
-	controllers.controller('EditClassCtrl', ['$scope', '$state', '$stateParams', '$log', 'Restangular', 'StudentSvc', 'ClassSvc', 'ProgramSvc',
-		function($scope, $state, $stateParams, $log, Restangular, StudentSvc, ClassSvc, ProgramSvc) {
+	controllers.controller('EditClassCtrl', ['saveAs', '$scope', '$state', '$stateParams', '$log', 'Restangular', 'StudentSvc', 'ClassSvc', 'ProgramSvc',
+		function(saveAs, $scope, $state, $stateParams, $log, Restangular, StudentSvc, ClassSvc, ProgramSvc) {
 			$scope.currentClass = {};
+
 			var currentProgram = null,
+                emails = [],
 				orig = null;
+
+            function populateStudentObjs() {
+                var data = [];
+                _($scope.currentClass.students).forEach(function(id) {
+                    StudentSvc.read(id, null, false).then(function(s) {
+                        data.push(s);
+                        _(s.emailAddresses).forEach(function(e) {
+                            emails.push(e);
+                        });
+                    });
+                });
+                $scope.currentClass.studentObjs = data;
+            }
 
 			if (ClassSvc.current && ClassSvc.editing) {
 				$scope.currentClass = ClassSvc.current;
+                populateStudentObjs();
 				currentProgram = ProgramSvc.current;
 				currentProgram.populated = true;
 				if (!ClassSvc.orig) {
@@ -20,6 +36,7 @@ define(['../../module'], function(controllers){
 			} else if ($stateParams.id) {
 				ClassSvc.read($stateParams.id, null, true).then(function(c) {
 					$scope.currentClass = c;
+                    populateStudentObjs();
 					ClassSvc.orig = {
 						name: c.name,
 						students: c.students
@@ -53,10 +70,43 @@ define(['../../module'], function(controllers){
 					$state.go('admin.programs.edit', { id: currentProgram._id});
 				} else if (ProgramSvc.creating) {
 					$state.go('admin.programs.create');
-				} else {
+				} else if ($stateParams.id) {
+                    $state.go('admin.programs.edit', {id: currentProgram._id});
+                } else {
 					$state.go('admin.programs.home');
 				}
 			}
+
+            function writeEmailList() {
+                var studentFile = '';
+                var d = new Date(),
+                    year = d.getFullYear(),
+                    month = d.getMonth()+1,
+                    day = d.getDate();
+
+                var filename = $scope.currentClass.name + '_emails_' + month + '-' + day + '-' + 
+                                year + '.txt';
+
+                _(emails).forEach(function(e) {
+                    studentFile += e + '\r\n';
+                });
+                
+                var blob = new Blob([studentFile], {type: 'text/plain;'});
+                saveAs(blob, filename);
+            }
+
+            $scope.showGenerateEmailListConfirm = false;
+
+            $scope.generateEmailList = function() {
+                $scope.showGenerateEmailListConfirm = true;
+            };
+
+            $scope.confirmGenerateEmailList = function(writeList) {
+                if (writeList) {
+                    writeEmailList();
+                }
+                $scope.showGenerateEmailListConfirm = false;
+            }
 
 			$scope.saveClass = function() {
 				//Find the original class in the program and replace it with the edited class
@@ -106,21 +156,17 @@ define(['../../module'], function(controllers){
                 }
             };
 
-            $scope.getPagedData = function (pageSize, page) {
+            $scope.getPagedData = function(pageSize, page, searchText) {
                 var data = [];
-                async.each($scope.currentClass.students,
-                	function(id, callback) {
-                		StudentSvc.read(id, null, false).then(function(s) {
-							data.push(s);
-							callback();
-						});
-                	},
-                	function(err) {
-                		$scope.setPagingData(data,page,pageSize);
-            	});	                
+                _.each($scope.currentClass.studentObjs, function(s) {
+                    data.push(s);
+                });
+                $scope.setPagingData(data, page, pageSize);
             };
 
-           	$scope.getPagedData($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage);
+            $scope.$watch('currentClass.studentObjs', function () {
+                $scope.getPagedData($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage, $scope.filterOptions.filterText);
+            }, true);
 
             $scope.$watch('pagingOptions', function (newVal, oldVal) {
                 if (newVal !== oldVal && newVal.currentPage !== oldVal.currentPage) {
