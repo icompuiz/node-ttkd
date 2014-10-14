@@ -246,6 +246,7 @@ define(['../../module'], function(controllers){
                         $scope.currentClass.students = $scope.currentClass.students.filter(function(filterStudent) {
                         	return filterStudent !== student._id;
                         });
+                        $scope.currentClass.studentObjs = _.without($scope.currentClass.studentObjs, student);
                     });
 
                     $scope.getPagedData($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage);

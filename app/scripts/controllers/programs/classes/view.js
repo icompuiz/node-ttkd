@@ -21,11 +21,7 @@ define(['../../module'], function(controllers){
 
 			if (ClassSvc.current && ClassSvc.viewing) {
 				$scope.currentClass = ClassSvc.current;
-                populateStudentObjs();
-                if ($scope.currentClass.program) {
-                    ProgramSvc.read($scope.currentClass.program, null, true);
-                }
-                
+                populateStudentObjs();              
 			} else if ($stateParams.id) {
 				ClassSvc.read($stateParams.id, null, true).then(function(_class) {
 					$scope.currentClass = _class;
@@ -39,7 +35,9 @@ define(['../../module'], function(controllers){
                     $state.go('admin.programs.edit', {id: ProgramSvc.current._id});
                 } else if (ProgramSvc.creating) {
                     $state.go('admin.programs.create', {id: ProgramSvc.current._id});
-                } else if ($rootScope.previousState && $rootScope.previousParams) {
+                } else if (ProgramSvc.viewing) {
+                    $state.go('admin.programs.view', {id: ProgramSvc.current._id});
+                }else if ($rootScope.previousState && $rootScope.previousParams) {
                     $state.go($rootScope.previousState, $rootScope.previousParams);
                 } else if ($rootScope.previousState) {
                     $state.go($rootScope.previousState);
