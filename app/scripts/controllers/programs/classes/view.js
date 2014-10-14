@@ -1,7 +1,7 @@
 define(['../../module'], function(controllers){
 	'use strict';
-	controllers.controller('ViewClassCtrl', ['saveAs', '$rootScope', '$scope', '$state', '$stateParams','$log', 'Restangular', 'ProgramSvc', 'ClassSvc','StudentSvc',
-		function(saveAs, $rootScope, $scope, $state, $stateParams, $log, Restangular, ProgramSvc, ClassSvc, StudentSvc) {
+	controllers.controller('ViewClassCtrl', ['saveAs', '$filter', '$rootScope', '$scope', '$state', '$stateParams','$log', 'Restangular', 'ProgramSvc', 'ClassSvc','StudentSvc',
+		function(saveAs, $filter, $rootScope, $scope, $state, $stateParams, $log, Restangular, ProgramSvc, ClassSvc, StudentSvc) {
 			$scope.currentClass = {};
             var program = {},
                 emails = [];
@@ -73,6 +73,7 @@ define(['../../module'], function(controllers){
             $scope.getPagedDataAsync = function(pageSize, page, searchText) {
                 var data = [];
                 _.each($scope.currentClass.studentObjs, function(s) {
+                    s.age = $filter('age')(s.birthday);
                     data.push(s);
                 });
                 $scope.setPagingData(data, page, pageSize);
