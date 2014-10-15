@@ -1,4 +1,4 @@
-define(['../../module'], function(controllers){
+	define(['../../module'], function(controllers){
 	'use strict';
 	controllers.controller('EditRankCtrl', ['$rootScope', '$scope', '$state', '$stateParams', 'Restangular', 'RankSvc', 'ProgramSvc',
 		function($rootScope, $scope, $state, $stateParams, Restangular, RankSvc, ProgramSvc) {
@@ -44,7 +44,9 @@ define(['../../module'], function(controllers){
 						async.each(p.ranks,  // Attach rank objects to current program
 							function(rId, callback) {
 								RankSvc.read(rId, null, false).then(function(r) {
-									rankObjs.push(r);
+									if (r) {
+										rankObjs.push(r);
+									}
 									callback();
 								});
 							},
@@ -222,13 +224,8 @@ define(['../../module'], function(controllers){
             $scope.showRemoveConfirm = false;
 
 			function goToPrevState() {
-				if (!$rootScope.previousState) {
-					$state.go('admin.programs.edit', {id: $scope.rank.program});
-				} else if ($rootScope.previousParams) {
-					$state.go($rootScope.previousState, $rootScope.previousParams);
-				} else {
-					$state.go($rootScope.previousState);
-				}
+				$state.go('admin.programs.edit', {id: ProgramSvc.current._id});
+				
 			}
 
 

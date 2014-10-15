@@ -2,5 +2,8 @@
  * Attach all state definitions
  **/
 define([
-	'./workshops'
+	'./workshops',
+	'./create',
+	'./view',
+	'./edit'
 ], function () {});

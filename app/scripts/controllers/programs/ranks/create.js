@@ -38,7 +38,9 @@ define(['../../module'], function(controllers){
 					async.each(p.ranks,  // Attach rank objects to current program
 						function(rId, callback) {
 							RankSvc.read(rId, null, false).then(function(r) {
-								rankObjs.push(r);
+								if (r) {
+									rankObjs.push(r);
+								}
 								callback();
 							});
 						},

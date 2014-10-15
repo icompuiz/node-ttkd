@@ -13,8 +13,8 @@ form.form-group
 	.row.row-margin-bottom-10
 		.col-md-12
 			.btn-toolbar.pull-left
-				button.btn.btn-primary(type='button', ng-click='goToCreateClass()') Create new class
-				button.btn.btn-danger(type='button', ng-disabled='removeClassDisabled()', ng-click='removeSelectedClasses()', ng-show='!showRemoveClassesConfirm') Remove selected
+				button.btn.btn-primary(type='button', ng-click='goToCreateClass()') Create New Class
+				button.btn.btn-danger(type='button', ng-disabled='removeClassDisabled()', ng-click='removeSelectedClasses()', ng-show='!showRemoveClassesConfirm') Remove Selected
 			.pull-left.margin-left-10(ng-show='showRemoveClassesConfirm && classGridOptions.selectedItems.length > 0')
 				.btn-toolbar
 					span.text-muted(ng-show='classGridOptions.selectedItems.length > 1') Are you sure you wish to remove the {{classGridOptions.selectedItems.length}} selected classes?
@@ -29,7 +29,7 @@ form.form-group
 		.col-md-12
 			.btn-toolbar.pull-left
 				button.btn.btn-primary(type='button', ng-click='goToCreateRank()') Create new rank
-				button.btn.btn-danger(type='button', ng-disabled='removeRankDisabled()', ng-click='removeSelectedRanks()', ng-show='!showRemoveRanksConfirm') Remove selected
+				button.btn.btn-danger(type='button', ng-disabled='removeRankDisabled()', ng-click='removeSelectedRanks()', ng-show='!showRemoveRanksConfirm') Remove Selected
 			.pull-left.margin-left-10(ng-show='showRemoveRanksConfirm && rankGridOptions.selectedItems.length > 0')
 				.btn-toolbar
 					span.text-muted(ng-show='rankGridOptions.selectedItems.length > 1') Are you sure you wish to remove the {{rankGridOptions.selectedItems.length}} selected ranks?

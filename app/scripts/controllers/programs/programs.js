@@ -1,7 +1,7 @@
 define(['../module'], function(controllers){
 	'use strict';
-	controllers.controller('ProgramsCtrl', ['$scope', '$state', 'Restangular', 'ProgramSvc', 'ClassSvc', 'RankSvc', 
-		function($scope, $state, Restangular, ProgramSvc, ClassSvc, RankSvc) {
+	controllers.controller('ProgramsCtrl', ['$scope', '$state', 'ProgramSvc', 'ClassSvc', 'RankSvc', 
+		function($scope, $state, ProgramSvc, ClassSvc, RankSvc) {
 
 /************ GridOptions *********************************/
 			$scope.filterOptions = {

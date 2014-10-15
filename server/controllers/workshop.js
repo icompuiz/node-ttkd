@@ -1,4 +1,4 @@
-var modelName = 'Workshops';
+var modelName = 'Workshop';
 
 var mongoose = require('mongoose'),
 	restful = require('node-restful');

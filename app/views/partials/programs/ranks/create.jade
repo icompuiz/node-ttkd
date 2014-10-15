@@ -1,5 +1,4 @@
 h1 Create Rank
-br
 
 form
 	h2 Name
@@ -17,6 +16,7 @@ form
 			.dropdown
 				button.btn.btn-default.dropdown-toggle(type='button' data-toggle='dropdown')
 					{{rank.rankOrder}}
+					| 
 					span.caret
 				ul.dropdown-menu(role='menu')
 					li(ng-repeat='i in dropdown.items' role='presentation')
@@ -33,7 +33,7 @@ form
 		.col-md-12
 			.btn-toolbar.pull-left
 				button.btn.btn-primary(type='button', ng-click='addSubrank()') Add Sub-rank
-				button.btn.btn-danger(type='button', ng-disabled='removeDisabled()', ng-show='!showRemoveConfirm', ng-click='remove({ rank: rank })') Remove Selected Sub-ranks
+				button.btn.btn-danger(type='button', ng-disabled='removeDisabled()', ng-show='!showRemoveConfirm', ng-click='remove({ rank: rank })') Remove Selected
 			.pull-left.margin-left-10(ng-show='showRemoveConfirm && getNumSelected() > 0')
 				.btn-toolbar
 					span.text-muted.error(ng-show='getNumSelected() > 1') Are you sure you wish to remove the {{getNumSelected()}} selected ranks?

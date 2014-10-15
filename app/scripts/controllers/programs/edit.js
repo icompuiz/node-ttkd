@@ -16,6 +16,17 @@ define(['../module'], function(controllers){
 			};
 			$scope.getPrograms();
 
+			function attachClassAndRankObjs(){
+				//Attach class objects to current program
+				ClassSvc.list().then(function(classes) {
+					$scope.currentProgram.classObjs = _.where(classes, {program: $scope.currentProgram._id});
+				});
+				//Attach rank objects to current program
+				RankSvc.list().then(function(ranks) {
+					$scope.currentProgram.rankObjs = _.where(ranks, {program: $scope.currentProgram._id});
+				});				
+			}
+
 			if (!WizardService.get($scope.currentProgram._id)) {
 				WizardService.create($scope.currentProgram._id, true);
 			}
@@ -31,33 +42,11 @@ define(['../module'], function(controllers){
 				if (ProgramSvc.removedRanks) {
 					$scope.removedRanks = ProgramSvc.removedRanks;
 				}
-
-				if (!$scope.currentProgram.rankObjs) {
-					$scope.currentProgram.rankObjs = [];
-				}
-				if (!$scope.currentProgram.classObjs) {
-					$scope.currentProgram.classObjs = [];
-				}
 			} else if ($stateParams.id) {
-				// Get class and rank objects and attach them to current program
-				var pClasses = [];
-				var pRanks = [];
-
 				ProgramSvc.read($stateParams.id, null, true).then(function(p) {
 					ProgramSvc.editing = true;
 					$scope.currentProgram = p;
-					_.each($scope.currentProgram.classes, function(cId) {
-						ClassSvc.read(cId, null, false).then(function(c) {
-							pClasses.push(c);
-						});
-					});
-					_.each($scope.currentProgram.ranks, function(rId) {
-						RankSvc.read(rId, null, false).then(function(r) {
-							pRanks.push(r);
-						});
-					});
-					$scope.currentProgram.classObjs = pClasses;
-					$scope.currentProgram.rankObjs = pRanks;
+					attachClassAndRankObjs();
 				});
 			}
 

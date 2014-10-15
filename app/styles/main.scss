@@ -550,3 +550,15 @@ none-colorpicker {
   display: table-cell;
   vertical-align: middle;
 }
+.anchor-bottom-right {
+  position: absolute;
+  right:    0;
+  bottom:   0;
+  padding-bottom: 15px; 
+  padding-right: 15px;
+}
+
+.valign-items {
+  display: flex;
+  align-items: center;
+}

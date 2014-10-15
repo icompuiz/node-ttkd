@@ -22,10 +22,6 @@ define(['../../module'], function(controllers){
 				});					
 			}
 
-            if ($scope.rank.intermediaryRanks) {
-                
-            }
-
 			if ($scope.rank.color) {
 				$('.color-tile').css('background', $scope.rank.color);
 			}
