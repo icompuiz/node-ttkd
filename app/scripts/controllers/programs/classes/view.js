@@ -1,15 +1,32 @@
 define(['../../module'], function(controllers){
 	'use strict';
-	controllers.controller('ViewClassCtrl', ['$rootScope', '$scope', '$state', '$stateParams','$log', 'Restangular', 'ProgramSvc', 'ClassSvc','StudentSvc',
-		function($rootScope, $scope, $state, $stateParams, $log, Restangular, ProgramSvc, ClassSvc, StudentSvc) {
+	controllers.controller('ViewClassCtrl', ['saveAs', '$filter', '$rootScope', '$scope', '$state', '$stateParams','$log', 'Restangular', 'ProgramSvc', 'ClassSvc','StudentSvc',
+		function(saveAs, $filter, $rootScope, $scope, $state, $stateParams, $log, Restangular, ProgramSvc, ClassSvc, StudentSvc) {
 			$scope.currentClass = {};
+            var program = {},
+                emails = [];
+
+            function populateStudentObjs() {
+                var data = [];
+                _($scope.currentClass.students).forEach(function(id) {
+                    StudentSvc.read(id, null, false).then(function(s) {
+                        data.push(s);
+                        _(s.emailAddresses).forEach(function(e) {
+                            emails.push(e);
+                        });
+                    });
+                });
+                $scope.currentClass.studentObjs = data;
+            }
 
 			if (ClassSvc.current && ClassSvc.viewing) {
 				$scope.currentClass = ClassSvc.current;
+                populateStudentObjs();              
 			} else if ($stateParams.id) {
 				ClassSvc.read($stateParams.id, null, true).then(function(_class) {
 					$scope.currentClass = _class;
-                    $scope.currentClass.studentObjs = [];
+                    ProgramSvc.read(_class.program, null, true);
+                    populateStudentObjs();
 				});
 			}
 
@@ -20,10 +37,12 @@ define(['../../module'], function(controllers){
                     $state.go('admin.programs.create', {id: ProgramSvc.current._id});
                 } else if (ProgramSvc.viewing) {
                     $state.go('admin.programs.view', {id: ProgramSvc.current._id});
-                } else if ($rootScope.previousState && $rootScope.previousParams) {
+                }else if ($rootScope.previousState && $rootScope.previousParams) {
                     $state.go($rootScope.previousState, $rootScope.previousParams);
                 } else if ($rootScope.previousState) {
                     $state.go($rootScope.previousState);
+                } else if ($stateParams.id) {
+                    $state.go('admin.programs.view', {id: ProgramSvc.current._id});
                 } else { // Default to the programs home page
                     $state.go('admin.programs.home'); 
                 }
@@ -51,28 +70,49 @@ define(['../../module'], function(controllers){
                 }
             };
 
-            $scope.getPagedDataAsync = function (pageSize, page) {
+            $scope.getPagedDataAsync = function(pageSize, page, searchText) {
                 var data = [];
-                async.each($scope.currentClass.students,
-                    function(id, callback) {
-                        StudentSvc.read(id, null, false).then(function(s) {
-                            data.push(s);
-                            $scope.currentClass.studentObjs.push(s);
-                            callback();
-                        });
-                    },
-                    function(err) {
-                        $scope.setPagingData(data,page,pageSize);
-                });                 
+                _.each($scope.currentClass.studentObjs, function(s) {
+                    s.age = $filter('age')(s.birthday);
+                    data.push(s);
+                });
+                $scope.setPagingData(data, page, pageSize);
             };
 
-            $scope.generateEmailDistList = function () {
-                //TODO
-            };
+            function writeEmailList() {
+                var studentFile = '';
+                var d = new Date(),
+                    year = d.getFullYear(),
+                    month = d.getMonth()+1,
+                    day = d.getDate();
 
-            if ($scope.currentClass.students) {
-                $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage);
+                var filename = $scope.currentClass.name + '_emails_' + month + '-' + day + '-' + 
+                                year + '.txt';
+
+                _(emails).forEach(function(e) {
+                    studentFile += e + '\r\n';
+                });
+                
+                var blob = new Blob([studentFile], {type: 'text/plain;'});
+                saveAs(blob, filename);
             }
+
+            $scope.showGenerateEmailListConfirm = false;
+
+            $scope.generateEmailList = function() {
+                $scope.showGenerateEmailListConfirm = true;
+            };
+
+            $scope.confirmGenerateEmailList = function(writeList) {
+                if (writeList) {
+                    writeEmailList();
+                }
+                $scope.showGenerateEmailListConfirm = false;
+            }
+
+            $scope.$watch('currentClass.studentObjs', function () {
+                $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage, $scope.filterOptions.filterText);
+            }, true);
 
             $scope.$watch('pagingOptions', function (newVal, oldVal) {
                 if (newVal !== oldVal && newVal.currentPage !== oldVal.currentPage) {

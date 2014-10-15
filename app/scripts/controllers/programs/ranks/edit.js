@@ -1,4 +1,4 @@
-define(['../../module'], function(controllers){
+	define(['../../module'], function(controllers){
 	'use strict';
 	controllers.controller('EditRankCtrl', ['$document', '$rootScope', '$scope', '$state', '$stateParams', 'Restangular', 'RankSvc', 'ProgramSvc',
 		function($document, $rootScope, $scope, $state, $stateParams, Restangular, RankSvc, ProgramSvc) {
@@ -247,13 +247,8 @@ define(['../../module'], function(controllers){
             $scope.showRemoveConfirm = false;
 
 			function goToPrevState() {
-				if (!$rootScope.previousState) {
-					$state.go('admin.programs.edit', {id: $scope.rank.program});
-				} else if ($rootScope.previousParams) {
-					$state.go($rootScope.previousState, $rootScope.previousParams);
-				} else {
-					$state.go($rootScope.previousState);
-				}
+				$state.go('admin.programs.edit', {id: ProgramSvc.current._id});
+				
 			}
 
 

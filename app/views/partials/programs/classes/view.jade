@@ -4,8 +4,13 @@ h1 {{currentClass.name}}
 		.pull-left
 			h2 Students
 		.anchor-bottom-right
-			button.btn.btn-default(type='button', ng-click='generateEmailDistList()')
+			button.btn.btn-default(ng-show='!showGenerateEmailListConfirm', type='button', ng-click='generateEmailList()')
 				.glyphicon.glyphicon-envelope
+			.pull-right(ng-show='showGenerateEmailListConfirm')
+				.btn-toolbar
+					span.text-muted Generate e-mail distribution list for this class?
+					button.btn.btn-success(type='button', ng-click='confirmGenerateEmailList(true)') Yes
+					button.btn.btn-danger(type='button', ng-click='confirmGenerateEmailList(false)') No
 .row
 	.col-md-12
 		div.gridStyle(ng-grid="gridOptions")
