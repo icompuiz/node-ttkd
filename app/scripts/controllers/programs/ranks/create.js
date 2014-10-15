@@ -29,7 +29,7 @@ define(['../../module'], function(controllers){
 			if (RankSvc.current && RankSvc.creating) {
 				$scope.rank = RankSvc.current;
 				if ($scope.rank.intermediaryRanks) {
-					var sorted = _.sortBy($scope.rank.intermediaryRanks, function(r) {return r.rankOrder;})
+					var sorted = _.sortBy($scope.rank.intermediaryRanks, function(r) {return r.rankOrder;});
 					$scope.intermediaryRanks = sorted;
 				}
 			}
@@ -265,12 +265,13 @@ define(['../../module'], function(controllers){
                     _($scope.intermediaryRanks).forEach(function(r){
             			r.rankOrder = _.indexOf(ordered, r.id) + 1;
             		});
-            		$scope.$apply();
+            		//$scope.$apply();
 
                     $scope.showRemoveConfirm = false;
                 } else {
                     $scope.showRemoveConfirm = false;
                 }
+                $("#sortable li").sortable('refresh');
             };
 
             $('#sortable').sortable({
@@ -290,7 +291,7 @@ define(['../../module'], function(controllers){
           	  		_($scope.intermediaryRanks).forEach(function(r) {
             			r.editingName = false;
             			//r.isSelected = false;
-            			$scope.$apply();
+            			//$scope.$apply();
             		});
             	}
 
@@ -313,8 +314,9 @@ define(['../../module'], function(controllers){
 			    var text = "";
 			    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
-			    for( var i=0; i < 5; i++ )
+			    for( var i=0; i < 5; i++ ) {
 			        text += possible.charAt(Math.floor(Math.random() * possible.length));
+			    }
 
 			    return 'r' + text;
 			}
