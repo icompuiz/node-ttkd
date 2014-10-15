@@ -20,7 +20,8 @@ requirejs.config({
         'angular-bootstrap-tmpls': '../bower_components/angular-bootstrap/ui-bootstrap-tpls',
         'ngGrid': '../bower_components/ng-grid/ng-grid-2.0.13.min',
         'sigPad': '../bower_components/signature_pad/signature_pad',
-        'swiper': '../bower_components/idangerous-swiper/dist/idangerous.swiper'
+        'swiper': '../bower_components/idangerous-swiper/dist/idangerous.swiper',
+        'jquery-ui': '../bower_components/jquery-ui/jquery-ui'
       },
 
     /**

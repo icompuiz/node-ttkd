@@ -550,3 +550,43 @@ none-colorpicker {
   display: flex;
   align-items: center;
 }
+
+#sortable {
+  width: 30%;
+}
+
+.no-pad-left {
+  padding-left: 0px !important;
+  margin-left: 0px !important;
+  -webkit-margin-before: 0px !important;
+  -webkit-margin-start: 0px !important;
+  -webkit-padding-before: 0px !important;
+  -webkit-padding-start: 0px !important;
+}
+
+#sortable li {
+  list-style: none;
+  margin: 0 8px 8px 8px;
+  padding: 0.4em;
+  padding-left: 1.5em;
+  font-size: 1.4em;
+  height: 30px;
+}
+
+#sortable .rank-row {
+  display: flex;
+  cursor: pointer;
+}
+
+#sortable .rank-order {
+  padding-right: 20px;
+}
+
+#sortable .rank-name-cell {
+  height: 30px;
+}
+
+#sortable .rank-list-item {
+  background-color: #d4d4d4;
+}
+

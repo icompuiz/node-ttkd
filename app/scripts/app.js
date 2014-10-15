@@ -12,6 +12,7 @@ define('app', [
     'restangular',
     'sigPad',
     'swiper',
+    'jquery-ui',
     './controllers/index',
     './directives/index',
     './factories/index',

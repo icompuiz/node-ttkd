@@ -12,7 +12,13 @@ var rankSchema = new Schema({
 	},
 	rankOrder: Number,
 	name: String,
-	intermediaryRanks: [Rank.schema], 
+	intermediaryRanks: [
+			new Schema({
+				id: String,
+				name: String,
+				rankOrder: Number
+			})
+		], 
 	color: String
 });
 
