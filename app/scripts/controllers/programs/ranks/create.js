@@ -5,7 +5,7 @@ define(['../../module'], function(controllers){
 			$scope.rank = {};
 			$scope.swapRank = {};
 			$scope.intermediaryRanks = [];
-			var tmp = [];
+			var tmpRanks = [];
 			$scope.dropdown = {
 				isOpen: false
 			};
@@ -30,7 +30,7 @@ define(['../../module'], function(controllers){
 			if (RankSvc.current && RankSvc.creating) {
 				$scope.rank = RankSvc.current;
 				if ($scope.rank.intermediaryRanks) {
-					tmp = _.sortBy($scope.rank.intermediaryRanks, function(r) {return r.rankOrder;});
+					tmpRanks = _.sortBy($scope.rank.intermediaryRanks, function(r) {return r.rankOrder;});
 				}
 			}
 
@@ -137,7 +137,7 @@ define(['../../module'], function(controllers){
             };
 
 			$scope.getNumSelected = function() {
-				var selected = _.where(tmp, {isSelected: true});
+				var selected = _.where(tmpRanks, {isSelected: true});
 				return selected.length;
 			};
 
@@ -174,7 +174,7 @@ define(['../../module'], function(controllers){
             }, true);
 
             $scope.addSubrank = function() {
-            	var newRankOrder = tmp.length + 1;
+            	var newRankOrder = tmpRanks.length + 1;
 
             	var newRank = {
             		name: 'Sub-rank' + newRankOrder,
@@ -182,12 +182,12 @@ define(['../../module'], function(controllers){
             		id: makeid()
             	};
 
-            	tmp.push(newRank);
+            	tmpRanks.push(newRank);
             	//$scope.getData();
             };
 
              $scope.removeDisabled = function() {
-            	var selected = _.where(tmp, {isSelected: true});
+            	var selected = _.where(tmpRanks, {isSelected: true});
                 return selected.length === 0;
             };
 
@@ -200,15 +200,15 @@ define(['../../module'], function(controllers){
 
             		var ordered = $('#sortable li').map(function(i) { return this.id; }).get();
 
-                    _(tmp).forEach(function(r) {
+                    _(tmpRanks).forEach(function(r) {
                     	if(r.isSelected) {
                     		$('#'+r.id).remove();  
-                    		tmp = _.without(tmp, r);
+                    		tmpRanks = _.without(tmpRanks, r);
                     		ordered = _.without(ordered, r.id);
                     	}
                     });
 
-                    _(tmp).forEach(function(r){
+                    _(tmpRanks).forEach(function(r){
             			r.rankOrder = _.indexOf(ordered, r.id) + 1;
             		});
 
@@ -216,19 +216,19 @@ define(['../../module'], function(controllers){
                 } else {
                     $scope.showRemoveConfirm = false;
                 }
-                $scope.intermediaryRanks = tmp;
+                $scope.intermediaryRanks = tmpRanks;
                 if(!$scope.$$phase) {
                		$scope.$apply();
                	}
             };
 
-            $scope.intermediaryRanks = tmp;
+            $scope.intermediaryRanks = tmpRanks;
 
             $('#sortable').sortable({
             	stop: function(event, ui) {
             		var ordered = $('#sortable li').map(function(i) { return this.id; }).get();
 
-            		_(tmp).forEach(function(r){
+            		_(tmpRanks).forEach(function(r){
             			r.rankOrder = _.indexOf(ordered, r.id) + 1;
             		});
 	                if(!$scope.$$phase) {
@@ -240,7 +240,7 @@ define(['../../module'], function(controllers){
             $document.bind('click', function(e) {
             	e.stopPropagation();
             	if (e.target.className.indexOf('edit-name') < 0) {
-          	  		_(tmp).forEach(function(r) {
+          	  		_(tmpRanks).forEach(function(r) {
             			r.editingName = false;
 		                if(!$scope.$$phase) {
 		               		$scope.$apply();
@@ -323,8 +323,8 @@ define(['../../module'], function(controllers){
 			$scope.showSubrankNameMessage = function() {
 				var names = [],
 					uniq = [];
-				if (tmp) {
-					names = _.map(tmp, function(r){return r.name;});
+				if (tmpRanks) {
+					names = _.map(tmpRanks, function(r){return r.name;});
 					uniq = _.uniq(names);
 					return (names.length !== uniq.length);
 				}
