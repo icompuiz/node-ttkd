@@ -216,7 +216,7 @@ define(['../../module'], function(controllers){
                 } else {
                     $scope.showRemoveConfirm = false;
                 }
-                $scope.intermediaryRanks = tmpRanks;
+                $scope.intermediaryRanks = _.sortBy(tmpRanks, 'rankOrder');
                 if(!$scope.$$phase) {
                		$scope.$apply();
                	}
