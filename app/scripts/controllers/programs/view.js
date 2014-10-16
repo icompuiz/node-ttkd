@@ -4,19 +4,24 @@ define(['../module'], function(controllers){
 		function($rootScope, $scope, $state, $stateParams, Restangular, ProgramSvc, ClassSvc, RankSvc) {
 			$scope.currentProgram = {};
 
+			function attachClassAndRankObjs(){
+				//Attach class objects to current program
+				ClassSvc.list().then(function(classes) {
+					$scope.currentProgram.classObjs = _.where(classes, {program: $scope.currentProgram._id});
+				});
+				//Attach rank objects to current program
+				RankSvc.list().then(function(ranks) {
+					$scope.currentProgram.rankObjs = _.where(ranks, {program: $scope.currentProgram._id});
+				});				
+			}
+
 			if (ProgramSvc.current && ProgramSvc.viewing) {
 				$scope.currentProgram = ProgramSvc.current;
+				attachClassAndRankObjs()
 			} else if ($stateParams.id) {
 				ProgramSvc.read($stateParams.id, null, true).then(function(p) { 
 					$scope.currentProgram = p;
-					//Attach class objects to current program
-					ClassSvc.list().then(function(classes) {
-						$scope.currentProgram.classObjs = _.where(classes, {program: $scope.currentProgram._id});
-					});
-					//Attach rank objects to current program
-					RankSvc.list().then(function(ranks) {
-						$scope.currentProgram.rankObjs = _.where(ranks, {program: $scope.currentProgram._id});
-					});
+					attachClassAndRankObjs()
 				});
 				ProgramSvc.startViewing();
 			}

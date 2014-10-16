@@ -1,0 +1,6 @@
+Scenario: Admin: Create a class within a program
+
+	Feature: Class is created for a program
+		Unit: Class has empty students list
+		Unit: Class has valid name
+		Unit: Class is in program's list of classes

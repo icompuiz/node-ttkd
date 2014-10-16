@@ -1,0 +1,8 @@
+Scenario: Admin: Remove rank from a program
+
+	Feature: Rank is deleted
+		Unit: Rank is no longer in program's list of ranks
+		Unit: Rank_id does not match url_id
+		
+	Feature: Rank's subranks are deleted
+		Unit: Subrank_id does not match url_id

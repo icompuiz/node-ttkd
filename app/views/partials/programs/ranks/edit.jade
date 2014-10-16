@@ -16,6 +16,7 @@ form
 			.dropdown
 				button.btn.btn-default.dropdown-toggle(type='button' data-toggle='dropdown')
 					{{rank.rankOrder}}
+					| 
 					span.caret
 				ul.dropdown-menu(role='menu')
 					li(ng-repeat='i in dropdown.items' role='presentation')
@@ -34,7 +35,7 @@ form
 		.col-md-12
 			.btn-toolbar.pull-left
 				button.btn.btn-primary(type='button', ng-click='addSubrank()') Add Sub-rank
-				button.btn.btn-danger(type='button', ng-disabled='removeDisabled()', ng-show='!showRemoveConfirm', ng-click='remove({ rank: rank })') Remove Selected Sub-ranks
+				button.btn.btn-danger(type='button', ng-disabled='removeDisabled()', ng-show='!showRemoveConfirm', ng-click='remove({ rank: rank })') Remove Selected
 			.pull-left.margin-left-10(ng-show='showRemoveConfirm && getNumSelected() > 0')
 				.btn-toolbar
 					span.text-muted.error(ng-show='getNumSelected() > 1') Are you sure you wish to remove the {{getNumSelected()}} selected ranks?
@@ -44,10 +45,21 @@ form
 	.row
 		.col-md-12
 			p.text-muted.error(ng-show='showSubrankNameMessage()') Sub-rank names must be unique.
-			p.text-muted.error(ng-show='showSubrankOrderMessage()') Sub-rank ordering must be incremental and begin at 1.
-	.row
-		.col-md-12
-			div.gridStyle.grid-short(ng-grid='gridOptions')
+			//p.text-muted.error(ng-show='showSubrankOrderMessage()') Sub-rank ordering must be incremental and begin at 1.
+	//- .row
+	//- 	.col-md-12
+	//- 		div.gridStyle.grid-short(ng-grid='gridOptions')
+
+	ul.no-pad-left(id='sortable', ng-model='intermediaryRanks')
+		li.no-pad-left(id='{{r.id}}', ng-repeat='r in intermediaryRanks')
+			.rank-row.rank-list-item.no-pad-left(ng-click='select(r, $event)')
+				div.rank-order.rank-list-item
+					{{r.rankOrder}}
+					|. 
+				div.rank-name-cell.rank-list-item(ng-show='!r.editingName', ng-dblClick='edit(r)')
+					{{r.name}}
+				div.rank-name-cell.edit-name.rank-list-item(ng-show='r.editingName')
+					input(type='text', ng-model='r.name').edit-name
 
 	input.btn.btn-primary.pull-right(ng-disabled='!canSaveRank()', type='submit', value='Save Rank', ng-click="saveRank()")
 	input.btn.btn-warning.pull-right(type='reset', value='Cancel', ng-click='cancelEdit()')

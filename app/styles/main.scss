@@ -74,7 +74,8 @@ body {
 /* Responsive: Portrait tablets and up */
 @media screen and (min-width: 768px) {
     .container {
-        max-width: 730px;
+        // max-width: 730px;
+        max-width: 80%;
     }
 
     /* Remove the padding we set earlier */
@@ -455,7 +456,7 @@ none-colorpicker {
 .swiper-wrapper {
   height: inherit;
 }
-.swiper-nested-1, .swiper-nested-2 {
+.swiper-container.nested {
   width: 100%;
 }
 .red-slide {
@@ -479,7 +480,7 @@ none-colorpicker {
   margin-bottom: 0;
   /*line-height: 250px;*/
 }
-.swiper-nested-1 .swiper-slide, .swiper-nested-2 .swiper-slide {
+.swiper-container.nested .swiper-slide {
   /*line-height: 125px;*/
   font-size: 21px
 }
@@ -536,3 +537,72 @@ none-colorpicker {
 .swiper-container.nested, .swiper-wrapper.nested, .swiper-wrapper.nested .swiper-slide {
   height: inherit;
 }
+
+.swiper-container h2.title {
+  color: #999;
+}
+
+.swiper-wrapper.nested > .swiper-slide {
+  display: table;
+}
+
+.swiper-slide > .class {
+  display: table-cell;
+  vertical-align: middle;
+}
+.anchor-bottom-right {
+  position: absolute;
+  right:    0;
+  bottom:   0;
+  padding-bottom: 15px; 
+  padding-right: 15px;
+}
+
+.valign-items {
+  display: flex;
+  align-items: center;
+}
+
+#sortable {
+  width: 170px;
+}
+
+.no-pad-left {
+  padding-left: 0px !important;
+  margin-left: 0px !important;
+  -webkit-margin-before: 0px !important;
+  -webkit-margin-start: 0px !important;
+  -webkit-padding-before: 0px !important;
+  -webkit-padding-start: 0px !important;
+}
+
+#sortable li {
+  list-style: none;
+  margin: 0 8px 8px 8px;
+  padding: 0.4em;
+  padding-left: 1.5em;
+  font-size: 1.4em;
+  height: 30px;
+}
+
+#sortable .rank-row {
+  display: flex;
+  cursor: pointer;
+}
+
+#sortable .rank-order {
+  padding-right: 20px;
+}
+
+#sortable .rank-name-cell {
+  height: 30px;
+}
+
+#sortable .rank-list-item {
+  background-color: #d4d4d4;
+}
+
+.pad-bottom-0 {
+  padding-bottom: 0px !important;
+}
+

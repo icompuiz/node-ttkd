@@ -12,6 +12,7 @@ define('app', [
     'restangular',
     'sigPad',
     'swiper',
+    'jquery-ui',
     './controllers/index',
     './directives/index',
     './factories/index',
@@ -56,7 +57,7 @@ define('app', [
               });
           }
         ]).run(function($state, $rootScope, Restangular) {
-
+            
         Restangular.setBaseUrl('/api');
 
         Restangular.setRestangularFields({

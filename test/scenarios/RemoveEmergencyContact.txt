@@ -1,0 +1,7 @@
+(No longer applicable since each student must have 2 emergency contacts,
+and they are now contained in the student model)
+
+Scenario: Admin: Remove emergency contact from student
+
+	Feature:
+		Unit:

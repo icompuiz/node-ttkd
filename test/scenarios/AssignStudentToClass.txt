@@ -1,0 +1,8 @@
+Scenario: Admin: Assign students to a class
+
+	Feature: Existing Student is put into a class
+		Unit: Class's list of students contains the student
+		
+	Feature: New Student is put into a class
+		Unit: Student is created through registration form
+		Unit: Class's list of students contains the student

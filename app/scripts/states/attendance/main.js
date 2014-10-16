@@ -23,8 +23,8 @@ define(['../module'], function (states) {
             url: '/attendance',
             views: {
             	'section-body': {
-            		templateUrl: 'partials/attendance/home',
-            		controller: 'DashboardCtrl'
+            		templateUrl: 'partials/attendance/list',
+            		controller: 'ListAttendanceCtrl'
             	}
             }
         });

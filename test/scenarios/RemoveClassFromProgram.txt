@@ -1,0 +1,5 @@
+Scenario: Admin: Remove a class from a program
+
+	Feature: Class is deleted
+		Unit: Class is no longer in program's list of classes
+		Unit: Class_id does not match url_id

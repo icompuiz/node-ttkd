@@ -1,13 +1,15 @@
-define(['../../module'], function(controllers){
+	define(['../../module'], function(controllers){
 	'use strict';
-	controllers.controller('EditRankCtrl', ['$rootScope', '$scope', '$state', '$stateParams', 'Restangular', 'RankSvc', 'ProgramSvc',
-		function($rootScope, $scope, $state, $stateParams, Restangular, RankSvc, ProgramSvc) {
+	controllers.controller('EditRankCtrl', ['$document', '$rootScope', '$scope', '$state', '$stateParams', 'Restangular', 'RankSvc', 'ProgramSvc',
+		function($document, $rootScope, $scope, $state, $stateParams, Restangular, RankSvc, ProgramSvc) {
 			$scope.rank = {};
 			$scope.swapRank = {};
+			$scope.intermediaryRanks = [];
 			$scope.dropdown = {
 				isOpen: false
 			};
 			var program = {};
+			var tmpRanks = [];
 
 			var orig = null;
 
@@ -21,6 +23,11 @@ define(['../../module'], function(controllers){
 			// load current program and rank if available from services
 			if (RankSvc.current && RankSvc.editing) {
 				$scope.rank = RankSvc.current;
+				if ($scope.rank.intermediaryRanks) {
+					tmpRanks = _.sortBy($scope.rank.intermediaryRanks, function(r) {return r.rankOrder;});
+					$scope.intermediaryRanks = tmpRanks;
+				}
+
 				program = ProgramSvc.current;
 				if (!RankSvc.orig) {
 					RankSvc.orig = {
@@ -34,6 +41,11 @@ define(['../../module'], function(controllers){
 			} else if ($stateParams.id) { 
 				RankSvc.read($stateParams.id, null, true).then(function(r) {
 					$scope.rank = RankSvc.current;
+					if ($scope.rank.intermediaryRanks) {
+						tmpRanks = _.sortBy($scope.rank.intermediaryRanks, function(r) {return r.rankOrder;});
+						$scope.intermediaryRanks = tmpRanks;
+					}
+
 					RankSvc.orig = {
 						name: r.name
 					};
@@ -44,7 +56,9 @@ define(['../../module'], function(controllers){
 						async.each(p.ranks,  // Attach rank objects to current program
 							function(rId, callback) {
 								RankSvc.read(rId, null, false).then(function(r) {
-									rankObjs.push(r);
+									if (r) {
+										rankObjs.push(r);
+									}
 									callback();
 								});
 							},
@@ -52,7 +66,6 @@ define(['../../module'], function(controllers){
 								program = p;
 								program.rankObjs = rankObjs;
 								program.populated = true;
-								$scope.getData();
 								setDropdownItems();
 							}
 						);
@@ -66,9 +79,9 @@ define(['../../module'], function(controllers){
 			}
 
 			$scope.getNumSelected = function() {
-				var selected = _.where($scope.rank.intermediaryRanks, {isSelected: true});
+				var selected = _.where(tmpRanks, {isSelected: true});
 				return selected.length;
-			}
+			};
 
 			$scope.setRankOrder = function(newVal) {
 				if (!$scope.origRankOrder) {
@@ -117,22 +130,6 @@ define(['../../module'], function(controllers){
             	$scope.rank.color = '';
             };
 
-            $scope.getData = function () {
-                var data = [];
-                _($scope.rank.intermediaryRanks).forEach(function(r) {
-                	data.push(r);
-                });
-                $scope.setPagingData(data);                
-            };
-
-           	$scope.getData();
-
-            $scope.$watch('filterOptions', function (newVal, oldVal) {
-                if (newVal !== oldVal) {
-                    $scope.getData();
-                }
-            }, true);
-
             $scope.$watch('rank.color', function (newVal, oldVal) {
             	if ($scope.rank.color === '') {
             		$('.rank-color').css('background', '#FFFFFF');
@@ -143,55 +140,20 @@ define(['../../module'], function(controllers){
             	}
             }, true);
 
-            $scope.gridOptions = {
-                data: 'myData',
-                rowHeight: 40,
-                enableCellSelection: true,
-                enableRowSelection: false,
-                enableCellEdit: true,
-                beforeSelectionChange: function (rowItem, event) {
-                    // check if one of the options buttons was clicked
-                    if(event.target.tagName === 'BUTTON') {	
-                        return false;
-                    } else {
-                        return true;
-                    }
-                },
-                afterSelectionChange: function () {
-                    if($scope.gridOptions.selectedItems.length === 0) {
-                        $scope.showRemoveConfirm = false;
-                    }
-                    return true;
-                },
-                totalServerItems: 'totalServerItems',
-                filterOptions: $scope.filterOptions,
-                selectedItems: [],
-                sortInfo: { fields: ['lastName', 'firstname'], directions: ['asc', 'asc'] },
-                columnDefs: [
-                    { cellTemplate: '/partials/programs/ranks/subranks/rankCheckbox', width: 50, sortable: false, enableCellEdit: false },                	
-                    { field: 'name', displayName: 'Rank Name' },
-                    { field: 'rankOrder', displayName: 'Order' }
-                ]
-            };
-
             $scope.addSubrank = function() {
-            	if(!$scope.rank.intermediaryRanks) {
-            		$scope.rank.intermediaryRanks = [];
-            	}
-
-            	var newRankOrder = $scope.rank.intermediaryRanks.length + 1;
+            	var newRankOrder = tmpRanks.length + 1;
 
             	var newRank = {
-            		name: '<Name>',
-            		rankOrder: newRankOrder
+            		name: 'Sub-rank' + newRankOrder,
+            		rankOrder: newRankOrder,
+            		id: makeid()
             	};
 
-            	$scope.rank.intermediaryRanks.push(newRank);
-            	$scope.getData();
+            	tmpRanks.push(newRank);
             };
 
             $scope.removeDisabled = function() {
-            	var selected = _.where($scope.rank.intermediaryRanks, {isSelected: true});
+            	var selected = _.where(tmpRanks, {isSelected: true});
                 return selected.length === 0;
             };
 
@@ -200,35 +162,95 @@ define(['../../module'], function(controllers){
             };
 
             $scope.confirmRemove = function(remove) {
-                if(remove) {
+                if(remove) {                	
+            		var ordered = $('#sortable li').map(function(i) { return this.id; }).get();
 
-                    _($scope.rank.intermediaryRanks).forEach(function(r) {
+                    _(tmpRanks).forEach(function(r) {
                     	if(r.isSelected) {
-                    		$scope.rank.intermediaryRanks = _.without($scope.rank.intermediaryRanks, r);
+                    		$('#'+r.id).remove();  
+                    		tmpRanks = _.without(tmpRanks, r);
+                    		ordered = _.without(ordered, r.id);
                     	}
                     });
 
-                    $scope.getData();
 
-                    // empty selection
-                    $scope.gridOptions.selectedItems = [];
+                    _(tmpRanks).forEach(function(r){
+            			r.rankOrder = _.indexOf(ordered, r.id) + 1;
+            		});
 
                     $scope.showRemoveConfirm = false;
                 } else {
                     $scope.showRemoveConfirm = false;
                 }
+                $scope.intermediaryRanks = _.sortBy(tmpRanks, 'rankOrder');
+                if(!$scope.$$phase) {
+               		$scope.$apply();
+               	}
+            };
+
+            $scope.intermediaryRanks = tmpRanks;
+
+            $('#sortable').sortable({
+            	stop: function(event, ui) {
+            		var ordered = $('#sortable li').map(function(i){return this.id;}).get();
+
+            		_(tmpRanks).forEach(function(r) {
+            			r.rankOrder = _.indexOf(ordered, r.id) + 1;
+            		}); 
+	                if(!$scope.$$phase) {
+	               		$scope.$apply();
+	               	}
+            	}
+            });
+
+            $document.bind('click', function(e) {
+            	e.stopPropagation();
+            	if (e.target.className.indexOf('edit-name') < 0) {
+          	  		_(tmpRanks).forEach(function(r) {
+            			r.editingName = false;
+            			$scope.$apply();
+            		});
+            	}
+
+            	// Do not allow sorting if there are duplicate
+            	var ordered = $('#sortable li').map(function(i) { return this.id; }).get();
+            	var uniq = _.uniq(ordered);
+
+            	if (uniq.length !== ordered.length) {
+            		$('#sortable').sortable('disable');
+            	} else {
+            		$('#sortable').sortable('enable');
+            	}
+            });
+
+            $scope.edit = function(r) {
+            	r.editingName = true;
+            };
+
+            function makeid(){
+			    var text = "";
+			    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+			    for( var i=0; i < 5; i++ )
+			        text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+			    return 'r' + text;
+			}
+
+            $scope.select = function(r, $event) {
+            	r.isSelected = !r.isSelected;
+            	if (r.isSelected) {
+        			$('#' + r.id + ' .rank-list-item').css('background-color', '#c9dde1');
+            	} else {
+        			$('#' + r.id + ' .rank-list-item').css('background-color', '#d4d4d4');
+            	}
             };
 
             $scope.showRemoveConfirm = false;
 
 			function goToPrevState() {
-				if (!$rootScope.previousState) {
-					$state.go('admin.programs.edit', {id: $scope.rank.program});
-				} else if ($rootScope.previousParams) {
-					$state.go($rootScope.previousState, $rootScope.previousParams);
-				} else {
-					$state.go($rootScope.previousState);
-				}
+				$state.go('admin.programs.edit', {id: ProgramSvc.current._id});
+				
 			}
 
 
@@ -237,7 +259,7 @@ define(['../../module'], function(controllers){
 				RankSvc.reset();
 				RankSvc.orig = null;
 
-				goToPrevState();
+				$state.go('admin.programs.edit', program._id);
 			};
 
 			$scope.saveRank = function() {
@@ -246,6 +268,7 @@ define(['../../module'], function(controllers){
 					return r.name === RankSvc.orig.name;
 				});
 				if (i >= 0) {
+					$scope.rank.intermediaryRanks = $scope.intermediaryRanks;
 					program.rankObjs[i] = $scope.rank;
 				} else {
 					program.rankObjs.push($scope.rank);
@@ -259,7 +282,7 @@ define(['../../module'], function(controllers){
 				RankSvc.reset();
 				RankSvc.orig = null;
 
-				goToPrevState();
+				$state.go('admin.programs.edit', {id: program._id});
 				
 			};
 
@@ -276,7 +299,7 @@ define(['../../module'], function(controllers){
 				}
 
 				// Validate sub-ranks
-				if ($scope.showSubrankNameMessage() || $scope.showSubrankOrderMessage()) {
+				if ($scope.showSubrankNameMessage()) {
 					return false;
 				}
 
@@ -296,8 +319,8 @@ define(['../../module'], function(controllers){
 			$scope.showSubrankNameMessage = function() {
 				var names = [],
 					uniq = [];
-				if ($scope.rank.intermediaryRanks) {
-					names = _.map($scope.rank.intermediaryRanks, function(r){return r.name;});
+				if (tmpRanks) {
+					names = _.map(tmpRanks, function(r){return r.name;});
 					uniq = _.uniq(names);
 					return (names.length !== uniq.length);
 				}
@@ -307,8 +330,8 @@ define(['../../module'], function(controllers){
 			$scope.showSubrankOrderMessage = function() {
 				var orders = [],
 					uniq = [];
-				if ($scope.rank.intermediaryRanks && $scope.rank.intermediaryRanks.length > 0) {
-					orders = _.map($scope.rank.intermediaryRanks, function(r){return r.rankOrder;});
+				if ($scope.intermediaryRanks && $scope.intermediaryRanks.length > 0) {
+					orders = _.map($scope.intermediaryRanks, function(r){return r.rankOrder;});
 
 					// Check for duplicates
 					uniq = _.uniq(orders);
@@ -322,7 +345,7 @@ define(['../../module'], function(controllers){
 					}
 
 					// Make sure they increment by 1
-					if (_.max(orders) != $scope.rank.intermediaryRanks.length) {
+					if (_.max(orders) != $scope.intermediaryRanks.length) {
 						return true;
 					}
 				}

@@ -23,7 +23,7 @@ module.exports = function(grunt) {
             // configurable paths
             app: require('./bower.json').appPath || 'app',
             dist: 'dist',
-            prod: 'prod',
+            prod: 'bin',
             server: 'server'
 
         },
@@ -383,6 +383,7 @@ module.exports = function(grunt) {
                     src: [
                         'package.json',
                         'server.js',
+                        'service.js',
                         'server/**/*'
                     ]
                 }]
@@ -425,8 +426,7 @@ module.exports = function(grunt) {
                     'dest': '<%= yeoman.prod %>/',
                     src: [
                     	'server.js',
-                    	'package.json',
-                    	'bower.json',
+                    	'node_modules/**/*',
                     ]
             	}]
             }
