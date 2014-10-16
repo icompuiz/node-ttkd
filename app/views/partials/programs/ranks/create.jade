@@ -55,9 +55,6 @@ form
 					{{r.name}}
 				div.rank-name-cell.edit-name.rank-list-item(ng-show='r.editingName')
 					input(type='text', ng-model='r.name').edit-name
-	//- .row
-	//- 	.col-md-12
-	//- 		div.gridStyle.grid-short(ng-grid='gridOptions')
 
 	input.btn.btn-primary.pull-right(ng-disabled='!canCreateRank()', type='submit', value='Create Rank', ng-click="createRank()")
 	input.btn.btn-warning.pull-right(type='reset', value='Cancel', ng-click='cancelCreate()')
