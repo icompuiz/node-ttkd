@@ -1,4 +1,4 @@
 /**
  * Attach all state definitions
  **/
-define(['./studentSvc', './programSvc', './classSvc', './rankSvc', './emergencyContactSvc', './workshopSvc'], function () {});
+define(['./studentSvc', './programSvc', './classSvc', './rankSvc', './emergencyContactSvc', './workshopSvc', './attendanceSvc'], function () {});
