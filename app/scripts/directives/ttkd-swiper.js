@@ -71,7 +71,7 @@ define(['./module'], function(directives){
 		return ttkdSwiper;
 	}])
 
-	.directive('ttkdSwiperLateralItem', ['$log', function($log) {
+	.directive('ttkdSwiperLateralItem', ['$log', '$compile', function($log, $compile) {
 		var ttkdSwiperLateralItem = {
 			restrict: 'A',
 			scope: {
