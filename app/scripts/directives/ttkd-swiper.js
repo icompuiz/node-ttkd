@@ -57,19 +57,12 @@ define(['./module'], function(directives){
 						mode: 'vertical',
 						slidesPerView: 3,
 						centeredSlides: true,
-						watchActiveIndex: false
+						watchActiveIndex: true
 					});
 
 					$scope.swiperParent = swiperParent;
 
 					var lateralHeight;
-
-					//calculateHeight not working... quick/hacky fix
-					function resizeLateralSlides(swiper, newHeight) {
-						for(i=0; i<swiper.slides.length; i++) {
-							swiper.slides[i].style.height = newHeight;
-						}
-					}
 
 				}, true);
 			}
@@ -83,47 +76,58 @@ define(['./module'], function(directives){
 			restrict: 'A',
 			scope: {
 				parent: '=',
+				item: '=program',
 				swiperId: '='
 			},
 
-			controller: function() {},
+			controller: function($scope) {
 
-			link: function($scope) {
+				$scope.classContinue = function() {
+					$log.log('hit');
+				};
+
+			},
+
+			link: function($scope, $compile) {
 				var program = $scope.item;
 				var swiperParent = $scope.parent;
-				var slideClassName = '.swiper-nested-' + $scope.swiperId;
+				var slideClassName = 'swiper-nested-' + $scope.swiperId;
 
-				//create a parent swiper for vertical movement
-				// var lateralSwiperWrapper = swiperParent.createSlide('<div class="swiper-container nested '+slideClassName+'"><div class="swiper-wrapper nested"></div></div>', 'swiper-slide');
+				//create a parent swiper for horizontal movement
+				var rowTitle = '<div class="title">' + program.name + '</div>';
+				var lateralSwiperWrapper = swiperParent.createSlide(rowTitle + '<div class="swiper-container nested '+slideClassName+'"><div class="swiper-wrapper nested"></div></div>', 'swiper-slide');
 
-				// var rowTitle = document.createElement('h2');
-				// rowTitle.innerText = program.name;
-				// rowTitle.className = 'title';
+				lateralSwiperWrapper.append();
 
-				// swiperParent.container.firstElementChild.appendChild(rowTitle);
-
-				// lateralSwiperWrapper.append();
-
-				var newLateralSwiper = new Swiper(slideClassName, {
+				var newLateralSwiperWrapper = new Swiper('.' + slideClassName, {
 					mode: 'horizontal',
 					slidesPerView: 4,
 					centeredSlides: true,
 					watchActiveIndex: true,
 					resistance: '100%'
 				});
-				// lateralSwipersNested.push(newLateralSwiper);
 
-				// if(swiperParent.slides.length > 0){
-				// 	lateralHeight = swiperParent.slides[0].style.height;
-				// }
+				var lateralHeight;
+				if(swiperParent.slides.length > 0){
+					lateralHeight = swiperParent.slides[0].style.height;
+				}
 
-				// for(var j=0; j<program.classObjs.length; j++) {
-				// 	var button = '<button type="button" class="btn btn-primary btn-lg" ng-click="classContinue">Continue</button>';
+				for(var j=0; j<program.classObjs.length; j++) {
+					var button = '<button type="button" class="btn btn-primary btn-lg" ng-click="classContinue()">Continue</button>';
+					//$compile(button)($scope);
 
-				// 	var newHSlide = newLateralSwiper.createSlide('d', 'swiper-slide red-slide');
-				// 	newHSlide.append();
-				// 	resizeLateralSlides(newLateralSwiper, lateralHeight);
-				// }
+					var newHSlide = newLateralSwiperWrapper.createSlide('<div class="class"><div class="name">'+program.classObjs[j].name+'</div><div class="button">'+button+'</div></div>', 'swiper-slide red-slide');
+					newHSlide.append();
+
+					resizeLateralSlides(newLateralSwiperWrapper, lateralHeight);
+				}
+
+				//calculateHeight not working... quick/hacky fix
+				function resizeLateralSlides(swiper, newHeight) {
+					for(var i=0; i<swiper.slides.length; i++) {
+						swiper.slides[i].style.height = newHeight;
+					}
+				}
 			}
 		};
 
