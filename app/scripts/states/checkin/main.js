@@ -8,19 +8,17 @@ define(['../module'], function (states) {
 
     return states.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $urlRouterProvider) {
 
-        $stateProvider.state('admin.checkin', {
-            url: '',
-            abstract: true,
-            views: {
-            	'application-body': {
-            		templateUrl: 'partials/checkin/index',
-            		controller: function() {}
-            	}
+        $stateProvider.state('checkin', {
+            url: '/',
+            // abstract: true,
+      		templateUrl: 'partials/checkin/index',
+            controller: function($state) {
+                $state.go('checkin.home');
             }
         });
         
-        $stateProvider.state('admin.checkin.home', {
-            url: '/checkin',
+        $stateProvider.state('checkin.home', {
+            url: '/checkin/home',
             views: {
             	'section-body': {
             		templateUrl: 'partials/checkin/home',
