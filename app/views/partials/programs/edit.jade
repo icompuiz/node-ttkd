@@ -9,7 +9,7 @@ form.form-group
 	p.text-muted.error(ng-show='isDupName()') Program name must be unique!
 
 	tabset.ptab.pad-top-20
-		tab(heading='Classes')
+		tab(heading='Classes', active='showClasses')
 			.tab-page
 				.row.row-margin-bottom-10
 					.col-md-12.pad-top-12
@@ -25,7 +25,7 @@ form.form-group
 				.row
 					.col-md-12
 						div.gridStyle.grid-med(ng-grid='classGridOptions')
-		tab(heading='Ranks')
+		tab(heading='Ranks', active='showRanks')
 			.tab-page
 				.row.row-margin-bottom-10
 					.col-md-12.pad-top-12

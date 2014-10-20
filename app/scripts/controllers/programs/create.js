@@ -1,7 +1,7 @@
 define(['../module'], function(controllers){
 	'use strict';
-	controllers.controller('CreateProgramCtrl', ['$scope', '$state', 'Restangular', 'ProgramSvc', 'ClassSvc', 'RankSvc', 
-		function($scope, $state, Restangular, ProgramSvc, ClassSvc, RankSvc) {
+	controllers.controller('CreateProgramCtrl', ['$rootScope', '$scope', '$state', 'Restangular', 'ProgramSvc', 'ClassSvc', 'RankSvc', 
+		function($rootScope, $scope, $state, Restangular, ProgramSvc, ClassSvc, RankSvc) {
 			$scope.newProgram = {};
 			$scope.newClass = {};
 			$scope.newRank = {};
@@ -17,6 +17,7 @@ define(['../module'], function(controllers){
 				});
 			};
 			$scope.getPrograms();
+			setTab();
 
 			if (ProgramSvc.current && ProgramSvc.creating) {
 				$scope.newProgram = ProgramSvc.current;
@@ -27,6 +28,14 @@ define(['../module'], function(controllers){
 					classObjs: [],
 					rankObjs: []
 				});
+			}
+
+			function setTab() {
+				if ($rootScope.previousState.indexOf('rank') > -1) {// Show ranks tab if the previous state contains 'rank'
+					$scope.showRanks = true;
+				} else {
+					$scope.showClasses = true;
+				}
 			}
 
 			$scope.cancelCreate = function() {

@@ -15,6 +15,15 @@ define(['../module'], function(controllers){
 				});				
 			}
 
+			function setTab() {
+				if ($rootScope.previousState.indexOf('rank') > -1) {// Show ranks tab if the previous state contains 'rank'
+					$scope.showRanks = true;
+				} else {
+					$scope.showClasses = true;
+				}
+			}
+			setTab();
+
 			if (ProgramSvc.current && ProgramSvc.viewing) {
 				$scope.currentProgram = ProgramSvc.current;
 				attachClassAndRankObjs()

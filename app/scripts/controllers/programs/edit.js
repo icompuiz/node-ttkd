@@ -1,7 +1,7 @@
 define(['../module'], function(controllers){
 	'use strict';
-	controllers.controller('EditProgramCtrl', ['$scope', '$state', '$stateParams', 'WizardService', 'Restangular', 'ProgramSvc', 'ClassSvc', 'RankSvc', 
-		function($scope, $state, $stateParams, WizardService, Restangular, ProgramSvc, ClassSvc, RankSvc) {
+	controllers.controller('EditProgramCtrl', ['$rootScope', '$scope', '$state', '$stateParams', 'WizardService', 'Restangular', 'ProgramSvc', 'ClassSvc', 'RankSvc', 
+		function($rootScope, $scope, $state, $stateParams, WizardService, Restangular, ProgramSvc, ClassSvc, RankSvc) {
 			$scope.currentProgram = {};
 			$scope.removedRanks = [];
 			$scope.removedClasses = [];
@@ -15,6 +15,15 @@ define(['../module'], function(controllers){
 				});
 			};
 			$scope.getPrograms();
+			setTab();
+
+			function setTab() {
+				if ($rootScope.previousState.indexOf('rank') > -1) {// Show ranks tab if the previous state contains 'rank'
+					$scope.showRanks = true;
+				} else {
+					$scope.showClasses = true;
+				}
+			}
 
 			function attachClassAndRankObjs(){
 				//Attach class objects to current program

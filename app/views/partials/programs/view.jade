@@ -2,10 +2,16 @@ h1 {{currentProgram.name}}
 .row
 	.col-md-12
 		tabset.ptab
-			tab(heading='Classes')
-				div.gridStyle(ng-grid='classGridOptions')
-			tab(heading='Ranks')
-				div.gridStyle(ng-grid='rankGridOptions')
+			tab(heading='Classes', active='showClasses')
+				.tab-page
+					.row
+						.col-md-12.pad-top-12
+							div.gridStyle(ng-grid='classGridOptions')
+			tab(heading='Ranks', active='showRanks')
+				.tab-page
+					.row
+						.col-md-12.pad-top-12
+							div.gridStyle(ng-grid='rankGridOptions')
 input.btn.btn-warning.pull-right(type='reset', value='Back', ng-click='back()')
 
 div(class='clearfix')
