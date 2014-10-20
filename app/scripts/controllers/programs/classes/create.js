@@ -3,9 +3,15 @@ define(['../../module'], function(controllers){
 	controllers.controller('CreateClassCtrl', ['$scope', '$state', '$stateParams', 'Restangular', 'ClassSvc', 'ProgramSvc',
 		function($scope, $state, $stateParams, Restangular, ClassSvc, ProgramSvc) {
 			$scope.newClass = {};
-			var program = {};
+			var program = {
+				classObjs: [],
+				rankObjs: []
+			};
 
-			if (ClassSvc.current && ClassSvc.creating) {
+			if (ProgramSvc.current) {
+				program = ProgramSvc.current;
+				$scope.newClass.program = program._id;
+			} else if (ClassSvc.current && ClassSvc.creating) {
 				$scope.newClass = ClassSvc.current;
 				program = ProgramSvc.current;
 			} else if ($stateParams.id) {
@@ -28,13 +34,7 @@ define(['../../module'], function(controllers){
 					};
 					ClassSvc.init($scope.newClass);
 				});					
-			} else {
-				program = ProgramSvc.current;
-				if (!program.classObjs) {
-					program.classObjs = [];
-				}
-			}
-
+			} 
 
 			function goToPrevState() {
 				if (ProgramSvc.editing) {
@@ -63,6 +63,7 @@ define(['../../module'], function(controllers){
 				}
 
 				program.classObjs.push($scope.newClass);
+				ProgramSvc.init(program);
 
 				ClassSvc.reset();
 

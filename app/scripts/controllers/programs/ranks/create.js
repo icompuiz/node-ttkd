@@ -117,6 +117,7 @@ define(['../../module'], function(controllers){
 				}
 				$scope.rank.intermediaryRanks = $scope.intermediaryRanks;
 				program.rankObjs.push($scope.rank);
+				ProgramSvc.init(program);
 
 				RankSvc.reset();
 
