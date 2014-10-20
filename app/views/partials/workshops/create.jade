@@ -12,7 +12,7 @@ br
 
 .row
 	div.input-group
-		input.form-control(type='text', ng-focus="openDatepicker($event)", placeholder='Enter workshop date', datepicker-popup="{{format}}", ng-model="workshop.workshopDate", is-open="dpOpened", datepicker-options="dateOptions", min-date="minDate", date-disabled="disabled(date, mode)", ng-required="true", close-text="Close")
+		input.form-control(type='text', ng-focus="openDatepicker($event)", placeholder='Workshop date', datepicker-popup="{{format}}", ng-model="workshop.workshopDate", is-open="dpOpened", datepicker-options="dateOptions", min-date="minDate", date-disabled="disabled(date, mode)", ng-required="true", close-text="Close")
 		span.input-group-btn
 			button.btn.btn-default(type='button', ng-click="openDatepicker($event)")
 				i.glyphicon.glyphicon-calendar
