@@ -45,6 +45,7 @@ define(['../module'], function(controllers){
 			} else if ($stateParams.id) {
 				ProgramSvc.read($stateParams.id, null, true).then(function(p) {
 					ProgramSvc.editing = true;
+					$scope.getPrograms();
 					$scope.currentProgram = p;
 					attachClassAndRankObjs();
 				});

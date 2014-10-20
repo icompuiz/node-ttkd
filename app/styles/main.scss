@@ -615,3 +615,26 @@ none-colorpicker {
   padding-bottom: 0px !important;
 }
 
+.ptab a {
+  border: 2px solid;
+  border-radius: 6px 6px 0 0;
+  color: #555555 !important;
+}
+
+.tab-page{
+  border-bottom: 1px solid #dddddd;
+  border-left: 1px solid #dddddd;
+  border-right: 1px solid #dddddd;
+}
+
+.pad-top-20 {
+  padding-top: 20px;
+}
+
+.pad-top-12 {
+  padding-top: 12px;
+}
+
+.no-border-bottom ul {
+  border-bottom: none;
+}

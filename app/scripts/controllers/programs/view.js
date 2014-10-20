@@ -1,7 +1,7 @@
 define(['../module'], function(controllers){
 	'use strict';
-	controllers.controller('ViewProgramCtrl', ['$rootScope', '$scope', '$state', '$stateParams', 'Restangular', 'ProgramSvc', 'ClassSvc', 'RankSvc',
-		function($rootScope, $scope, $state, $stateParams, Restangular, ProgramSvc, ClassSvc, RankSvc) {
+	controllers.controller('ViewProgramCtrl', ['$rootScope', '$window', '$scope', '$state', '$stateParams', 'Restangular', 'ProgramSvc', 'ClassSvc', 'RankSvc',
+		function($rootScope, $window, $scope, $state, $stateParams, Restangular, ProgramSvc, ClassSvc, RankSvc) {
 			$scope.currentProgram = {};
 
 			function attachClassAndRankObjs(){
