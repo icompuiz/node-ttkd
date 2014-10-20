@@ -11,15 +11,13 @@ br
 		p.text-muted.error(ng-show='isDupName()') Workshop name must be unique!
 
 .row
-	.row
-		.col-md-8.vcenter
-			div.input-group
-				input.form-control(type='text', ng-focus="openDatepicker($event)", placeholder='Enter workshop date', datepicker-popup="{{format}}", ng-model="workshop.workshopDate", is-open="dpOpened", datepicker-options="dateOptions", min-date="minDate", date-disabled="disabled(date, mode)", ng-required="true", close-text="Close")
-				span.input-group-btn
-					button.btn.btn-default(type='button', ng-click="openDatepicker($event)")
-						i.glyphicon.glyphicon-calendar
-		.col-md-4.vcenter
-				timepicker(ng-model='workshopTime')
+	div.input-group
+		input.form-control(type='text', ng-focus="openDatepicker($event)", placeholder='Enter workshop date', datepicker-popup="{{format}}", ng-model="workshop.workshopDate", is-open="dpOpened", datepicker-options="dateOptions", min-date="minDate", date-disabled="disabled(date, mode)", ng-required="true", close-text="Close")
+		span.input-group-btn
+			button.btn.btn-default(type='button', ng-click="openDatepicker($event)")
+				i.glyphicon.glyphicon-calendar
+.row
+	timepicker(ng-model='workshopTime')
 
 input.btn.btn-primary.pull-right(ng-disabled='!canSaveWorkshop()' type='submit', value='Create Workshop', ng-click='createWorkshop()')
 input.btn.btn-warning.pull-right(type='reset', value='Cancel', ng-click='backToWorkshops()')
