@@ -1,7 +1,7 @@
 define(['../../module'], function(controllers){
 	'use strict';
-	controllers.controller('EditClassCtrl', ['saveAs', '$filter', '$scope', '$state', '$stateParams', '$log', 'Restangular', 'StudentSvc', 'ClassSvc', 'ProgramSvc',
-		function(saveAs, $filter, $scope, $state, $stateParams, $log, Restangular, StudentSvc, ClassSvc, ProgramSvc) {
+	controllers.controller('EditClassCtrl', ['$rootScope', 'saveAs', '$filter', '$scope', '$state', '$stateParams', '$log', 'Restangular', 'StudentSvc', 'ClassSvc', 'ProgramSvc',
+		function($rootScope, saveAs, $filter, $scope, $state, $stateParams, $log, Restangular, StudentSvc, ClassSvc, ProgramSvc) {
 			$scope.currentClass = {};
 
 			var currentProgram = null,
@@ -20,10 +20,11 @@ define(['../../module'], function(controllers){
                 });
                 $scope.currentClass.studentObjs = data;
             }
+            populateStudentObjs();
 
-			if (ClassSvc.current && ClassSvc.editing) {
+			if (ClassSvc.current && ClassSvc.editing && ($rootScope.previousState.indexOf('students/create') === -1)) {
 				$scope.currentClass = ClassSvc.current;
-                populateStudentObjs();
+                populateStudentObjs();  
 				currentProgram = ProgramSvc.current;
 				currentProgram.populated = true;
 				if (!ClassSvc.orig) {
@@ -110,15 +111,15 @@ define(['../../module'], function(controllers){
 
 			$scope.saveClass = function() {
 				//Find the original class in the program and replace it with the edited class
-				var i = _.findIndex(currentProgram.classObjs, function(c) {
-					return c.name === ClassSvc.orig.name;
-				});
-				if (i >= 0) {
-					currentProgram.classObjs[i] = $scope.currentClass;
-				} else {
-					currentProgram.classObjs.push($scope.currentClass);
-				}
+                var classes = [];
+                _(currentProgram.classObjs).forEach(function(c) {
+                    if (c.name !== ClassSvc.orig.name) {
+                        classes.push(c);
+                    }
+                })
+                classes.push($scope.currentClass);
 
+                ProgramSvc.current.classObjs = classes;
 				ClassSvc.reset();
 				ClassSvc.orig = null;
 

@@ -147,7 +147,7 @@ define(['../module'], function(controllers) {
 
 	                    StudentSvc.reset();
 	                    if ($stateParams.classId) {
-	                    	$state.go('admin.programs.viewclass', { id: $stateParams.classId });
+	                    	$state.go('admin.programs.editclass', { id: $stateParams.classId });
 	                    } else {
 	                    	$state.go('admin.students.home');
 	                    }
