@@ -6,14 +6,24 @@ define(['./module'], function(directives){
 		var ttkdSwiper = {
 			restrict: 'A',
 			templateUrl: 'partials/checkin/ttkd-swiper',
+			scope: {
+				type: '=',
+				classId: '='
+
+			},
 
 			controller: function($scope, ProgramSvc, ClassSvc) {
-				// do controller work here for directive
-				$scope.classContinue = function() {
-					$log.log('continue button clicked');
-				}
+				// Load data based on type
+				$scope.data = [];
 
-				loadProgramsAndClasses();
+				if($scope.type === 'students') {
+					$log.log('Attempting to load students...');
+
+
+				} else {
+					$log.log('Attempting to load programs...');
+					loadProgramsAndClasses();
+				}
 
 				function loadProgramsAndClasses() {
 					var data = [];
@@ -72,23 +82,30 @@ define(['./module'], function(directives){
 	}])
 
 	.directive('ttkdSwiperLateralItem', ['$log', '$compile', function($log, $compile) {
+		var compileHack = $compile;
 		var ttkdSwiperLateralItem = {
 			restrict: 'A',
 			scope: {
 				parent: '=',
 				item: '=program',
-				swiperId: '='
+				swiperId: '=',
+				type: '='
 			},
 
-			controller: function($scope) {
+			controller: ['$scope', function($scope) {
+			
 
-				$scope.classContinue = function() {
-					$log.log('hit');
-				};
 
-			},
+			}],
 
-			link: function($scope, $compile) {
+			link: function($scope, element) {
+				if($scope.type === 'students') {
+
+				} else {
+
+				}
+
+
 				var program = $scope.item;
 				var swiperParent = $scope.parent;
 				var slideClassName = 'swiper-nested-' + $scope.swiperId;
@@ -113,11 +130,12 @@ define(['./module'], function(directives){
 				}
 
 				for(var j=0; j<program.classObjs.length; j++) {
-					var button = '<button type="button" class="btn btn-primary btn-lg" ng-click="classContinue()">Continue</button>';
-					//$compile(button)($scope);
-
-					var newHSlide = newLateralSwiperWrapper.createSlide('<div class="class"><div class="name">'+program.classObjs[j].name+'</div><div class="button">'+button+'</div></div>', 'swiper-slide red-slide');
+					var className = program.classObjs[j].name;
+					var classId = program.classObjs[j]._id
+					var newHSlide = newLateralSwiperWrapper.createSlide('<div ttkd-swiper-slide-item-class name="\''+className+'\'" id="\''+classId+'\'"></div>', 'swiper-slide red-slide');					
 					newHSlide.append();
+
+					compileHack(newHSlide)($scope);
 
 					resizeLateralSlides(newLateralSwiperWrapper, lateralHeight);
 				}
@@ -134,22 +152,29 @@ define(['./module'], function(directives){
 		return ttkdSwiperLateralItem;
 	}])
 
-	.directive('ttkdSwiperSlideItem', ['$log', function($log) {
-		var ttkdSwiperSlideItem = {
+	.directive('ttkdSwiperSlideItemClass', ['$log', function($log) {
+		var ttkdSwiperSlideItemClass = {
 			restrict: 'A',
+			templateUrl: 'partials/checkin/ttkd-swiper-card-class',
 			scope: {
-				item: '=ttkdSwiperSlideItem'
+				className: '=name',
+				classId: '=id'
+			},
+			replace:true,
+
+			controller: function($scope) {
+				$scope.classContinue = function() {
+					$log.log('hit again ' + $scope.classId);
+				}
 			},
 
-			controller: function() {},
-
 			link: function($scope) {
-				var clazz = $scope.item;
+				
 
 			}
 		};
 
-		return ttkdSwiperSlideItem;
+		return ttkdSwiperSlideItemClass;
 	}]);
 
 });
