@@ -6,16 +6,36 @@ define(['../../module'], function(controllers){
 			$scope.program = {};
             $scope.intermediaryRankNames = [];
 
+            function attachSubranks(callback) {
+                var subrankObjs = [];
+                async.each($scope.rank.intermediaryRanks,
+                    function(subrankId, callback) {
+                        RankSvc.read(subrankId, null, false).then(function(subrank) {
+                            // Attach sub-rank identifiers
+                            subrank.divId = 'r' + subrank._id;
+
+                            subrankObjs.push(subrank);
+                            callback();
+                        });
+                    },
+                    function(err) {
+                        $scope.rank.subrankObjs = subrankObjs;
+                        callback();
+                });
+            }
+
 			// load current program and rank if available from services
 			if (RankSvc.current && RankSvc.viewing) {
 				$scope.rank = RankSvc.current;
 				$scope.program = ProgramSvc.current;
-                $scope.intermediaryRankNames = _.map($scope.rank.intermediaryRanks, function(r) {return r.name;});
+                $scope.intermediaryRankNames = _.map($scope.rank.subrankObjs, function(r) {return r.name;});
 			// Otherwise get them from db
 			} else if ($stateParams.id) { 
 				RankSvc.read($stateParams.id, null, true).then(function(r) {
 					$scope.rank = RankSvc.current;
-                    $scope.intermediaryRankNames = _.map($scope.rank.intermediaryRanks, function(r) {return r.name;});
+                    attachSubranks(function() {
+                        $scope.intermediaryRankNames = _.map($scope.rank.subrankObjs, function(r) {return r.name;});
+                    });
 					ProgramSvc.read(r.program, null, true).then(function(p) {
 						$scope.program = p;
 					});
@@ -24,7 +44,7 @@ define(['../../module'], function(controllers){
 
 			if ($scope.rank.color) {
 				$('.color-tile').css('background', $scope.rank.color);
-			}
+			}    
 
 			$scope.filterOptions = {
                 filterText: '',

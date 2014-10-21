@@ -20,12 +20,42 @@
 				$scope.dropdown.items = orders;
 			}
 
+			function attachSubranks(callback) {
+				var subrankObjs = [];
+				async.each($scope.rank.intermediaryRanks,
+					function(subrankId, callback) {
+						RankSvc.read(subrankId, null, false).then(function(subrank) {
+							// Attach sub-rank identifiers
+							subrank.isIntermediaryRank = true;
+							subrank.divId = 'r' + subrank._id;
+
+							subrankObjs.push(subrank);
+							callback();
+						});
+					},
+					function(err) {
+						$scope.rank.subrankObjs = subrankObjs;
+						callback();
+				});
+			}
+
+			// Make an identifier for the sub-rank list item divs
+            function makeid(){
+			    var text = "";
+			    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+			    for( var i=0; i < 5; i++ )
+			        text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+			    return 'r' + text;
+			}
+
 			// load current program and rank if available from services
 			if (RankSvc.current && RankSvc.editing) {
 				$scope.rank = RankSvc.current;
-				if ($scope.rank.intermediaryRanks) {
-					tmpRanks = _.sortBy($scope.rank.intermediaryRanks, function(r) {return r.rankOrder;});
-					$scope.intermediaryRanks = tmpRanks;
+				if ($scope.rank.subrankObjs) {
+					tmpRanks = _.sortBy($scope.rank.subrankObjs, function(r) {return r.rankOrder;});
+					$scope.rank.subrankObjs = tmpRanks;
 				}
 
 				program = ProgramSvc.current;
@@ -42,8 +72,10 @@
 				RankSvc.read($stateParams.id, null, true).then(function(r) {
 					$scope.rank = RankSvc.current;
 					if ($scope.rank.intermediaryRanks) {
-						tmpRanks = _.sortBy($scope.rank.intermediaryRanks, function(r) {return r.rankOrder;});
-						$scope.intermediaryRanks = tmpRanks;
+						attachSubranks(function() {
+							tmpRanks = _.sortBy($scope.rank.subrankObjs, function(r) {return r.rankOrder;});
+							$scope.rank.subrankObjs = tmpRanks;
+						});
 					}
 
 					RankSvc.orig = {
@@ -146,7 +178,8 @@
             	var newRank = {
             		name: 'Sub-rank' + newRankOrder,
             		rankOrder: newRankOrder,
-            		id: makeid()
+            		divId: 'r' + makeid(),
+            		isIntermediaryRank: true
             	};
 
             	tmpRanks.push(newRank);
@@ -163,19 +196,19 @@
 
             $scope.confirmRemove = function(remove) {
                 if(remove) {                	
-            		var ordered = $('#sortable li').map(function(i) { return this.id; }).get();
+            		var ordered = $('#sortable li').map(function(i) { return this.divId; }).get();
 
                     _(tmpRanks).forEach(function(r) {
                     	if(r.isSelected) {
-                    		$('#'+r.id).remove();  
+                    		$('#'+r.divId).remove();  
                     		tmpRanks = _.without(tmpRanks, r);
-                    		ordered = _.without(ordered, r.id);
+                    		ordered = _.without(ordered, r.divId);
                     	}
                     });
 
 
                     _(tmpRanks).forEach(function(r){
-            			r.rankOrder = _.indexOf(ordered, r.id) + 1;
+            			r.rankOrder = _.indexOf(ordered, r.divId) + 1;
             		});
 
                     $scope.showRemoveConfirm = false;
@@ -195,7 +228,7 @@
             		var ordered = $('#sortable li').map(function(i){return this.id;}).get();
 
             		_(tmpRanks).forEach(function(r) {
-            			r.rankOrder = _.indexOf(ordered, r.id) + 1;
+            			r.rankOrder = _.indexOf(ordered, r.divId) + 1;
             		}); 
 	                if(!$scope.$$phase) {
 	               		$scope.$apply();
@@ -213,7 +246,7 @@
             	}
 
             	// Do not allow sorting if there are duplicate
-            	var ordered = $('#sortable li').map(function(i) { return this.id; }).get();
+            	var ordered = $('#sortable li').map(function(i) { return this.divId; }).get();
             	var uniq = _.uniq(ordered);
 
             	if (uniq.length !== ordered.length) {
@@ -240,9 +273,9 @@
             $scope.select = function(r, $event) {
             	r.isSelected = !r.isSelected;
             	if (r.isSelected) {
-        			$('#' + r.id + ' .rank-list-item').css('background-color', '#c9dde1');
+        			$('#' + r.divId + ' .rank-list-item').css('background-color', '#c9dde1');
             	} else {
-        			$('#' + r.id + ' .rank-list-item').css('background-color', '#d4d4d4');
+        			$('#' + r.divId + ' .rank-list-item').css('background-color', '#d4d4d4');
             	}
             };
 
@@ -259,7 +292,7 @@
 				RankSvc.reset();
 				RankSvc.orig = null;
 
-				$state.go('admin.programs.edit', program._id);
+				$state.go('admin.programs.edit', {id: program._id});
 			};
 
 			$scope.saveRank = function() {
@@ -268,7 +301,7 @@
 					return r.name === RankSvc.orig.name;
 				});
 				if (i >= 0) {
-					$scope.rank.intermediaryRanks = $scope.intermediaryRanks;
+					//$scope.rank.subrankObjs = $scope.intermediaryRanks;
 					program.rankObjs[i] = $scope.rank;
 				} else {
 					program.rankObjs.push($scope.rank);
@@ -323,31 +356,6 @@
 					names = _.map(tmpRanks, function(r){return r.name;});
 					uniq = _.uniq(names);
 					return (names.length !== uniq.length);
-				}
-				return false;
-			};
-
-			$scope.showSubrankOrderMessage = function() {
-				var orders = [],
-					uniq = [];
-				if ($scope.intermediaryRanks && $scope.intermediaryRanks.length > 0) {
-					orders = _.map($scope.intermediaryRanks, function(r){return r.rankOrder;});
-
-					// Check for duplicates
-					uniq = _.uniq(orders);
-					if (uniq.length !== orders.length) {
-						return true;
-					}
-
-					// Make sure ordering starts at 1
-					if (!_.contains(orders, 1) && !_.contains(orders, '1')) {
-						return true;
-					}
-
-					// Make sure they increment by 1
-					if (_.max(orders) != $scope.intermediaryRanks.length) {
-						return true;
-					}
 				}
 				return false;
 			};
