@@ -2,4 +2,4 @@
 	.swiper-container.swiper-parent
 		.swiper-wrapper
 			div(ng-repeat="item in data")
-				div(parent="swiperParent", program="item", swiper-id="$index", ttkd-swiper-lateral-item)
+				div(parent="swiperParent", item="item", swiper-id="$index", type="type", selected-class-id="selectedClassId", ttkd-swiper-lateral-item)
