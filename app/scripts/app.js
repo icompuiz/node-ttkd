@@ -58,22 +58,22 @@ define('app', [
           }
         ]).run(function($state, $rootScope, Restangular) {
             
-        Restangular.setBaseUrl('/api');
+            Restangular.setBaseUrl('/api');
 
-        Restangular.setRestangularFields({
-            id: '_id',
-          });
+            Restangular.setRestangularFields({
+                id: '_id',
+              });
 
-        $rootScope.$on('$stateChangeSuccess', function(ev, to, toParams, from, fromParams) {
-            $rootScope.previousState = from.name;
-            $rootScope.previousParams = fromParams;
-            $rootScope.currentState = to.name;
-            $rootScope.currentParams = toParams;
-            console.log('Previous state:'+$rootScope.previousState)
-            console.log('Current state:'+$rootScope.currentState)
-        });
+            $rootScope.$on('$stateChangeSuccess', function(ev, to, toParams, from, fromParams) {
+                $rootScope.previousState = from.name;
+                $rootScope.previousParams = fromParams;
+                $rootScope.currentState = to.name;
+                $rootScope.currentParams = toParams;
+                console.log('Previous state:'+$rootScope.previousState)
+                console.log('Current state:'+$rootScope.currentState)
+            });
 
-        $state.go('login');
+            $state.go('checkin');
 
       });
   });

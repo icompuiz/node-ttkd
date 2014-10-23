@@ -2,5 +2,5 @@
  * Attach all state definitions
  **/
 define([
-	'./checkin'
+	'./checkin', './unranked'
 ], function () {});

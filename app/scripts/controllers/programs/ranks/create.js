@@ -30,7 +30,17 @@ define(['../../module'], function(controllers){
 			if (RankSvc.current && RankSvc.creating) {
 				$scope.rank = RankSvc.current;
 				if ($scope.rank.intermediaryRanks) {
-					tmpRanks = _.sortBy($scope.rank.intermediaryRanks, function(r) {return r.rankOrder;});
+					var subrankObjs = [];
+					async.each($scope.rank.intermediaryRanks,
+						function(subrankId, callback) {
+							RankSvc.read(subrankId, null, false).then(function(subrank) {
+								subrankObjs.push(subrank);
+								callback();
+							});
+						},
+						function(err) {
+							$scope.rank.subrankObjs = subrankObjs;
+						});
 				}
 			}
 
@@ -107,6 +117,7 @@ define(['../../module'], function(controllers){
 			};
 
 			$scope.createRank = function() {
+				var subrankIds = [];
 				if (!program.rankObjs) {
 					program.rankObjs = [];
 				}
@@ -115,8 +126,9 @@ define(['../../module'], function(controllers){
 				if ($scope.showOrderWarning) {
 					$scope.swapRank.rankOrder = $scope.swapRank.newRankOrder;
 				}
-				$scope.rank.intermediaryRanks = $scope.intermediaryRanks;
+				$scope.rank.subrankObjs = tmpRanks;
 				program.rankObjs.push($scope.rank);
+				ProgramSvc.init(program);
 
 				RankSvc.reset();
 
@@ -177,9 +189,10 @@ define(['../../module'], function(controllers){
             	var newRankOrder = tmpRanks.length + 1;
 
             	var newRank = {
-            		name: 'Sub-rank' + newRankOrder,
-            		rankOrder: newRankOrder,
-            		id: makeid()
+            		name: '<NAME>',
+            		rankOrder: newRankOrder, 
+            		divId: 'r' + makeid(),
+            		isIntermediaryRank: true
             	};
 
             	tmpRanks.push(newRank);
@@ -198,25 +211,25 @@ define(['../../module'], function(controllers){
             $scope.confirmRemove = function(remove) {
                 if(remove) {   
 
-            		var ordered = $('#sortable li').map(function(i) { return this.id; }).get();
+            		var ordered = $('#sortable li').map(function(i) { return this.divId; }).get();
 
                     _(tmpRanks).forEach(function(r) {
                     	if(r.isSelected) {
-                    		$('#'+r.id).remove();  
+                    		$('#'+r.divId).remove();  
                     		tmpRanks = _.without(tmpRanks, r);
-                    		ordered = _.without(ordered, r.id);
+                    		ordered = _.without(ordered, r.divId);
                     	}
                     });
 
                     _(tmpRanks).forEach(function(r){
-            			r.rankOrder = _.indexOf(ordered, r.id) + 1;
+            			r.rankOrder = _.indexOf(ordered, r.divId) + 1;
             		});
 
                     $scope.showRemoveConfirm = false;
                 } else {
                     $scope.showRemoveConfirm = false;
                 }
-                $scope.intermediaryRanks = _.sortBy(tmpRanks, 'rankOrder');
+                $scope.subrankObjs = _.sortBy(tmpRanks, 'rankOrder');
                 if(!$scope.$$phase) {
                		$scope.$apply();
                	}
@@ -229,13 +242,23 @@ define(['../../module'], function(controllers){
             		var ordered = $('#sortable li').map(function(i) { return this.id; }).get();
 
             		_(tmpRanks).forEach(function(r){
-            			r.rankOrder = _.indexOf(ordered, r.id) + 1;
+            			r.rankOrder = _.indexOf(ordered, r.divId) + 1;
             		});
 	                if(!$scope.$$phase) {
 	               		$scope.$apply();
 	               	}
             	}
             });
+
+            function makeid(){
+			    var text = "";
+			    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+			    for( var i=0; i < 5; i++ )
+			        text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+			    return 'r' + text;
+			}
 
             $document.bind('click', function(e) {
             	e.stopPropagation();
@@ -249,7 +272,7 @@ define(['../../module'], function(controllers){
             	}
 
             	// // Do not allow sorting if there are duplicate
-            	// var ordered = $('#sortable li').map(function(i) { return this.id; }).get();
+            	// var ordered = $('#sortable li').map(function(i) { return this.divId; }).get();
             	// var uniq = _.uniq(ordered);
 
             	// if (uniq.length !== ordered.length) {
@@ -263,23 +286,12 @@ define(['../../module'], function(controllers){
             	r.editingName = true;
             };
 
-            function makeid(){
-			    var text = "";
-			    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-
-			    for( var i=0; i < 5; i++ ) {
-			        text += possible.charAt(Math.floor(Math.random() * possible.length));
-			    }
-
-			    return 'r' + text;
-			}
-
             $scope.select = function(r, $event) {
             	r.isSelected = !r.isSelected;
             	if (r.isSelected) {
-        			$('#' + r.id + ' .rank-list-item').css('background-color', '#c9dde1');
+        			$('#' + r.divId + ' .rank-list-item').css('background-color', '#c9dde1');
             	} else {
-        			$('#' + r.id + ' .rank-list-item').css('background-color', '#d4d4d4');
+        			$('#' + r.divId + ' .rank-list-item').css('background-color', '#d4d4d4');
             	}
             };
 
@@ -327,31 +339,6 @@ define(['../../module'], function(controllers){
 					names = _.map(tmpRanks, function(r){return r.name;});
 					uniq = _.uniq(names);
 					return (names.length !== uniq.length);
-				}
-				return false;
-			};
-
-			$scope.showSubrankOrderMessage = function() {
-				var orders = [],
-					uniq = [];
-				if ($scope.rank.intermediaryRanks && $scope.rank.intermediaryRanks.length > 0) {
-					orders = _.map($scope.rank.intermediaryRanks, function(r){return r.rankOrder;});
-
-					// Check for duplicates
-					uniq = _.uniq(orders);
-					if (uniq.length !== orders.length) {
-						return true;
-					}
-
-					// Make sure ordering starts at 1
-					if (!_.contains(orders, 1) && !_.contains(orders, '1')) {
-						return true;
-					}
-
-					// Make sure they increment by 1
-					if (_.max(orders) != $scope.rank.intermediaryRanks.length) {
-						return true;
-					}
 				}
 				return false;
 			};

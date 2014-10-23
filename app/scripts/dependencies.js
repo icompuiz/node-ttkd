@@ -61,6 +61,9 @@ requirejs.config({
           },
           'swiper':{
             deps: []
+          },
+          'jquery-ui':{
+            deps:['$']
           }
         },
 

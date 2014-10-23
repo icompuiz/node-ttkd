@@ -1,13 +1,17 @@
 h1 {{currentProgram.name}}
-h2 Classes
 .row
 	.col-md-12
-		div.gridStyle(ng-grid='classGridOptions')
-h2 Ranks
-.row
-	.col-md-12
-		div.gridStyle(ng-grid='rankGridOptions')
-
+		tabset.ptab
+			tab(heading='Classes', active='showClasses')
+				.tab-page
+					.row
+						.col-md-12.pad-top-12
+							div.gridStyle(ng-grid='classGridOptions')
+			tab(heading='Ranks', active='showRanks')
+				.tab-page
+					.row
+						.col-md-12.pad-top-12
+							div.gridStyle(ng-grid='rankGridOptions')
 input.btn.btn-warning.pull-right(type='reset', value='Back', ng-click='back()')
 
 div(class='clearfix')

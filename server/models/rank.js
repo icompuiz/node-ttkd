@@ -12,14 +12,12 @@ var rankSchema = new Schema({
 	},
 	rankOrder: Number,
 	name: String,
-	intermediaryRanks: [
-			new Schema({
-				id: String,
-				name: String,
-				rankOrder: Number
-			})
-		], 
-	color: String
+	intermediaryRanks: [{
+		ref: 'Rank',
+		type: ObjectId
+	}], 
+	color: String,
+	isIntermediaryRank: Boolean
 });
 
 var Rank = mongoose.model('Rank', rankSchema);

@@ -1,7 +1,7 @@
 define(['../module'], function(controllers){
 	'use strict';
-	controllers.controller('ViewProgramCtrl', ['$rootScope', '$scope', '$state', '$stateParams', 'Restangular', 'ProgramSvc', 'ClassSvc', 'RankSvc',
-		function($rootScope, $scope, $state, $stateParams, Restangular, ProgramSvc, ClassSvc, RankSvc) {
+	controllers.controller('ViewProgramCtrl', ['$rootScope', '$window', '$scope', '$state', '$stateParams', 'Restangular', 'ProgramSvc', 'ClassSvc', 'RankSvc',
+		function($rootScope, $window, $scope, $state, $stateParams, Restangular, ProgramSvc, ClassSvc, RankSvc) {
 			$scope.currentProgram = {};
 
 			function attachClassAndRankObjs(){
@@ -9,11 +9,41 @@ define(['../module'], function(controllers){
 				ClassSvc.list().then(function(classes) {
 					$scope.currentProgram.classObjs = _.where(classes, {program: $scope.currentProgram._id});
 				});
-				//Attach rank objects to current program
+				
+				//Attach rank and subrank objects to current program
 				RankSvc.list().then(function(ranks) {
-					$scope.currentProgram.rankObjs = _.where(ranks, {program: $scope.currentProgram._id});
+					$scope.currentProgram.rankObjs = _.where(ranks, {program: $scope.currentProgram._id, isIntermediaryRank: undefined});
+					var rankObjs = [];
+					async.each($scope.currentProgram.rankObjs, 
+						function(rank, callback) {
+							var subrankObjs = [];
+							async.each(rank.intermediaryRanks,
+								function(subrankId, callback) {
+									RankSvc.read(subrankId, null, false).then(function(subrank) {
+										subrankObjs.push(subrank);
+										callback();
+									});
+								},
+								function(err) {
+									rank.subrankObjs = subrankObjs;
+									rankObjs.push(rank);
+									callback();
+							});
+						},
+						function(err) {
+							$scope.currentProgram.rankObjs = rankObjs;
+					});		
 				});				
 			}
+
+			function setTab() {
+				if ($rootScope.previousState.indexOf('rank') > -1) {// Show ranks tab if the previous state contains 'rank'
+					$scope.showRanks = true;
+				} else {
+					$scope.showClasses = true;
+				}
+			}
+			setTab();
 
 			if (ProgramSvc.current && ProgramSvc.viewing) {
 				$scope.currentProgram = ProgramSvc.current;

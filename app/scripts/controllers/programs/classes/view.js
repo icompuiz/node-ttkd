@@ -11,9 +11,11 @@ define(['../../module'], function(controllers){
                 _($scope.currentClass.students).forEach(function(id) {
                     StudentSvc.read(id, null, false).then(function(s) {
                         data.push(s);
-                        _(s.emailAddresses).forEach(function(e) {
-                            emails.push(e);
-                        });
+                        if (s.emailAddresses && s.emailAddresses.length > 0) {
+                            _(s.emailAddresses).forEach(function(e) {
+                                emails.push(e);
+                            });
+                        }
                     });
                 });
                 $scope.currentClass.studentObjs = data;
@@ -72,10 +74,12 @@ define(['../../module'], function(controllers){
 
             $scope.getPagedDataAsync = function(pageSize, page, searchText) {
                 var data = [];
-                _.each($scope.currentClass.studentObjs, function(s) {
-                    s.age = $filter('age')(s.birthday);
-                    data.push(s);
-                });
+                if ($scope.currentClass.studentObjs && $scope.currentClass.studentObjs.length > 0) {
+                    _.each($scope.currentClass.studentObjs, function(s) {
+                        s.age = $filter('age')(s.birthday);
+                        data.push(s);
+                    });
+                }
                 $scope.setPagingData(data, page, pageSize);
             };
 

@@ -1,0 +1,5 @@
+Scenario: Admin: Remove an existing workshop
+
+	Feature: Workshop is deleted
+		Unit: Workshop is no longer in list of workshop
+		Unit: Workshop_id does not match url_id

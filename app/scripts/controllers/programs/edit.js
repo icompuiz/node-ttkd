@@ -1,7 +1,7 @@
 define(['../module'], function(controllers){
 	'use strict';
-	controllers.controller('EditProgramCtrl', ['$scope', '$state', '$stateParams', 'WizardService', 'Restangular', 'ProgramSvc', 'ClassSvc', 'RankSvc', 
-		function($scope, $state, $stateParams, WizardService, Restangular, ProgramSvc, ClassSvc, RankSvc) {
+	controllers.controller('EditProgramCtrl', ['$rootScope', '$scope', '$state', '$stateParams', 'WizardService', 'Restangular', 'ProgramSvc', 'ClassSvc', 'RankSvc', 
+		function($rootScope, $scope, $state, $stateParams, WizardService, Restangular, ProgramSvc, ClassSvc, RankSvc) {
 			$scope.currentProgram = {};
 			$scope.removedRanks = [];
 			$scope.removedClasses = [];
@@ -15,15 +15,61 @@ define(['../module'], function(controllers){
 				});
 			};
 			$scope.getPrograms();
+			setTab();
+
+			function setTab() {
+				if ($rootScope.previousState.indexOf('rank') > -1) {// Show ranks tab if the previous state contains 'rank'
+					$scope.showRanks = true;
+				} else {
+					$scope.showClasses = true;
+				}
+			}
+
+			function attachSubranksToRank(rankObj) {
+				var subrankObjs = [];
+				async.each(rankObj.intermediaryRanks,
+					function(subrankId, callback) {
+						RankSvc.read(subrankId, null, false).then(function(subrank) {
+							subrankObjs.push(subrank);
+							callback();
+						});
+					},
+					function(err) {
+						rankObj.subrankObjs = subrankObjs;
+				});
+			}
 
 			function attachClassAndRankObjs(){
 				//Attach class objects to current program
 				ClassSvc.list().then(function(classes) {
 					$scope.currentProgram.classObjs = _.where(classes, {program: $scope.currentProgram._id});
 				});
-				//Attach rank objects to current program
+				
+				//Attach rank and subrank objects to current program
 				RankSvc.list().then(function(ranks) {
-					$scope.currentProgram.rankObjs = _.where(ranks, {program: $scope.currentProgram._id});
+					$scope.currentProgram.rankObjs = _.where(ranks, {program: $scope.currentProgram._id, isIntermediaryRank: undefined});
+					var rankObjs = [];
+					async.each($scope.currentProgram.rankObjs, 
+						function(rank, callback) {
+							var subrankObjs = [];
+							async.each(rank.intermediaryRanks,
+								function(subrankId, callback) {
+									RankSvc.read(subrankId, null, false).then(function(subrank) {
+										// Add sub-rank list item identifier to subrank object
+										subrank.divId = 'r' + subrank._id;
+										subrankObjs.push(subrank);
+										callback();
+									});
+								},
+								function(err) {
+									rank.subrankObjs = subrankObjs;
+									rankObjs.push(rank);
+									callback();
+							});
+						},
+						function(err) {
+							$scope.currentProgram.rankObjs = rankObjs;
+					});		
 				});				
 			}
 
@@ -42,9 +88,17 @@ define(['../module'], function(controllers){
 				if (ProgramSvc.removedRanks) {
 					$scope.removedRanks = ProgramSvc.removedRanks;
 				}
+
+				
+				_.each($scope.currentProgram.rankObjs, function(rank) {
+					if (!rank.subrankObjs || rank.subrankObjs.length === 0) {
+						attachSubranksToRank(rank);
+					}
+				});
 			} else if ($stateParams.id) {
 				ProgramSvc.read($stateParams.id, null, true).then(function(p) {
 					ProgramSvc.editing = true;
+					$scope.getPrograms();
 					$scope.currentProgram = p;
 					attachClassAndRankObjs();
 				});
@@ -144,23 +198,35 @@ define(['../module'], function(controllers){
 
 				//Add or update ranks
 				function updateRanks(callback, err) {
+
 					async.each($scope.currentProgram.rankObjs,
 						function(rankItem, callback) {
-
 							function beforeSave(c) {
 								c.name = rankItem.name;
 								c.rankOrder = rankItem.rankOrder;
-								c.intermediaryRanks = rankItem.intermediaryRanks;
+								c.intermediaryRanks = subrankIds;
 								c.program = $scope.currentProgram._id;
 								c.color = rankItem.color;
 							}
 
-							RankSvc.init(rankItem);
-							RankSvc.save(beforeSave).then(function(r) {
-								rankIDs.push(r._id);
-								callback();
-							});
-												
+							var subrankIds = [];
+
+							async.each(rankItem.subrankObjs,
+								function(subrank, callback) {
+									RankSvc.init(subrank);
+									RankSvc.save().then(function(saved) {
+										subrankIds.push(saved._id);
+										callback();
+									});
+								},
+								function(err) {
+									rankItem.intermediaryRanks = subrankIds;
+									RankSvc.init(rankItem);
+									RankSvc.save(beforeSave).then(function(saved) {
+										rankIDs.push(saved._id);
+										callback();
+									});
+								});												
 						},
 						function(err) {
 							callback();
