@@ -39,6 +39,12 @@ var copyFile = function(file, doneCopyingFile) {
                 doneCopyingFile(null, storedFile);
             });
 
+        } else {
+
+            console.log('File does not exist', file);
+            doneCopyingFile();
+            return;
+
         }
     }
     $filesystem.exists(file.path, onFileExists);

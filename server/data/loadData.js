@@ -1,11 +1,14 @@
 'use strict';
 
 var $async = require('async'),
-    $mongoose = require('mongoose');
+    $mongoose = require('mongoose'),
+    path = require('path'),
+    mime = require('mime');
 
 var userData = require('./users'),
     groupData = require('./groups'),
-    assetData = require('./assets');
+    assetData = require('./assets'),
+    studentData = require('./students');
 
 function removeMockObjects(doneRemovingMocks) {
     var Mock = $mongoose.model('Mock');
@@ -406,6 +409,109 @@ function addMocks(doneAddingMocks) {
 }
 
 
+function addStudents(doneAddingStudents) {
+
+    console.log('loadData::addStudents::enter');
+
+
+    var Student = $mongoose.model('Student');
+
+    function afterEachStudent(error) {
+        if(error) {
+            return doneAddingStudents(error);
+        }
+
+        return doneAddingStudents();
+    }
+
+    function eachStudent(student, eachStudentIteratorDone) {
+        function onStudentSaved(error) {
+            if(error) {
+                return eachStudentIteratorDone(error);                
+            }
+
+            return eachStudentIteratorDone();
+        }
+
+        var avatar = student.avatar;
+        
+        delete student.avatar;
+        var studentDoc = new Student(student);
+
+        if (!avatar) {
+            return studentDoc.save(onStudentSaved);
+        }
+
+        // files located in data/photos
+        var imageDirectory = path.join(__dirname, "photos");
+
+        var filename = (studentDoc.firstName + studentDoc.lastName).replace(/\W/g, '_');
+        var type = mime.lookup(avatar);
+        var extension = mime.extension(type);
+        filename += '.' + extension;
+
+        var copyData = {
+            path: path.join(imageDirectory, avatar),
+            name: filename,
+            type: type
+        };
+
+        var Directory = $mongoose.model('Directory');
+        var File = $mongoose.model('File');
+        Directory.findOne({name:'Site Root'}, function(error, directoryDoc) {
+            if(error) {
+                console.log('loadData::addStudents::findSiteRoot::error', error);
+                return eachStudentIteratorDone(error);
+            }
+
+            if(!directoryDoc) {
+                console.log('loadData::addStudents::findSiteRoot::Root Directory not found');
+                error = new Error('Root Directory not found');
+                return eachStudentIteratorDone(error);
+            }
+
+            var fileData = {
+                name: copyData.name,
+                directory: directoryDoc._id
+            };
+
+            var file = new File(fileData);
+
+            function onFileCopied(error, gridStoreFile) {
+                if(error) {
+                    return eachStudentIteratorDone(error);
+                }
+
+                function onFileSaved(error) {
+                    if(error) {
+                        return eachStudentIteratorDone(error);
+                    }
+
+                    studentDoc.avatar = file._id;
+                    
+                    return studentDoc.save(onStudentSaved);
+                }
+
+                file.fileId = gridStoreFile.fileId;
+                return file.save(onFileSaved);
+            }
+
+            return file.copyFile(copyData, onFileCopied);
+
+        });
+
+    }
+
+
+
+
+
+    
+
+    $async.each(studentData, eachStudent, afterEachStudent);
+}
+
+
 function addAssets(doneAddingAssets) {
     console.log('loadData::addAssets::enter');
 
@@ -507,6 +613,7 @@ var tasks = {
     addAssets: addAssets,
     addRootDirectory: addRootDirectory,
     addMocks: addMocks,
+    addStudents: addStudents
 };
 
 function main(onDataInitialized) {
