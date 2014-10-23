@@ -1,0 +1,7 @@
+Scenario: Admin: View details about a workshop
+
+	Feature: View all information about a workshop
+		Unit: Name is displayed
+		Unit: Date is displayed
+		Unit: Time is displayed
+		Unit: List of students is displayed

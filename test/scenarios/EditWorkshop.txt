@@ -1,0 +1,16 @@
+Scenario: Admin: Edit a workshop
+
+	Feature: Change name of workshop
+		Unit: Name is changed
+	
+	Feature: Change date of workshop
+		Unit: Date is changed
+	
+	Feature: Change time of workshop
+		Unit: Time is changed
+	
+	Feature: Add students to workshop
+		Unit: Student is in workshop's list of students
+		
+	Feature: Remove students from workshop
+		Unit: Student is no longer in list of students

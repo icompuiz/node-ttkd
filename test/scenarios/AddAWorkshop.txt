@@ -1,0 +1,6 @@
+Scenario: Add a new workshop
+
+	Feature: Workshop is created
+		Unit: Workshop is in list of workshops
+		Unit: Workshop name, and date are valid
+		Unit: Workshop has an empty list of students
