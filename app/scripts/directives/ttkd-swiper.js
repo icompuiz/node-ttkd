@@ -39,25 +39,32 @@ define(['./module'], function(directives){
 						filtered = _.filter(data, function (student) {
 							return _.contains(filter, student[filterParam][0]);
 						});
+
+						// and sort...
+						filtered = _.sortBy(filtered, function(student) {
+							return student[filterParam];
+						});
 					}
 
 					if(!maxLateralSlideDeck) {
-						maxLateralSlideDeck = 8;
+						maxLateralSlideDeck = 5;
 					}
 
 					var returnableFiltered = [];
 
-					var neededLaterals = Math.ceil(filtered.length / maxLateralSlideDeck);
+					var filteredLength = filtered.length;
+					var neededLaterals = Math.ceil(filteredLength / maxLateralSlideDeck);
+
 					for(var i=0; i<neededLaterals; i++) {
 						var howMany;
 						if(i+1 === neededLaterals) {
-							howMany = filtered.length - (i * maxLateralSlideDeck);
+							howMany = filteredLength - (i * maxLateralSlideDeck);
 						} else {
 							howMany = maxLateralSlideDeck;
 						}
 
 						returnableFiltered.push({
-							students: filtered.splice(i*maxLateralSlideDeck, howMany)
+							students: filtered.splice(0, howMany)
 						});
 					}
 
@@ -93,7 +100,7 @@ define(['./module'], function(directives){
 							function(err){
 								$scope.allStudents = data;
 
-								$scope.filterStudents();
+								$scope.filterStudents(['A','B','C','D','M','T'], 'firstName');
 							}
 						);
 					});
@@ -263,7 +270,7 @@ define(['./module'], function(directives){
 				$scope.className = $scope.classes[$scope.classId].name;
 				$scope.classContinue = function() {
 					$log.log('hit again ' + $scope.classId);
-					$state.go('checkin.home.unranked');
+					$state.go('checkin.home.unranked', {id: $scope.classId});
 				}
 			},
 
