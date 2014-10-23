@@ -1,0 +1,5 @@
+Scenario: Generate an email distribution list for a class
+	
+	Feature: List of emails is given to used for all students in a class
+		Unit: Text of emails is displayed to user
+		Unit: Emails can be highlighted and copied using standard practices(ctrl+v etc.)
