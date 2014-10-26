@@ -4,7 +4,6 @@
 		function($document, $rootScope, $scope, $state, $stateParams, Restangular, RankSvc, ProgramSvc) {
 			$scope.rank = {};
 			$scope.swapRank = {};
-			$scope.intermediaryRanks = [];
 			$scope.dropdown = {
 				isOpen: false
 			};
@@ -54,7 +53,13 @@
 			if (RankSvc.current && RankSvc.editing) {
 				$scope.rank = RankSvc.current;
 				if ($scope.rank.subrankObjs) {
+					_($scope.rank.subrankObjs).forEach(function(obj) {
+						obj.divId = 'r' + makeid();
+					});
 					tmpRanks = _.sortBy($scope.rank.subrankObjs, function(r) {return r.rankOrder;});
+					_(tmpRanks).forEach(function(r) {
+						r.isSelected = false;
+					});
 					$scope.rank.subrankObjs = tmpRanks;
 				}
 
@@ -67,6 +72,7 @@
 				}
 				program.populated = true;
 				setDropdownItems();
+				setSortableWidth();
 			// Otherwise get them from db
 			} else if ($stateParams.id) { 
 				RankSvc.read($stateParams.id, null, true).then(function(r) {
@@ -74,6 +80,9 @@
 					if ($scope.rank.intermediaryRanks) {
 						attachSubranks(function() {
 							tmpRanks = _.sortBy($scope.rank.subrankObjs, function(r) {return r.rankOrder;});
+							_(tmpRanks).forEach(function(r) {
+								r.isSelected = false;
+							});
 							$scope.rank.subrankObjs = tmpRanks;
 						});
 					}
@@ -99,11 +108,15 @@
 								program.rankObjs = rankObjs;
 								program.populated = true;
 								setDropdownItems();
+								setSortableWidth();
 							}
 						);
 					});
-				});					
-			}
+				});			
+			}			
+			_(tmpRanks).forEach(function(r) {
+				r.isSelected = false;
+			});
 
 			// Initialize to the last rankOrder for the program
 			if (!$scope.rank.rankOrder && program.rankObjs) {
@@ -172,17 +185,29 @@
             	}
             }, true);
 
+            function setSortableWidth() {
+            	var maxlen = 0;
+            	_($scope.subrankObjs).forEach(function(subrank) {
+            		maxlen = subrank.name.length > maxlen ? subrank.name.length : maxlen;
+            	});
+            	
+            	maxlen = maxlen*10 + 80; 
+
+            	$('.sortable').css('width', maxlen);
+            }
+
             $scope.addSubrank = function() {
             	var newRankOrder = tmpRanks.length + 1;
 
             	var newRank = {
-            		name: 'Sub-rank' + newRankOrder,
+            		name: '<NAME>',
             		rankOrder: newRankOrder,
             		divId: 'r' + makeid(),
             		isIntermediaryRank: true
             	};
 
             	tmpRanks.push(newRank);
+            	setSortableWidth();
             };
 
             $scope.removeDisabled = function() {
@@ -196,7 +221,7 @@
 
             $scope.confirmRemove = function(remove) {
                 if(remove) {                	
-            		var ordered = $('#sortable li').map(function(i) { return this.divId; }).get();
+            		var ordered = $('#sortable li').map(function(i) { return this.id; }).get();
 
                     _(tmpRanks).forEach(function(r) {
                     	if(r.isSelected) {
@@ -210,18 +235,18 @@
                     _(tmpRanks).forEach(function(r){
             			r.rankOrder = _.indexOf(ordered, r.divId) + 1;
             		});
+            		$scope.subrankObjs = tmpRanks;
+
 
                     $scope.showRemoveConfirm = false;
                 } else {
                     $scope.showRemoveConfirm = false;
                 }
-                $scope.intermediaryRanks = _.sortBy(tmpRanks, 'rankOrder');
                 if(!$scope.$$phase) {
                		$scope.$apply();
-               	}
+               	}               	
+            	setSortableWidth();
             };
-
-            $scope.intermediaryRanks = tmpRanks;
 
             $('#sortable').sortable({
             	stop: function(event, ui) {
@@ -296,12 +321,12 @@
 			};
 
 			$scope.saveRank = function() {
+				$scope.rank.subrankObjs = $scope.subrankObjs;
 				//Find the original rank in the program and replace it with the edited rank
 				var i = _.findIndex(program.rankObjs, function(r) {
 					return r.name === RankSvc.orig.name;
 				});
 				if (i >= 0) {
-					//$scope.rank.subrankObjs = $scope.intermediaryRanks;
 					program.rankObjs[i] = $scope.rank;
 				} else {
 					program.rankObjs.push($scope.rank);

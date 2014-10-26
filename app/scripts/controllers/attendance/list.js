@@ -34,8 +34,6 @@ define(['../module'], function(controllers) {
                             data.push(attendance);
                         });
 
-
-
                         $scope.setPagingData(data,page,pageSize);
                     });
                 }, 100);

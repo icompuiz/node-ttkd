@@ -1,3 +1,9 @@
 .row
 	.col-md-12
-		div.gridStyle(ng-grid="gridOptions")
+		tabset(justified='true')
+			tab(heading='Students')
+				div.gridStyle(ng-grid='gridOptions')
+			tab(heading='Classes')
+				div.gridStyle(ng-grid='gridOptions')
+			tab(heading='Workshops')
+				div.gridStyle(ng-grid='gridOptions')
