@@ -575,7 +575,7 @@ none-colorpicker {
 }
 
 #sortable {
-  width: 170px;
+  width: 250px;
 }
 
 .no-pad-left {
@@ -637,10 +637,15 @@ none-colorpicker {
   padding-top: 12px;
 }
 
+.pad-top-6 {
+  padding-top: 6px;
+}
+
 .no-border-bottom ul {
   border-bottom: none;
 }
 
+<<<<<<< HEAD
 .height-inherit {
   height: inherit;
 }
@@ -689,4 +694,19 @@ body, html {
 
 .panel.class {
   color:black;
+}
+
+.attendance-heading {
+  font-size: 24px;
+  padding-left: 6px;
+}
+
+.attendance-search {
+  padding-right: 6px;
+}
+
+.attendance-subheading {
+  font-size: 18px;
+  padding-top: 8px;
+  padding-right: 6px;
 }
