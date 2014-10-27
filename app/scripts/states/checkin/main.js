@@ -9,7 +9,7 @@ define(['../module'], function (states) {
     return states.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $urlRouterProvider) {
 
         $stateProvider.state('checkin', {
-            url: '/',
+            url: '/checkin',
             // abstract: true,
       		templateUrl: 'partials/checkin/index',
             controller: function($state) {
@@ -18,7 +18,7 @@ define(['../module'], function (states) {
         });
         
         $stateProvider.state('checkin.home', {
-            url: '/checkin/home',
+            url: '/home',
             views: {
             	'section-body': {
             		templateUrl: 'partials/checkin/home',

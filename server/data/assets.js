@@ -20,6 +20,16 @@ var pub = {
 		}]
 };
 
+var checkinusers = {
+		groups: [{
+				name: 'checkinusers',
+				access: {
+						read: true,
+						create: true
+				}
+		}]
+};
+
 var users = {
 		groups: [{
 				name: 'users',
@@ -99,6 +109,12 @@ var assets = [{
 }, {
     name: '/api/workshopattendancelists',
 	items: [admin, users]
+}, {
+	name: 'user::admin',
+	items: [admin]
+}, {
+	name: 'user::checkinusers',
+	items: [admin, checkinusers]
 }];
 
 module.exports = {
