@@ -29,6 +29,7 @@ define(['../module'], function(controllers) {
 
             $scope.allData = [];
             $scope.filterStudent = {};
+            $scope.studentTab = {};
 
             $scope.filterOptions = {
                 filterText: '',
@@ -76,6 +77,7 @@ define(['../module'], function(controllers) {
             };
 
             $scope.viewStudentAttendance = function(row) {
+                $scope.studentTab.active = true;
                 $scope.currentStudent = row.entity.fullName;
                 $scope.viewingStudent = true;
                 $scope.columnDefs = studentColumnDefs;
