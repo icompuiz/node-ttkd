@@ -29,8 +29,6 @@ define(['../module'], function(controllers) {
 
             $scope.allData = [];
 
-            $scope.filterStudent = {} ;
-
             $scope.filterOptions = {
                 filterText: '',
                 useExternalFilter: true
@@ -45,46 +43,72 @@ define(['../module'], function(controllers) {
 
             $scope.columnDefs = defaultColumnDefs;
 
-            $scope.selectStudents = function() {
+            function resetNewTab() {
                 $scope.viewingStudent = false;
+                $scope.viewingClass = false;
+
+                $scope.currentClass = null;
+                $scope.currentStudent = null;                
+            }
+
+            $scope.selectStudents = function() {
+                resetNewTab();
+
                 $scope.columnDefs = defaultColumnDefs;
                 $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage);
             };
 
             $scope.selectClasses = function() {
-                $scope.viewingStudent = false;
+                resetNewTab();
+
                 $scope.columnDefs = classColumnDefs;
                 $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage);             
             };
 
             $scope.selectWorkshops = function() { 
-                $scope.viewingStudent = false;
+                resetNewTab();
+
                 $scope.columnDefs = workshopColumnDefs;
                 $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage);             
             };
 
             $scope.viewStudentAttendance = function(row) {
+                $scope.currentStudent = row.entity.fullName;
                 $scope.viewingStudent = true;
                 $scope.columnDefs = studentColumnDefs;
                 $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage, {student: row.entity.student});
             };
 
+            $scope.viewClassAttendance = function(row) {
+                $scope.currentClass = row.entity.name;
+                $scope.viewingClass = true;
+                $scope.columnDefs = defaultColumnDefs;
+                $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage, {classAttended: row.entity._id});
+            }
+
             $scope.searchByStudent = function() {
                 var data = [];
-                var searchCriteria = $scope.filterStudent.name.toLowerCase();
 
-                _($scope.allData).forEach(function(attendance) {
-                    if (attendance.fullName.toLowerCase().indexOf(searchCriteria) > -1) {
-                        data.push(attendance);
-                    }
-                });
-                
+                if (!$scope.filterStudent || $scope.filterStudent.length === 0) {
+                    data = $scope.allData;
+                } else {
+                    var searchCriteria = $scope.filterStudent.toLowerCase();
+
+                    _($scope.allData).forEach(function(attendance) {
+                        if (attendance.fullName.toLowerCase().indexOf(searchCriteria) > -1) {
+                            data.push(attendance);
+                        }
+                    });
+                }                
                 $scope.setPagingData(data, $scope.pagingOptions.currentPage, $scope.pagingOptions.pageSize);
             };
 
+            $scope.$watch('filterStudent.name', function(newVal) {
+                $scope.searchByStudent();
+            });
+
             $scope.setPagingData = function(data, page, pageSize){
                 var pagedData = data.slice((page - 1) * pageSize, page * pageSize);
-                $scope.allData = data;
                 $scope.myData = pagedData;
                 $scope.totalServerItems = data.length;
                 if (!$scope.$$phase) {
@@ -123,7 +147,7 @@ define(['../module'], function(controllers) {
                         });
                     } else if ($scope.columnDefs === studentColumnDefs) { // Viewing a student's attendace records
                         AttendanceSvc.list().then(function(attendances) {
-                            attendances = _.where(attendances, filterOptions); //using filteroptions as list() param didn't work
+                            attendances = _.where(attendances, filterOptions); //using filterOptions as list() param didn't work
                             async.each(attendances,
                                 function(attendance, callback) {
                                     StudentSvc.read(attendance.student, null, false).then(function(student) {
@@ -154,25 +178,30 @@ define(['../module'], function(controllers) {
                             // add attendances to new array for ng-grid outputting
                             async.each(attendances,
                                 function(attendance, callback) {
-                                    StudentSvc.read(attendance.student, null, false).then(function(student) {
-                                        attendance.fullName = student.firstName + ' ' + student.lastName;
+                                    if (!filterOptions || (filterOptions.classAttended && attendance.classAttended === filterOptions.classAttended)) {
+                                        StudentSvc.read(attendance.student, null, false).then(function(student) {
+                                            attendance.fullName = student.firstName + ' ' + student.lastName;
 
-                                        if (attendance.workshop) {
-                                            WorkshopSvc.read(attendance.classAttended, null, false).then(function(workshop) {
-                                                attendance.eventName = 'Workshop: ' + workshop.name;
-                                                data.push(attendance);
-                                                callback();
-                                            });
-                                        } else {
-                                            ClassSvc.read(attendance.classAttended, null, false).then(function(classObj) {
-                                                attendance.eventName = classObj.name;
-                                                data.push(attendance);
-                                                callback();
-                                            });
-                                        }
-                                    });
+                                            if (attendance.workshop) {
+                                                WorkshopSvc.read(attendance.classAttended, null, false).then(function(workshop) {
+                                                    attendance.eventName = 'Workshop: ' + workshop.name;
+                                                    data.push(attendance);
+                                                    callback();
+                                                });
+                                            } else {
+                                                ClassSvc.read(attendance.classAttended, null, false).then(function(classObj) {
+                                                    attendance.eventName = classObj.name;
+                                                    data.push(attendance);
+                                                    callback();
+                                                });
+                                            }
+                                        });
+                                    } else {
+                                        callback();
+                                    }
                                 },
                                 function(err) {
+                                    $scope.allData = data;
                                     $scope.setPagingData(data,page,pageSize);
                             });                        
                         });
@@ -198,22 +227,8 @@ define(['../module'], function(controllers) {
                 data: 'myData',
                 rowHeight: 40,
                 enablePaging: true,
-                showFooter: true,
-                beforeSelectionChange: function (rowItem, event) {
-                    // check if one of the options buttons was clicked
-                    if(event.target.tagName === 'BUTTON') {
-                        return false;
-                    } else {
-                        return true;
-                    }
-                },
-                afterSelectionChange: function () {
-                    // check if one of the options buttons was clicked
-                    if($scope.gridOptions.selectedItems.length === 0) {
-                        $scope.showRemoveConfirm = false;
-                    }
-                    return true;
-                },
+                showFooter: true,                
+                enableRowSelection: false,
                 totalServerItems: 'totalServerItems',
                 pagingOptions: $scope.pagingOptions,
                 filterOptions: $scope.filterOptions,
@@ -222,7 +237,7 @@ define(['../module'], function(controllers) {
             };
 
             $scope.$watch('filterStudent.name', function() {
-                console.log($scope.filterStudent.name);
+                console.log($scope.filterStudent);
             });
 
             $scope.classGridOptions = {
@@ -230,21 +245,7 @@ define(['../module'], function(controllers) {
                 rowHeight: 40,
                 enablePaging: true,
                 showFooter: true,
-                beforeSelectionChange: function (rowItem, event) {
-                    // check if one of the options buttons was clicked
-                    if(event.target.tagName === 'BUTTON') {
-                        return false;
-                    } else {
-                        return true;
-                    }
-                },
-                afterSelectionChange: function () {
-                    // check if one of the options buttons was clicked
-                    if($scope.gridOptions.selectedItems.length === 0) {
-                        $scope.showRemoveConfirm = false;
-                    }
-                    return true;
-                },
+                enableRowSelection: false,
                 totalServerItems: 'totalServerItems',
                 pagingOptions: $scope.pagingOptions,
                 filterOptions: $scope.filterOptions,
@@ -257,21 +258,7 @@ define(['../module'], function(controllers) {
                 rowHeight: 40,
                 enablePaging: true,
                 showFooter: true,
-                beforeSelectionChange: function (rowItem, event) {
-                    // check if one of the options buttons was clicked
-                    if(event.target.tagName === 'BUTTON') {
-                        return false;
-                    } else {
-                        return true;
-                    }
-                },
-                afterSelectionChange: function () {
-                    // check if one of the options buttons was clicked
-                    if($scope.gridOptions.selectedItems.length === 0) {
-                        $scope.showRemoveConfirm = false;
-                    }
-                    return true;
-                },
+                enableRowSelection: false,
                 totalServerItems: 'totalServerItems',
                 pagingOptions: $scope.pagingOptions,
                 filterOptions: $scope.filterOptions,
@@ -284,21 +271,7 @@ define(['../module'], function(controllers) {
                 rowHeight: 40,
                 enablePaging: true,
                 showFooter: true,
-                beforeSelectionChange: function (rowItem, event) {
-                    // check if one of the options buttons was clicked
-                    if(event.target.tagName === 'BUTTON') {
-                        return false;
-                    } else {
-                        return true;
-                    }
-                },
-                afterSelectionChange: function () {
-                    // check if one of the options buttons was clicked
-                    if($scope.gridOptions.selectedItems.length === 0) {
-                        $scope.showRemoveConfirm = false;
-                    }
-                    return true;
-                },
+                enableRowSelection: false,
                 totalServerItems: 'totalServerItems',
                 pagingOptions: $scope.pagingOptions,
                 filterOptions: $scope.filterOptions,

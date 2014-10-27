@@ -1,20 +1,36 @@
 .row
 	.col-md-12
-		tabset.ptab(justified='true')
+		tabset(justified='true')
 			tab(heading='Students', ng-click='selectStudents()')
-				.row.pad-top-12
-					.col-md-4
-						.input-group
-							input.form-control(type='text', ng-model='filterStudent.name', placeholder='Search by student...')
-							span.input-group-btn
-								button.btn.btn-default(type='button', ng-click='searchByStudent()')
+				.tab-page
+					.row.pad-top-6
+						.col-md-8
+							.attendance-heading
+								|Student Attendance
+						form.col-md-4(ng-show='!viewingStudent')
+							.attendance-search.input-group
+								input.form-control(type='text', ng-bind='filterStudent', placeholder='Search by student...')
+								span.input-group-addon
 									span.glyphicon.glyphicon-search
-					.col-md-8
-				.pad-top-6
-					div.gridStyle(ng-grid='gridOptions', ng-if='!viewingStudent')
-				.pad-top-6
-					div.gridStyle(ng-grid='studentGridOptions', ng-if='viewingStudent')
+						.col-md-4(ng-show='viewingStudent')
+							.attendance-subheading.pull-right
+								{{currentStudent}}
+					.pad-top-6
+						div.gridStyle(ng-grid='gridOptions', ng-if='!viewingStudent')
+					.pad-top-6
+						div.gridStyle(ng-grid='studentGridOptions', ng-if='viewingStudent')
 			tab(heading='Classes', ng-click='selectClasses()')
-				div.gridStyle(ng-grid='classGridOptions')
+				.tab-page
+					.row.pad-top-6
+						.col-md-8
+							.attendance-heading
+								|Class Attendance
+						.col-md-4
+							.attendance-subheading.pull-right
+								{{currentClass}}
+					.pad-top-6
+						div.gridStyle(ng-grid='classGridOptions', ng-if='!viewingClass')
+						div.gridStyle(ng-grid='gridOptions', ng-if='viewingClass')
 			tab(heading='Workshops', ng-click='selectWorkshops()')
+				.tab-page
 				div.gridStyle(ng-grid='workshopGridOptions')
