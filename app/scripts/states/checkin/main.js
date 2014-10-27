@@ -8,22 +8,42 @@ define(['../module'], function (states) {
 
     return states.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $urlRouterProvider) {
 
+
         $stateProvider.state('checkin', {
-            url: '/checkin',
-            // abstract: true,
-      		templateUrl: 'partials/checkin/index',
-            controller: function($state) {
-                $state.go('checkin.home');
+          url: '/checkin',
+          templateUrl: 'partials/checkinBase',
+          controller: function() {}
+        });
+
+        $stateProvider.state('checkin.home', {
+            url: '',
+            abstract: true,
+            views: {
+                'application-body': {
+                    templateUrl: 'partials/checkin/index',
+                    controller: function() {}
+                }
             }
         });
-        
-        $stateProvider.state('checkin.home', {
+
+        $stateProvider.state('checkin.home.programs', {
             url: '/home',
             views: {
-            	'section-body': {
-            		templateUrl: 'partials/checkin/home',
-            		controller: 'CheckinCtrl'
-            	}
+                'section-body': {
+                    templateUrl: 'partials/checkin/home',
+                    controller: 'CheckinCtrl'
+                }
+            }
+        });
+
+
+        $stateProvider.state('checkin.home.unranked', {
+            url: '/unranked/:id',
+            views: {
+                'section-body': {
+                    templateUrl: 'partials/checkin/unranked',
+                    controller: 'UnrankedCheckinCtrl'
+                }
             }
         });
 

@@ -445,13 +445,15 @@ none-colorpicker {
 /* Specify Swiper's Size: */
 
 .swiper-parent {
-  height: 700px;
+  height: inherit;
 }
 
 .swiper-container {
   width: 100%;
   color: #fff;
   text-align: center;
+  height:inherit;
+  /*height: 700px;*/
 }
 .swiper-wrapper {
   height: inherit;
@@ -573,7 +575,7 @@ none-colorpicker {
 }
 
 #sortable {
-  width: 170px;
+  width: 250px;
 }
 
 .no-pad-left {
@@ -635,6 +637,75 @@ none-colorpicker {
   padding-top: 12px;
 }
 
+.pad-top-6 {
+  padding-top: 6px;
+}
+
 .no-border-bottom ul {
   border-bottom: none;
+}
+
+.height-inherit {
+  height: inherit;
+}
+
+body, html {
+  height: 100%;
+}
+
+.checkin-toolbar {
+  height: 10%;
+}
+
+.checkin-swipe {
+  height: 90%;
+}
+
+.device {
+  height: 100%;
+  /*height: 300px;*/
+}
+.swiper-wrapper .student .name {
+  font-size: 18px;
+  line-height: 18px;
+  float: left;
+  height: 18px;
+  width: 100%;
+  color: #000;
+}
+
+.height-full {
+  height:100%;
+}
+
+.swiper-slide .panel {
+  box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.15);
+  background-color: #F0F0F0;
+  border: 1px solid #CACACA;
+  border-radius: 4px;
+  padding: 0px;
+  margin: 0px;
+}
+
+.swiper-wrapper .student .btn {
+  width: 100%;
+}
+
+.panel.class {
+  color:black;
+}
+
+.attendance-heading {
+  font-size: 24px;
+  padding-left: 6px;
+}
+
+.attendance-search {
+  padding-right: 6px;
+}
+
+.attendance-subheading {
+  font-size: 18px;
+  padding-top: 8px;
+  padding-right: 6px;
 }

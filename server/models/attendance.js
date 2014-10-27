@@ -14,6 +14,7 @@ var attendanceSchema = new Schema({
 		type: ObjectId
 	},
 	checkInTime: Date,
+	workshop: Boolean
 });
 
 var Attendance = mongoose.model('Attendance', attendanceSchema);

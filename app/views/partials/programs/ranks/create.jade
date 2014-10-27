@@ -43,10 +43,9 @@ form
 	.row
 		.col-md-12
 			p.text-muted.error(ng-show='showSubrankNameMessage()') Sub-rank names must be unique.
-			//p.text-muted.error(ng-show='showSubrankOrderMessage()') Sub-rank ordering must be incremental and begin at 1.
 	
 	ul.no-pad-left(id='sortable')
-		li.no-pad-left(id='{{r.id}}', ng-repeat='r in intermediaryRanks')
+		li.no-pad-left(id='{{r.divId}}', ng-repeat='r in intermediaryRanks')
 			.rank-row.rank-list-item.no-pad-left(ng-click='select(r, $event)')
 				div.rank-order.rank-list-item
 					{{r.rankOrder}}

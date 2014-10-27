@@ -5,7 +5,6 @@ define(['../module'], function (controllers) {
 
 
 
-
 	}]);
 
 });
