@@ -23,13 +23,5 @@ define(['../module'], function(controllers){
                     $state.go('admin.workshops.home'); 
                 }
 			}
-
-
-			$scope.back = function() {
-
-				WorkshopSvc.reset();
-
-				goToPrevState();
-			};
 	}]);
 });	

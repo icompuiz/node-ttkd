@@ -10,6 +10,9 @@ define(['../../module'], function(controllers){
                 var data = [];
                 _($scope.currentClass.students).forEach(function(id) {
                     StudentSvc.read(id, null, false).then(function(s) {
+                        if (!s) {
+                            return;
+                        }
                         data.push(s);
                         if (s.emailAddresses && s.emailAddresses.length > 0) {
                             _(s.emailAddresses).forEach(function(e) {
@@ -31,24 +34,6 @@ define(['../../module'], function(controllers){
                     populateStudentObjs();
 				});
 			}
-
-	       $scope.goBack = function() {
-                if (ProgramSvc.editing) {
-                    $state.go('admin.programs.edit', {id: ProgramSvc.current._id});
-                } else if (ProgramSvc.creating) {
-                    $state.go('admin.programs.create', {id: ProgramSvc.current._id});
-                } else if (ProgramSvc.viewing) {
-                    $state.go('admin.programs.view', {id: ProgramSvc.current._id});
-                }else if ($rootScope.previousState && $rootScope.previousParams) {
-                    $state.go($rootScope.previousState, $rootScope.previousParams);
-                } else if ($rootScope.previousState) {
-                    $state.go($rootScope.previousState);
-                } else if ($stateParams.id) {
-                    $state.go('admin.programs.view', {id: ProgramSvc.current._id});
-                } else { // Default to the programs home page
-                    $state.go('admin.programs.home'); 
-                }
-            };
 			            
             $scope.filterOptions = {
                 filterText: '',

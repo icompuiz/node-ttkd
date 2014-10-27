@@ -3,7 +3,7 @@ h1 {{currentClass.name}}
 	.col-md-12
 		div
 			h2 Students
-			.anchor-bottom-right.pad-bottom-0
+			.anchor-bottom-right.pad-bottom-12
 				button.btn.btn-default(ng-show='!showGenerateEmailListConfirm', type='button', ng-click='generateEmailList()')
 					.glyphicon.glyphicon-envelope
 				.pull-right(ng-show='showGenerateEmailListConfirm')
@@ -14,10 +14,5 @@ h1 {{currentClass.name}}
 .row
 	.col-md-12
 		div.gridStyle(ng-grid="gridOptions")
-.row
-	.col-md-12
-		.btn-toolbar
-			button.btn.btn-warning.pull-right(type='button', ng-click='goBack()')
-				| Back to Program
 
 div(class='clearfix')
