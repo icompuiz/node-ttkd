@@ -1,8 +1,8 @@
 define(['../module'], function(controllers) {
     'use strict';
 
-    controllers.controller('ListAttendanceCtrl', ['$scope', '$http', '$log', '$state', '$filter', 'AttendanceSvc', 'StudentSvc', 'WorkshopSvc', 'ClassSvc', 'ProgramSvc',
-        function($scope, $http, $log, $state, $filter, AttendanceSvc, StudentSvc, WorkshopSvc, ClassSvc, ProgramSvc) {
+    controllers.controller('ListAttendanceCtrl', ['$scope', '$http', '$log', '$state', '$filter', 'AttendanceSvc', 'StudentSvc', 'WorkshopSvc', 'ClassSvc', 'ProgramSvc', 'AchievementSvc', 'RankSvc',
+        function($scope, $http, $log, $state, $filter, AttendanceSvc, StudentSvc, WorkshopSvc, ClassSvc, ProgramSvc, AchievementSvc, RankSvc) {
             var defaultColumnDefs = [
                     { field: 'checkInTime', displayName: 'Check-in Time', cellTemplate: '/partials/attendance/list/dateCell'},
                     { field: 'fullName', displayName: 'Student'},
@@ -12,7 +12,7 @@ define(['../module'], function(controllers) {
                 studentColumnDefs = [
                     { field: 'checkInTime', displayName: 'Check-in Time', cellTemplate: '/partials/attendance/list/dateCell'},
                     { field: 'eventName', displayName: 'Event Attended'},
-                    { field: 'achievementNames', displayName: 'Achievement(s)'},
+                    { field: 'achievementNames', displayName: 'Achievement(s)', cellFilter: 'stringArray'},
                     { sortable: false, displayName: 'Actions', cellTemplate: '/partials/attendance/list/removeButton'}
                 ],
                 classColumnDefs = [
@@ -89,14 +89,14 @@ define(['../module'], function(controllers) {
                 $scope.viewingClass = true;
                 $scope.columnDefs = defaultColumnDefs;
                 $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage, {classAttended: row.entity._id});
-            }
+            };
 
             $scope.viewWorkshopAttendance = function(row) {
                 $scope.currentWorkshop = row.entity.name;
                 $scope.viewingWorkshop = true;
                 $scope.columnDefs = defaultColumnDefs;
                 $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage, {classAttended: row.entity._id});
-            }
+            };
 
             $scope.searchByStudent = function() {
                 var data = [];
@@ -165,19 +165,35 @@ define(['../module'], function(controllers) {
                                     StudentSvc.read(attendance.student, null, false).then(function(student) {
                                         attendance.fullName = student.firstName + ' ' + student.lastName;
 
-                                        if (attendance.workshop) {
-                                            WorkshopSvc.read(attendance.classAttended, null, false).then(function(workshop) {
-                                                attendance.eventName = 'Workshop: ' + workshop.name;
-                                                data.push(attendance);
-                                                callback();
-                                            });
-                                        } else {
-                                            ClassSvc.read(attendance.classAttended, null, false).then(function(classObj) {
-                                                attendance.eventName = classObj.name;
-                                                data.push(attendance);
-                                                callback();
-                                            });
-                                        }
+                                        AchievementSvc.list().then(function(achievements) {
+                                            achievements = _.where(achievements, {'attendance': attendance._id});
+
+                                            var achievementNames = [];
+                                            async.each(achievements,
+                                                function(ach, callback) {
+                                                    RankSvc.read(ach.rank, null, false).then(function(rank) {
+                                                        achievementNames.push(rank.name);
+                                                        callback();
+                                                    });
+                                                },
+                                                function(err) {
+                                                    attendance.achievementNames = achievementNames;
+
+                                                     if (attendance.workshop) {
+                                                        WorkshopSvc.read(attendance.classAttended, null, false).then(function(workshop) {
+                                                            attendance.eventName = 'Workshop: ' + workshop.name;
+                                                            data.push(attendance);
+                                                            callback();
+                                                        });
+                                                    } else {
+                                                        ClassSvc.read(attendance.classAttended, null, false).then(function(classObj) {
+                                                            attendance.eventName = classObj.name;
+                                                            data.push(attendance);
+                                                            callback();
+                                                        });
+                                                    }
+                                                });
+                                        });
                                     });
                                 },
                                 function(err) {
