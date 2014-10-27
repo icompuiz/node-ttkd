@@ -271,7 +271,7 @@
             	}
 
             	// Do not allow sorting if there are duplicate
-            	var ordered = $('#sortable li').map(function(i) { return this.divId; }).get();
+            	var ordered = $('#sortable li').map(function(i) { return this.id; }).get();
             	var uniq = _.uniq(ordered);
 
             	if (uniq.length !== ordered.length) {

@@ -4,7 +4,7 @@ define(['../../module'], function(controllers){
 		function($document, $scope, $state, $stateParams, Restangular, RankSvc, ProgramSvc) {
 			$scope.rank = {};
 			$scope.swapRank = {};
-			$scope.intermediaryRanks = [];
+			$scope.subrankObjs = [];
 			var tmpRanks = [];
 			$scope.dropdown = {
 				isOpen: false
@@ -196,6 +196,7 @@ define(['../../module'], function(controllers){
             	};
 
             	tmpRanks.push(newRank);
+            	$scope.subrankObjs = tmpRanks;
             	//$scope.getData();
             };
 
@@ -211,7 +212,7 @@ define(['../../module'], function(controllers){
             $scope.confirmRemove = function(remove) {
                 if(remove) {   
 
-            		var ordered = $('#sortable li').map(function(i) { return this.divId; }).get();
+            		var ordered = $('#sortable li').map(function(i) { return this.id; }).get();
 
                     _(tmpRanks).forEach(function(r) {
                     	if(r.isSelected) {
@@ -224,12 +225,12 @@ define(['../../module'], function(controllers){
                     _(tmpRanks).forEach(function(r){
             			r.rankOrder = _.indexOf(ordered, r.divId) + 1;
             		});
+            		$scope.rank.subrankObjs = tmpRanks;
 
                     $scope.showRemoveConfirm = false;
                 } else {
                     $scope.showRemoveConfirm = false;
                 }
-                $scope.subrankObjs = _.sortBy(tmpRanks, 'rankOrder');
                 if(!$scope.$$phase) {
                		$scope.$apply();
                	}
