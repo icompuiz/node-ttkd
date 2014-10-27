@@ -9,7 +9,7 @@
 								|Student Attendance
 						form.col-md-4(ng-show='!viewingStudent')
 							.attendance-search.input-group
-								input.form-control(type='text', ng-bind='filterStudent', placeholder='Search by student...')
+								input.form-control(type='text', ng-model='filterStudent.name', placeholder='Search by student...')
 								span.input-group-addon
 									span.glyphicon.glyphicon-search
 						.col-md-4(ng-show='viewingStudent')

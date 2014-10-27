@@ -28,6 +28,7 @@ define(['../module'], function(controllers) {
                 ];
 
             $scope.allData = [];
+            $scope.filterStudent = {};
 
             $scope.filterOptions = {
                 filterText: '',
@@ -98,10 +99,10 @@ define(['../module'], function(controllers) {
             $scope.searchByStudent = function() {
                 var data = [];
 
-                if (!$scope.filterStudent || $scope.filterStudent.length === 0) {
+                if (!$scope.filterStudent.name || $scope.filterStudent.name.length === 0) {
                     data = $scope.allData;
                 } else {
-                    var searchCriteria = $scope.filterStudent.toLowerCase();
+                    var searchCriteria = $scope.filterStudent.name.toLowerCase();
 
                     _($scope.allData).forEach(function(attendance) {
                         if (attendance.fullName.toLowerCase().indexOf(searchCriteria) > -1) {
@@ -244,10 +245,6 @@ define(['../module'], function(controllers) {
                 selectedItems: [],
                 columnDefs: defaultColumnDefs
             };
-
-            $scope.$watch('filterStudent.name', function() {
-                console.log($scope.filterStudent);
-            });
 
             $scope.classGridOptions = {
                 data: 'myData',
