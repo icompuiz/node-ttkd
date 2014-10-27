@@ -33,4 +33,13 @@
 						div.gridStyle(ng-grid='gridOptions', ng-if='viewingClass')
 			tab(heading='Workshops', ng-click='selectWorkshops()')
 				.tab-page
-				div.gridStyle(ng-grid='workshopGridOptions')
+					.row.pad-top-6
+						.col-md-8
+							.attendance-heading
+								|Workshop Attendance
+						.col-md-4
+							.attendance-subheading.pull-right
+								{{currentWorkshop}}
+					.pad-top-6
+						div.gridStyle(ng-grid='workshopGridOptions', ng-if='!viewingWorkshop')
+						div.gridStyle(ng-grid='gridOptions', ng-if='viewingWorkshop')

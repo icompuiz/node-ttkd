@@ -46,9 +46,11 @@ define(['../module'], function(controllers) {
             function resetNewTab() {
                 $scope.viewingStudent = false;
                 $scope.viewingClass = false;
+                $scope.viewingWorkshop = false;
 
                 $scope.currentClass = null;
-                $scope.currentStudent = null;                
+                $scope.currentStudent = null;
+                $scope.currentWorkshop = null;              
             }
 
             $scope.selectStudents = function() {
@@ -82,6 +84,13 @@ define(['../module'], function(controllers) {
             $scope.viewClassAttendance = function(row) {
                 $scope.currentClass = row.entity.name;
                 $scope.viewingClass = true;
+                $scope.columnDefs = defaultColumnDefs;
+                $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage, {classAttended: row.entity._id});
+            }
+
+            $scope.viewWorkshopAttendance = function(row) {
+                $scope.currentWorkshop = row.entity.name;
+                $scope.viewingWorkshop = true;
                 $scope.columnDefs = defaultColumnDefs;
                 $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage, {classAttended: row.entity._id});
             }
