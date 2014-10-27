@@ -1,9 +1,20 @@
 .row
 	.col-md-12
-		tabset(justified='true')
-			tab(heading='Students')
-				div.gridStyle(ng-grid='gridOptions')
-			tab(heading='Classes')
-				div.gridStyle(ng-grid='gridOptions')
-			tab(heading='Workshops')
-				div.gridStyle(ng-grid='gridOptions')
+		tabset.ptab(justified='true')
+			tab(heading='Students', ng-click='selectStudents()')
+				.row.pad-top-12
+					.col-md-4
+						.input-group
+							input.form-control(type='text', ng-model='filterStudent.name', placeholder='Search by student...')
+							span.input-group-btn
+								button.btn.btn-default(type='button', ng-click='searchByStudent()')
+									span.glyphicon.glyphicon-search
+					.col-md-8
+				.pad-top-6
+					div.gridStyle(ng-grid='gridOptions', ng-if='!viewingStudent')
+				.pad-top-6
+					div.gridStyle(ng-grid='studentGridOptions', ng-if='viewingStudent')
+			tab(heading='Classes', ng-click='selectClasses()')
+				div.gridStyle(ng-grid='classGridOptions')
+			tab(heading='Workshops', ng-click='selectWorkshops()')
+				div.gridStyle(ng-grid='workshopGridOptions')

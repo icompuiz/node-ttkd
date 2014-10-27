@@ -235,7 +235,7 @@
                     _(tmpRanks).forEach(function(r){
             			r.rankOrder = _.indexOf(ordered, r.divId) + 1;
             		});
-            		$scope.subrankObjs = tmpRanks;
+            		$scope.rank.subrankObjs = tmpRanks;
 
 
                     $scope.showRemoveConfirm = false;
@@ -321,7 +321,7 @@
 			};
 
 			$scope.saveRank = function() {
-				$scope.rank.subrankObjs = $scope.subrankObjs;
+				$scope.rank.subrankObjs = $scope.rank.subrankObjs;
 				//Find the original rank in the program and replace it with the edited rank
 				var i = _.findIndex(program.rankObjs, function(r) {
 					return r.name === RankSvc.orig.name;
