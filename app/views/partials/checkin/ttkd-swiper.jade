@@ -1,15 +1,15 @@
 .row.checkin-toolbar(ng-if="data.type === 'students'")
 	.col-md-6
-		button(type="button", ng-click="test(data)") First Name
+		button(type="button", ng-click="filterStudents(undefined, 'firstName')") First Name
 	.col-md-6
-		button(type="button", ng-click="filterStudents()") Last Name
+		button(type="button", ng-click="filterStudents(undefined, 'lastName')") Last Name
 
 
 .device
 	.swiper-container.swiper-parent
 		.swiper-wrapper
 
-			ttkd-swiper-lateral-item-student(ng-if="data.type === 'students'", parent="swiperParent", items="data.students", swiper-id="0", type="type", selected-class-id="selectedClassId", id="studentholder")
+			ttkd-swiper-lateral-item-student(ng-if="data.type === 'students'", parent="swiperParent", items="data.students", swiper-id="0", type="type", selected-class-id="selectedClassId", id="studentholder", filtered-students="studentsFiltered")
 
 
 
