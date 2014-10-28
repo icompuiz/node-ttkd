@@ -40,6 +40,7 @@ define(['../../module'], function(controllers){
 						},
 						function(err) {
 							$scope.rank.subrankObjs = subrankObjs;
+							setSortableWidth();
 						});
 				}
 			}
@@ -75,6 +76,17 @@ define(['../../module'], function(controllers){
 					);
 				});					
 			} 
+
+            function setSortableWidth() {
+            	var maxlen = 0;
+            	_($scope.subrankObjs).forEach(function(subrank) {
+            		maxlen = subrank.name.length > maxlen ? subrank.name.length : maxlen;
+            	});
+            	
+            	maxlen = maxlen*10 + 80; 
+
+            	$('#sortable').css('width', maxlen);
+            }
 
 			$scope.setRankOrder = function(newVal) {
 				if (!$scope.origRankOrder) {
@@ -234,6 +246,7 @@ define(['../../module'], function(controllers){
                 if(!$scope.$$phase) {
                		$scope.$apply();
                	}
+               	setSortableWidth();
             };
 
             $scope.intermediaryRanks = tmpRanks;
@@ -250,6 +263,16 @@ define(['../../module'], function(controllers){
 	               	}
             	}
             });
+
+           $scope.stopEditingName = function(e) {
+            	if (e.keyCode === 13) {
+	            	_(tmpRanks).forEach(function(r) {
+	        			r.editingName = false;
+	        			$scope.$apply();
+	        		});
+	        		setSortableWidth();
+	        	}
+            }
 
             function makeid(){
 			    var text = "";
@@ -271,16 +294,7 @@ define(['../../module'], function(controllers){
 		               	}
             		});
             	}
-
-            	// // Do not allow sorting if there are duplicate
-            	// var ordered = $('#sortable li').map(function(i) { return this.divId; }).get();
-            	// var uniq = _.uniq(ordered);
-
-            	// if (uniq.length !== ordered.length) {
-            	// 	$('#sortable').sortable('disable');
-            	// } else {
-            	// 	$('#sortable').sortable('enable');
-            	// }
+            	setSortableWidth();
             });
 
             $scope.edit = function(r) {

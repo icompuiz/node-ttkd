@@ -162,7 +162,7 @@ define(['../module'], function(controllers) {
                             attendances = _.where(attendances, filterOptions); //using filterOptions as list() param didn't work
                             async.each(attendances,
                                 function(attendance, callback) {
-                                    StudentSvc.read(attendance.student, null, false).then(function(student) {
+                                    StudentSvc.read(attendance.student, null, false).then(function(student) { // Retrieve and attach student name to attendance obj
                                         attendance.fullName = student.firstName + ' ' + student.lastName;
 
                                         AchievementSvc.list().then(function(achievements) {
@@ -179,6 +179,7 @@ define(['../module'], function(controllers) {
                                                 function(err) {
                                                     attendance.achievementNames = achievementNames;
 
+                                                    // Attach achievement name(s) to attendance object
                                                      if (attendance.workshop) {
                                                         WorkshopSvc.read(attendance.classAttended, null, false).then(function(workshop) {
                                                             attendance.eventName = 'Workshop: ' + workshop.name;
