@@ -114,7 +114,7 @@ var assets = [{
 	items: [admin]
 }, {
 	name: 'user::checkinusers',
-	items: [admin, checkinusers]
+	items: [admin, users, checkinusers]
 }];
 
 module.exports = {

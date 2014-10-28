@@ -279,7 +279,7 @@ function addUsers(doneAddingUsers) {
 
             console.log('loadData::addUsers::definePublicUser::success');
 
-            user.addToGroups(['public'], function(err) {
+            user.addToGroups(publicUser.options.groups, function(err) {
 
                 if (err) {
                     console.log('loadData::addUsers::definePublicUser::addToGroups::error');
@@ -310,7 +310,7 @@ function addUsers(doneAddingUsers) {
 
             console.log('loadData::addUsers::defineCheckinUser::success');
 
-            user.addToGroups(['checkinusers'], function(err) {
+            user.addToGroups(checkinUser.options.groups, function(err) {
 
                 if (err) {
                     console.log('loadData::addUsers::defineCheckinUser::addToGroups::error');

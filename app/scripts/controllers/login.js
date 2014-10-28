@@ -7,9 +7,9 @@ define(['./module'], function(controllers) {
         $scope.statusMessage = '';
 
         function continueToHomePage() {
-            if (AuthenticationSvc.authorize('users::admin')) {
+            if (AuthenticationSvc.authorize('user::admin')) {
                 $state.go('admin.dashboard.home');
-            } else if (AuthenticationSvc.authorize('users::checkinusers')) {
+            } else if (AuthenticationSvc.authorize('user::checkinusers')) {
                 $state.go('checkin');
             }
         }

@@ -34,7 +34,7 @@ routeSchema.statics.whatResources = function(userId, callback) {
 
 			AccessControlList.findOne({
 				_id: ace.acl,
-				'model.modelName': 'Route'
+				refModel: 'Route'
 			}).populate('groupAccessControlEntries userAccessControlEntries').exec(function(err, acl) {
 
 				if (err) {
@@ -43,7 +43,7 @@ routeSchema.statics.whatResources = function(userId, callback) {
 				}
 				if (acl) {
 
-					RouteModel.findById(acl.model.id).exec(function(err, route) {
+					RouteModel.findById(acl.refId).exec(function(err, route) {
 
 						if (err) {
 							return	nextAcl(err);
@@ -51,7 +51,7 @@ routeSchema.statics.whatResources = function(userId, callback) {
 						}
 
 						if (!route) {
-							err = new Error('Route object not found:' + acl.model.id);
+							err = new Error('Route object not found:' + acl.refId);
 							return	nextAcl(err);
 
 						}

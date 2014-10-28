@@ -13,11 +13,11 @@ var AccessControlListSchema = new Schema({
 				type: $mongoose.Schema.Types.ObjectId,
 				ref: 'GroupAccessControlEntry'
 		}],
-		model: {
-				id: {
-						type: $mongoose.Schema.Types.ObjectId
-				},
-				modelName: String
+		refId: {
+			type: $mongoose.Schema.Types.ObjectId
+		},
+		refModel: {
+				type: String
 		},
 		noadmin: {
 				type: Boolean,
@@ -33,13 +33,11 @@ AccessControlListSchema.statics.create = function(model, onCreate, noadmin) {
 
 
 		var accessControlList = new this({
-				users: [],
-				groups: [],
-				noadmin: noadmin,
-				model: {
-						id: model._id,
-						modelName: model.constructor.modelName
-				}
+			users: [],
+			groups: [],
+			noadmin: noadmin,
+			refId: model._id,
+			refModel: model.constructor.modelName
 		});
 
 		function saveAcl(done) {
