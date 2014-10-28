@@ -203,11 +203,5 @@ define(['../module'], function(controllers){
 				RankSvc.startViewing();
 				$state.go('admin.programs.viewrank', {id: row.entity._id});
 			};
-
-			$scope.back = function() {
-				ProgramSvc.reset();
-				$state.go('admin.programs.home');
-			};
-
 	}]);
 });	

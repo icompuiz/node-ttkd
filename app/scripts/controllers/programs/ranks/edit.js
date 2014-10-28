@@ -187,13 +187,13 @@
 
             function setSortableWidth() {
             	var maxlen = 0;
-            	_($scope.subrankObjs).forEach(function(subrank) {
+            	_($scope.rank.subrankObjs).forEach(function(subrank) {
             		maxlen = subrank.name.length > maxlen ? subrank.name.length : maxlen;
             	});
             	
             	maxlen = maxlen*10 + 80; 
 
-            	$('.sortable').css('width', maxlen);
+            	$('#sortable').css('width', maxlen);
             }
 
             $scope.addSubrank = function() {
@@ -248,6 +248,16 @@
             	setSortableWidth();
             };
 
+           $scope.stopEditingName = function(e) {
+            	if (e.keyCode === 13) {
+	            	_(tmpRanks).forEach(function(r) {
+	        			r.editingName = false;
+	        			$scope.$apply();
+	        		});
+	        		setSortableWidth();
+	        	}
+            }
+
             $('#sortable').sortable({
             	stop: function(event, ui) {
             		var ordered = $('#sortable li').map(function(i){return this.id;}).get();
@@ -268,16 +278,7 @@
             			r.editingName = false;
             			$scope.$apply();
             		});
-            	}
-
-            	// Do not allow sorting if there are duplicate
-            	var ordered = $('#sortable li').map(function(i) { return this.divId; }).get();
-            	var uniq = _.uniq(ordered);
-
-            	if (uniq.length !== ordered.length) {
-            		$('#sortable').sortable('disable');
-            	} else {
-            		$('#sortable').sortable('enable');
+            		setSortableWidth();
             	}
             });
 
@@ -321,7 +322,6 @@
 			};
 
 			$scope.saveRank = function() {
-				$scope.rank.subrankObjs = $scope.rank.subrankObjs;
 				//Find the original rank in the program and replace it with the edited rank
 				var i = _.findIndex(program.rankObjs, function(r) {
 					return r.name === RankSvc.orig.name;

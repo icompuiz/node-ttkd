@@ -1,8 +1,8 @@
 define(['../module'], function(controllers) {
     'use strict';
 
-    controllers.controller('ListAttendanceCtrl', ['$scope', '$http', '$log', '$state', '$filter', 'AttendanceSvc', 'StudentSvc', 'WorkshopSvc', 'ClassSvc', 'ProgramSvc',
-        function($scope, $http, $log, $state, $filter, AttendanceSvc, StudentSvc, WorkshopSvc, ClassSvc, ProgramSvc) {
+    controllers.controller('ListAttendanceCtrl', ['$scope', '$http', '$log', '$state', '$filter', 'AttendanceSvc', 'StudentSvc', 'WorkshopSvc', 'ClassSvc', 'ProgramSvc', 'AchievementSvc', 'RankSvc',
+        function($scope, $http, $log, $state, $filter, AttendanceSvc, StudentSvc, WorkshopSvc, ClassSvc, ProgramSvc, AchievementSvc, RankSvc) {
             var defaultColumnDefs = [
                     { field: 'checkInTime', displayName: 'Check-in Time', cellTemplate: '/partials/attendance/list/dateCell'},
                     { field: 'fullName', displayName: 'Student'},
@@ -12,7 +12,7 @@ define(['../module'], function(controllers) {
                 studentColumnDefs = [
                     { field: 'checkInTime', displayName: 'Check-in Time', cellTemplate: '/partials/attendance/list/dateCell'},
                     { field: 'eventName', displayName: 'Event Attended'},
-                    { field: 'achievementNames', displayName: 'Achievement(s)'},
+                    { field: 'achievementNames', displayName: 'Achievement(s)', cellFilter: 'stringArray'},
                     { sortable: false, displayName: 'Actions', cellTemplate: '/partials/attendance/list/removeButton'}
                 ],
                 classColumnDefs = [
@@ -29,6 +29,7 @@ define(['../module'], function(controllers) {
 
             $scope.allData = [];
             $scope.filterStudent = {};
+            $scope.studentTab = {};
 
             $scope.filterOptions = {
                 filterText: '',
@@ -76,6 +77,7 @@ define(['../module'], function(controllers) {
             };
 
             $scope.viewStudentAttendance = function(row) {
+                $scope.studentTab.active = true;
                 $scope.currentStudent = row.entity.fullName;
                 $scope.viewingStudent = true;
                 $scope.columnDefs = studentColumnDefs;
@@ -87,14 +89,14 @@ define(['../module'], function(controllers) {
                 $scope.viewingClass = true;
                 $scope.columnDefs = defaultColumnDefs;
                 $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage, {classAttended: row.entity._id});
-            }
+            };
 
             $scope.viewWorkshopAttendance = function(row) {
                 $scope.currentWorkshop = row.entity.name;
                 $scope.viewingWorkshop = true;
                 $scope.columnDefs = defaultColumnDefs;
                 $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage, {classAttended: row.entity._id});
-            }
+            };
 
             $scope.searchByStudent = function() {
                 var data = [];
@@ -160,22 +162,39 @@ define(['../module'], function(controllers) {
                             attendances = _.where(attendances, filterOptions); //using filterOptions as list() param didn't work
                             async.each(attendances,
                                 function(attendance, callback) {
-                                    StudentSvc.read(attendance.student, null, false).then(function(student) {
+                                    StudentSvc.read(attendance.student, null, false).then(function(student) { // Retrieve and attach student name to attendance obj
                                         attendance.fullName = student.firstName + ' ' + student.lastName;
 
-                                        if (attendance.workshop) {
-                                            WorkshopSvc.read(attendance.classAttended, null, false).then(function(workshop) {
-                                                attendance.eventName = 'Workshop: ' + workshop.name;
-                                                data.push(attendance);
-                                                callback();
-                                            });
-                                        } else {
-                                            ClassSvc.read(attendance.classAttended, null, false).then(function(classObj) {
-                                                attendance.eventName = classObj.name;
-                                                data.push(attendance);
-                                                callback();
-                                            });
-                                        }
+                                        AchievementSvc.list().then(function(achievements) {
+                                            achievements = _.where(achievements, {'attendance': attendance._id});
+
+                                            var achievementNames = [];
+                                            async.each(achievements,
+                                                function(ach, callback) {
+                                                    RankSvc.read(ach.rank, null, false).then(function(rank) {
+                                                        achievementNames.push(rank.name);
+                                                        callback();
+                                                    });
+                                                },
+                                                function(err) {
+                                                    attendance.achievementNames = achievementNames;
+
+                                                    // Attach achievement name(s) to attendance object
+                                                     if (attendance.workshop) {
+                                                        WorkshopSvc.read(attendance.classAttended, null, false).then(function(workshop) {
+                                                            attendance.eventName = 'Workshop: ' + workshop.name;
+                                                            data.push(attendance);
+                                                            callback();
+                                                        });
+                                                    } else {
+                                                        ClassSvc.read(attendance.classAttended, null, false).then(function(classObj) {
+                                                            attendance.eventName = classObj.name;
+                                                            data.push(attendance);
+                                                            callback();
+                                                        });
+                                                    }
+                                                });
+                                        });
                                     });
                                 },
                                 function(err) {

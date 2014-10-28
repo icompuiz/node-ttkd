@@ -12,6 +12,10 @@ define(['../../module'], function(controllers){
                 var data = [];
                 _($scope.currentClass.students).forEach(function(id) {
                     StudentSvc.read(id, null, false).then(function(s) {
+                        if (!s) {
+                            return;
+                        }
+                        data.push
                         data.push(s);
                         _(s.emailAddresses).forEach(function(e) {
                             emails.push(e);
