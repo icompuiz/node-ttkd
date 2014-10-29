@@ -3,6 +3,9 @@ define(['./module'], function(filters) {
 
 	  filters.filter('stringArray', ['$log', function() {
         return function(myArray) {
+        	if (!myArray) {
+        		return;
+        	}
             return myArray.join(', ');
           };
       }]);

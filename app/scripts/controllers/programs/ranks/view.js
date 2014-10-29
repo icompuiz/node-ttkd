@@ -129,13 +129,5 @@ define(['../../module'], function(controllers){
                     $state.go('admin.programs.home'); 
                 }
 			}
-
-
-			$scope.back = function() {
-
-				RankSvc.reset();
-
-				goToPrevState();
-			};
 	}]);
 });	

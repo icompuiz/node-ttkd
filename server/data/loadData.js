@@ -279,13 +279,44 @@ function addUsers(doneAddingUsers) {
 
             console.log('loadData::addUsers::definePublicUser::success');
 
-            user.addToGroups(['public'], function(err) {
+            user.addToGroups(publicUser.options.groups, function(err) {
 
                 if (err) {
                     console.log('loadData::addUsers::definePublicUser::addToGroups::error');
                 }
                 console.log('loadData::addUsers::definePublicUser::addToGroups::success');
                 doneAddingPublicUser(null, 'addUsers::definePublicUser::sucessful');
+
+            });
+
+        });
+
+    }
+    function defineCheckinUser(doneAddingCheckinUser) {
+
+        var checkinUser = userData.checkin;
+
+        var user = new User(checkinUser);
+
+        console.log('loadData::addUsers::defineCheckinUser::enter');
+        var password = checkinUser.password;
+        checkinUser.password = null;
+        User.register(user, password, function(err, user) {
+
+            if (err) {
+                console.log('loadData::addUsers::defineCheckinUser::fail', err);
+                return doneAddingCheckinUser(err);
+            }
+
+            console.log('loadData::addUsers::defineCheckinUser::success');
+
+            user.addToGroups(checkinUser.options.groups, function(err) {
+
+                if (err) {
+                    console.log('loadData::addUsers::defineCheckinUser::addToGroups::error');
+                }
+                console.log('loadData::addUsers::defineCheckinUser::addToGroups::success');
+                doneAddingCheckinUser(null, 'addUsers::defineCheckinUser::sucessful');
 
             });
 
@@ -345,12 +376,13 @@ function addUsers(doneAddingUsers) {
     $async.series({
         root: defineRootUser,
         administrator: defineAdministratorUser,
+        checkin: defineCheckinUser,
         'public': definePublicUser,
         allUsers: defineAllUsers
-    }, function(err) {
+    }, function(err, results) {
 
         if (err) {
-            return doneAddingUsers(err, err);
+            return doneAddingUsers(err, results);
         }
         doneAddingUsers();
     });

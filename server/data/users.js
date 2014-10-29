@@ -1,3 +1,4 @@
+'use strict';
 var root = {
 	username: 'root',
 	password: 'doesnt matter this user will never authenticate',
@@ -18,6 +19,20 @@ var administrator = {
 	}
 };
 
+var checkin = {
+	username: 'checkin',
+	password: 'password',
+	fullname: 'Checkin User',
+	email: 'no value',
+	options: {
+		type: 'system',
+		groups: [
+			'users',
+			'checkinusers'
+		]
+	}
+};
+
 var pub = {
 	username: 'public',
 	password: 'public',
@@ -30,7 +45,7 @@ var pub = {
 			'public'
 		],
 	}
-}
+};
 
 var users = [{
 	username: 'basic',
@@ -47,6 +62,7 @@ var users = [{
 module.exports = {
 	root: root,
 	administrator: administrator,
+	checkin: checkin,
 	'public': pub,
 	all: users
 };

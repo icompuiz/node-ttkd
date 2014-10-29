@@ -1,5 +1,7 @@
 var groups = [{
 	name: 'administrators'
+},{
+	name: 'checkinusers'
 }, {
 	name: 'users'
 }, {

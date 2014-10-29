@@ -1,27 +1,35 @@
 'use strict';
 
-define(['./module'], function (controllers) {
+define(['./module'], function(controllers) {
 
-	controllers.controller('LoginCtrl', ['$scope','$http', '$log', '$state','AuthenticationSvc', function($scope, $http, $log, $state, AuthenticationSvc) {
+    controllers.controller('LoginCtrl', ['$scope', '$http', '$log', '$state', 'AuthenticationSvc', function($scope, $http, $log, $state, AuthenticationSvc) {
 
-		$scope.statusMessage = '';
+        $scope.statusMessage = '';
 
-		$scope.submit = function() {
+        function continueToHomePage() {
+            if (AuthenticationSvc.authorize('user::admin')) {
+                $state.go('admin.dashboard.home');
+            } else if (AuthenticationSvc.authorize('user::checkinusers')) {
+                $state.go('checkin');
+            }
+        }
 
-			AuthenticationSvc.login({
-				  username: $scope.username,
-				  password: $scope.password
-			  }).then(function() {
-				  $state.go('admin.dashboard.home');
+        $scope.submit = function() {
 
-			  }, function(error) {
+            AuthenticationSvc.login({
+                username: $scope.username,
+                password: $scope.password
+            }).then(function() {
+                    continueToHomePage();
+                },
+                function(error) {
 
-				  $scope.statusMessage = error.data.replace('Unauthorized: ', '');
-			  });
-		};
-		if (AuthenticationSvc.isLoggedIn()) {
-			$state.go('admin.dashboard.home');
-		}
-	}]);
+                    $scope.statusMessage = error.data.replace('Unauthorized: ', '');
+                });
+        };
+        if (AuthenticationSvc.isLoggedIn()) {
+            continueToHomePage();
+        }
+    }]);
 
 });

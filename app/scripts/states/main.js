@@ -16,8 +16,12 @@ define(['./module'], function (states) {
             if (!AuthenticationSvc.isLoggedIn()) {
               $state.go('login');
             } else {
-              if ($state.current.name === 'admin') {
-                $state.go('admin.dashboard.home');
+              if (AuthenticationSvc.authorize('user::admin')) {
+                if ($state.current.name === 'admin') {
+                  $state.go('admin.dashboard.home');
+                }
+              } else if (AuthenticationSvc.authorize('user::checkinusers')) {
+                $state.go('checkin');
               }
             }
           }
