@@ -6,7 +6,10 @@ define(['../module'], function(controllers) {
 
 			// get class
 			$scope.selectedClassId = $stateParams.id;
+			$scope.selectedRankId = $stateParams.id;
 			$scope.selectedType = 'students';
+
+			$scope.testMe = 'ads';
 
 		}
 	]);

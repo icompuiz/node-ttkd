@@ -658,7 +658,7 @@ body, html {
 }
 
 .checkin-toolbar {
-  height: 10%;
+  height: 102px;
 }
 
 .checkin-swipe {
@@ -712,4 +712,14 @@ body, html {
   font-size: 18px;
   padding-top: 8px;
   padding-right: 6px;
+}
+
+.checkin-toolbar .label-btn-lg {
+  line-height: 46px;
+  text-align: center;
+  font-weight: bold;
+}
+
+.checkin-toolbar button {
+  width: 100%;
 }

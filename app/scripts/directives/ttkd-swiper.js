@@ -9,10 +9,11 @@ define(['./module'], function(directives){
 			templateUrl: 'partials/checkin/ttkd-swiper',
 			scope: {
 				type: '=',
-				selectedClassId: '='
+				selectedClassId: '=',
+				selectedRankId: '='
 			},
 
-			controller: function($scope, ProgramSvc, ClassSvc, StudentSvc, $compile) {
+			controller: function($scope, ProgramSvc, ClassSvc, StudentSvc, RankSvc, $compile) {
 				// Load data based on type
 
 				// store students so we don't need to reload
@@ -20,12 +21,44 @@ define(['./module'], function(directives){
 
 				if($scope.type === 'students' && $scope.selectedClassId) {
 					$log.log('Attempting to load students...');
+
+					// Add breadcrumb navigation
+					loadBreadcrumbs($scope.selectedClassId, $scope.selectedRankId)
+
 					loadStudents($scope.selectedClassId);
 				} else {
 					$log.log('Attempting to load programs...');
 					loadProgramsAndClasses();
 				}
 
+				function loadBreadcrumbs(selectedClassId, selectedRankId) {
+					$scope.breadcrumbs = [];
+
+					if(selectedClassId) {
+						ClassSvc.read(selectedClassId, {populate: 'program'}, false).then(function(classDoc){
+							var matches = classDoc.program.name.match(/\b(\w)/g);
+							var acronym = matches.join('');
+
+							$scope.breadcrumbs['program'] = {
+								content: acronym
+							}
+						});
+					}
+
+					if(selectedRankId) {
+						RankSvc.read(selectedRankId, null, false).then(function(rankDoc) {
+							if(rankDoc.color) {
+								$scope.breadcrumbs['rank'] = {
+									style: 'background-color: red;'
+								}
+							} else {
+								$scope.breadcrumbs['rank'] = {
+									content: rankDoc.name
+								}
+							}
+						});
+					}
+				}
 
 
 				function loadStudents(selectedClassId) {
@@ -63,7 +96,7 @@ define(['./module'], function(directives){
 					var filtered = allStudents;
 
 					if(filter) {
-						filtered = _.filter(data, function (student) {
+						filtered = _.filter(filtered, function (student) {
 							return _.contains(filter, student[filterParam][0]);
 						});
 					}
