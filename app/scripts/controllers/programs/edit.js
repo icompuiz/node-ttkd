@@ -26,6 +26,10 @@ define(['../module'], function(controllers){
 			}
 
 			function attachSubranksToRank(rankObj) {
+				if (!rankObj.intermediaryRanks) {
+					return;
+				}
+
 				var subrankObjs = [];
 				async.each(rankObj.intermediaryRanks,
 					function(subrankId, callback) {
