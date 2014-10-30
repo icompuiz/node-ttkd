@@ -4,13 +4,13 @@ define(['../module'], function(controllers) {
     controllers.controller('ListAttendanceCtrl', ['$scope', '$http', '$log', '$state', '$filter', 'AttendanceSvc', 'StudentSvc', 'WorkshopSvc', 'ClassSvc', 'ProgramSvc', 'AchievementSvc', 'RankSvc',
         function($scope, $http, $log, $state, $filter, AttendanceSvc, StudentSvc, WorkshopSvc, ClassSvc, ProgramSvc, AchievementSvc, RankSvc) {
             var defaultColumnDefs = [
-                    { field: 'checkInTime', displayName: 'Check-in Time', cellTemplate: '/partials/attendance/list/dateCell'},
+                    { field: 'checkInTime', displayName: 'Check-in Time', cellFilter: 'dateTime'},
                     { field: 'fullName', displayName: 'Student'},
                     { field: 'eventName', displayName: 'Event Attended'},
                     { sortable: false, displayName: 'Actions', cellTemplate: '/partials/attendance/list/studentViewButton'}
                 ],
                 studentColumnDefs = [
-                    { field: 'checkInTime', displayName: 'Check-in Time', cellTemplate: '/partials/attendance/list/dateCell'},
+                    { field: 'checkInTime', displayName: 'Check-in Time', cellFilter: 'dateTime'},
                     { field: 'eventName', displayName: 'Event Attended'},
                     { field: 'achievementNames', displayName: 'Achievement(s)', cellFilter: 'stringArray'},
                     { sortable: false, displayName: 'Actions', cellTemplate: '/partials/attendance/list/removeButton'}
@@ -22,7 +22,7 @@ define(['../module'], function(controllers) {
                 ],
                 workshopColumnDefs = [
                     { field: 'name', displayName: 'Workshop Name'},
-                    { displayName: 'Date', cellTemplate: '/partials/workshops/list/workshopDate'},
+                    { field: 'workshopDate', displayName: 'Date', cellFilter: 'dateTime'},
                     { field: 'numAttendees', displayName: 'Attendees'},
                     { sortable: false, displayName: 'Actions', cellTemplate: '/partials/attendance/list/workshopViewButton'}
                 ];
