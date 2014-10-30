@@ -38,9 +38,28 @@ define(['../module'], function (states) {
             }
         });
 
+        $stateProvider.state('checkin.home.ranked', {
+            url: '/ranked/:classId',
+            views: {
+                'section-body': {
+                    templateUrl: 'partials/checkin/ranked',
+                    controller: 'RankedCheckinCtrl'
+                }
+            }
+        });
 
-        $stateProvider.state('checkin.home.unranked', {
-            url: '/unranked/:id',
+        $stateProvider.state('checkin.home.studentsRanked', {
+            url: '/studentsRanked/:classId/:rankId',
+            views: {
+                'section-body': {
+                    templateUrl: 'partials/checkin/unranked',
+                    controller: 'StudentsCheckinCtrl'
+                }
+            }
+        });
+
+        $stateProvider.state('checkin.home.studentsUnranked', {
+            url: '/studentsUnranked/:classId',
             views: {
                 'section-body': {
                     templateUrl: 'partials/checkin/unranked',

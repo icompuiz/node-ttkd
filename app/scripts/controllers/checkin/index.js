@@ -2,5 +2,5 @@
  * Attach all state definitions
  **/
 define([
-	'./checkin', './unranked'
+	'./checkin', './unranked', './rankedstudent', './ranked'
 ], function () {});

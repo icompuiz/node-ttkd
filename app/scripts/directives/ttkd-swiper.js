@@ -25,7 +25,7 @@ define(['./module'], function(directives){
 					// Add breadcrumb navigation
 					loadBreadcrumbs($scope.selectedClassId, $scope.selectedRankId)
 
-					loadStudents($scope.selectedClassId);
+					loadStudents($scope.selectedClassId, $scope.selectedRankId);
 				} else {
 					$log.log('Attempting to load programs...');
 					loadProgramsAndClasses();
@@ -61,7 +61,9 @@ define(['./module'], function(directives){
 				}
 
 
-				function loadStudents(selectedClassId) {
+				function loadStudents(selectedClassId, selectedRankId) {
+					// Do something with the rank if provided
+
 					ClassSvc.read(selectedClassId, {populate: 'students'}, false).then(function(classDoc){
 						$scope.data = {
 							students: classDoc.students,
@@ -73,12 +75,14 @@ define(['./module'], function(directives){
 				function loadProgramsAndClasses() {
 					var data = [];
 
-					ProgramSvc.list({populate: 'classes'}).then(function(programs) {
+					ProgramSvc.list({populate: ['classes', 'ranks']}).then(function(programs) {
 						_.each(programs, function(program) {
 							data.push({
 								'classObjs': program.classes,
 								'name': program.name,
 								'classNames': _.map(program.classes, function(c){return c.name;}),
+								'ranks': program.ranks,
+
 								'_id': program._id
 							});
 						});
@@ -141,7 +145,8 @@ define(['./module'], function(directives){
 					if($scope.type === 'students') {
 						swiperParent = new Swiper('.swiper-parent', {
 							mode: 'horizontal',
-							grabCursor: true
+							grabCursor: true,
+							resistance: '100%'
 						});
 					} else {
 						if($scope.data.length == 0) {
@@ -153,7 +158,8 @@ define(['./module'], function(directives){
 							slidesPerView: 3,
 							centeredSlides: true,
 							watchActiveIndex: true,
-							grabCursor: true
+							grabCursor: true,
+							resistance: '100%'
 						});
 					}
 
@@ -215,8 +221,9 @@ define(['./module'], function(directives){
 					var className = item.classObjs[j].name;
 					var classId = item.classObjs[j]._id;
 					$scope.classes[classId] = item.classObjs[j];
+					var hasRanks = !_.isEmpty(item.ranks);
 					//name="\''+className+'\'"
-					var newHSlide = newLateralSwiperWrapper.createSlide('<div ttkd-swiper-slide-item-class classes="classes" id="\''+classId+'\'"></div>', 'swiper-slide');
+					var newHSlide = newLateralSwiperWrapper.createSlide('<div ttkd-swiper-slide-item-class classes="classes" has-ranks="'+hasRanks+'" id="\''+classId+'\'"></div>', 'swiper-slide');
 					newHSlide.append();
 					compileHack(newHSlide)($scope);
 					resizeLateralSlides(newLateralSwiperWrapper, lateralHeight);
@@ -245,7 +252,8 @@ define(['./module'], function(directives){
 				items: '=',
 				swiperId: '=',
 				type: '=',
-				filteredStudents: '='
+				filteredStudents: '=',
+				classAttended: '=selectedClassId'
 			},
 
 			controller: ['$scope', function($scope) {}],
@@ -278,7 +286,7 @@ define(['./module'], function(directives){
 
 							var studentHtml = '';
 							studentHtml += '<div class="col-md-4" style="height: 33%; padding: 15px;">' + '\n';
-							studentHtml += '  <div class="height-full panel" ttkd-swiper-slide-item-student students="students" id="\''+studentId+'\'" style="padding:10px;">' + '\n';
+							studentHtml += '  <div class="height-full panel" ttkd-swiper-slide-item-student students="students" class-attended="classAttended" id="\''+studentId+'\'" style="padding:10px;">' + '\n';
 							studentHtml += '  </div>' + '\n';
 							studentHtml += '</div>' + '\n';
 
@@ -305,15 +313,19 @@ define(['./module'], function(directives){
 			templateUrl: 'partials/checkin/ttkd-swiper-card-class',
 			scope: {
 				classId: '=id',
-				classes: '='
+				classes: '=',
+				hasRanks: '='
 			},
 			replace:true,
 
 			controller: function($scope) {
 				$scope.className = $scope.classes[$scope.classId].name;
 				$scope.classContinue = function() {
-					$log.log('hit again ' + $scope.classId);
-					$state.go('checkin.home.unranked', {id: $scope.classId});
+					if($scope.hasRanks) {
+						$state.go('checkin.home.ranked', {classId: $scope.classId});
+					} else {
+						$state.go('checkin.home.studentsUnranked', {classId: $scope.classId});
+					}
 				}
 			},
 
@@ -323,13 +335,14 @@ define(['./module'], function(directives){
 		return ttkdSwiperSlideItemClass;
 	}])
 
-	.directive('ttkdSwiperSlideItemStudent', ['$log', function($log) {
+	.directive('ttkdSwiperSlideItemStudent', ['$log', 'AttendanceSvc', 'ClassSvc', function($log, AttendanceSvc, ClassSvc) {
 		var ttkdSwiperSlideItemStudent = {
 			restrict: 'A',
-			templateUrl: 'partials/checkin/class/students',
+			templateUrl: 'partials/checkin/ttkd-swiper-card-student',
 			scope: {
 				students: '=',
-				studentId: '=id'
+				studentId: '=id',
+				classAttended: '='
 			},
 			replace:true,
 
@@ -337,14 +350,23 @@ define(['./module'], function(directives){
 				var student = $scope.students[$scope.studentId];
 				$scope.studentName = student.firstName + ' ' + student.lastName;
 				$scope.studentAvatar = student.avatar;
+
 				$scope.studentContinue = function() {
-					$log.log('hit again student ' + studentId);
-				}
+					ClassSvc.read($scope.classAttended, null, false).then(function(classDoc) {
+						var model = AttendanceSvc.init({});
+						model.student = student;
+						model.classAttended = classDoc;
+
+						AttendanceSvc.save().then(function(saved) {
+							$log.log('student ' + $scope.studentId + ' is now checked in');
+						}, function() {
+							$log.log('student ' + $scope.studentId + ' unable to be checked in');
+						});
+					});
+				};
 			},
 
-			link: function($scope, element) {
-				$log.log('t');
-			}
+			link: function($scope, element) {}
 		};
 
 		return ttkdSwiperSlideItemStudent;
