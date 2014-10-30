@@ -75,6 +75,12 @@ define(['../module'], function(controllers){
 				$state.go('admin.programs.editrank');
 			};
 
+			$scope.goToViewRank = function(row) {
+				RankSvc.init(row.entity);
+				RankSvc.startViewing();
+				$state.go('admin.programs.viewrank');
+			};
+
 			$scope.createProgram = function() {
 				var programToAdd = {
 					name: $scope.newProgram.name
@@ -142,7 +148,8 @@ define(['../module'], function(controllers){
 							var rankToAdd = {
 								name: rankItem.name,
 								rankOrder: rankItem.rankOrder,
-								program: programAdded._id
+								program: programAdded._id,
+								color: rankItem.color
 							};
 							//POST each new rank and add object ID to array
 							RankSvc.init(rankToAdd);

@@ -63,6 +63,10 @@
 					$scope.rank.subrankObjs = tmpRanks;
 				}
 
+				if (!$scope.rank.color || $scope.rank.color === '') {
+            		$('.rank-color').text('None');
+				}
+
 				program = ProgramSvc.current;
 				if (!RankSvc.orig) {
 					RankSvc.orig = {
@@ -85,6 +89,10 @@
 							});
 							$scope.rank.subrankObjs = tmpRanks;
 						});
+					}
+
+					if (!$scope.rank.color || $scope.rank.color === '') {
+	            		$('.rank-color').text('None');
 					}
 
 					RankSvc.orig = {
