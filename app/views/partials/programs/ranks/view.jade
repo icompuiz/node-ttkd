@@ -19,13 +19,11 @@ h1 {{rank.name}}
 					|Color:
 				.color-tile
 
-	.row(ng-show='rank.intermediaryRanks && rank.intermediaryRanks.length > 0')
+	.row(ng-show='intermediaryRankNames && intermediaryRankNames.length > 0')
 		.col-md-12
 			span
 				b
 					|Sub-ranks: 
 				{{intermediaryRankNames | stringArray}}
-
-button.btn.btn-warning.pull-right(type='button', ng-click='back()') Back
 
 div(class='clearfix')

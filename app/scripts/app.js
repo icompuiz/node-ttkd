@@ -73,7 +73,7 @@ define('app', [
                 console.log('Current state:'+$rootScope.currentState)
             });
 
-            $state.go('checkin');
+            $state.go('login');
 
       });
   });

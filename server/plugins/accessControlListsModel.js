@@ -271,7 +271,7 @@ function AccessControlListPlugin(schema, options) {
 
 		}
 
-		AccessControlList.create(doc.constructor, addUser); // create a new acl and add the user to it.
+		AccessControlList.create(doc, addUser); // create a new acl and add the user to it.
 
 		
 	}

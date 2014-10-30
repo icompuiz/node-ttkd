@@ -425,7 +425,8 @@ module.exports = function(grunt) {
             		dot: true,
                     'dest': '<%= yeoman.prod %>/',
                     src: [
-                    	'server.js',
+                        'server.js',
+                    	'service.js',
                     	'node_modules/**/*',
                     ]
             	}]

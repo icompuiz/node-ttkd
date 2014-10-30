@@ -5,8 +5,9 @@ define(['../module'], function(controllers) {
 		function($scope, $http, $log, $state, $stateParams) {
 
 			// get class
-			$scope.selectedClassId = $stateParams.id;
+			$scope.selectedClassId = $stateParams.classId;
 			$scope.selectedType = 'students';
+
 
 		}
 	]);

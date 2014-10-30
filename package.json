@@ -4,6 +4,7 @@
   "version": "0.0.0",
   "dependencies": {
     "fuzzer": "^0.2.0",
+    "mime": "^1.2.11",
     "ot-fuzzer": "^1.0.0"
   },
   "devDependencies": {

@@ -1,8 +1,2 @@
 doctype html
-.row
-	.col-md-6
-		button(type="button", ng-click="filterStudents()") First Name
-	.col-md-6
-		button(type="button", ng-click="filterStudents()") Last Name
-
-.col-md-12(ttkd-swiper, type="'students'", selected-class-id="selectedClassId")
+.col-md-12.checkin-swipe(ttkd-swiper, type="'students'", selected-class-id="selectedClassId", selected-rank-id="selectedRankId")

@@ -4,7 +4,7 @@ define(['../../module'], function(controllers){
 		function($document, $scope, $state, $stateParams, Restangular, RankSvc, ProgramSvc) {
 			$scope.rank = {};
 			$scope.swapRank = {};
-			$scope.intermediaryRanks = [];
+			$scope.subrankObjs = [];
 			var tmpRanks = [];
 			$scope.dropdown = {
 				isOpen: false
@@ -40,6 +40,7 @@ define(['../../module'], function(controllers){
 						},
 						function(err) {
 							$scope.rank.subrankObjs = subrankObjs;
+							setSortableWidth();
 						});
 				}
 			}
@@ -75,6 +76,17 @@ define(['../../module'], function(controllers){
 					);
 				});					
 			} 
+
+            function setSortableWidth() {
+            	var maxlen = 0;
+            	_($scope.subrankObjs).forEach(function(subrank) {
+            		maxlen = subrank.name.length > maxlen ? subrank.name.length : maxlen;
+            	});
+            	
+            	maxlen = maxlen*10 + 80; 
+
+            	$('#sortable').css('width', maxlen);
+            }
 
 			$scope.setRankOrder = function(newVal) {
 				if (!$scope.origRankOrder) {
@@ -196,6 +208,7 @@ define(['../../module'], function(controllers){
             	};
 
             	tmpRanks.push(newRank);
+            	$scope.subrankObjs = tmpRanks;
             	//$scope.getData();
             };
 
@@ -211,7 +224,7 @@ define(['../../module'], function(controllers){
             $scope.confirmRemove = function(remove) {
                 if(remove) {   
 
-            		var ordered = $('#sortable li').map(function(i) { return this.divId; }).get();
+            		var ordered = $('#sortable li').map(function(i) { return this.id; }).get();
 
                     _(tmpRanks).forEach(function(r) {
                     	if(r.isSelected) {
@@ -224,15 +237,16 @@ define(['../../module'], function(controllers){
                     _(tmpRanks).forEach(function(r){
             			r.rankOrder = _.indexOf(ordered, r.divId) + 1;
             		});
+            		$scope.rank.subrankObjs = tmpRanks;
 
                     $scope.showRemoveConfirm = false;
                 } else {
                     $scope.showRemoveConfirm = false;
                 }
-                $scope.subrankObjs = _.sortBy(tmpRanks, 'rankOrder');
                 if(!$scope.$$phase) {
                		$scope.$apply();
                	}
+               	setSortableWidth();
             };
 
             $scope.intermediaryRanks = tmpRanks;
@@ -249,6 +263,16 @@ define(['../../module'], function(controllers){
 	               	}
             	}
             });
+
+           $scope.stopEditingName = function(e) {
+            	if (e.keyCode === 13) {
+	            	_(tmpRanks).forEach(function(r) {
+	        			r.editingName = false;
+	        			$scope.$apply();
+	        		});
+	        		setSortableWidth();
+	        	}
+            }
 
             function makeid(){
 			    var text = "";
@@ -270,16 +294,7 @@ define(['../../module'], function(controllers){
 		               	}
             		});
             	}
-
-            	// // Do not allow sorting if there are duplicate
-            	// var ordered = $('#sortable li').map(function(i) { return this.divId; }).get();
-            	// var uniq = _.uniq(ordered);
-
-            	// if (uniq.length !== ordered.length) {
-            	// 	$('#sortable').sortable('disable');
-            	// } else {
-            	// 	$('#sortable').sortable('enable');
-            	// }
+            	setSortableWidth();
             });
 
             $scope.edit = function(r) {

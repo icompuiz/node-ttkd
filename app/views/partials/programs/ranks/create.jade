@@ -44,18 +44,18 @@ form
 		.col-md-12
 			p.text-muted.error(ng-show='showSubrankNameMessage()') Sub-rank names must be unique.
 	
-	ul.no-pad-left(id='sortable')
-		li.no-pad-left(id='{{r.divId}}', ng-repeat='r in intermediaryRanks')
+	ul.no-pad-left(id='sortable', ng-model='subrankObjs')
+		li.no-pad-left(id='{{r.divId}}', ng-repeat='r in subrankObjs')
 			.rank-row.rank-list-item.no-pad-left(ng-click='select(r, $event)')
 				div.rank-order.rank-list-item
 					{{r.rankOrder}}
 					|. 
 				div.rank-name-cell.rank-list-item(ng-show='!r.editingName', ng-dblClick='edit(r)')
 					{{r.name}}
-				div.rank-name-cell.edit-name.rank-list-item(ng-show='r.editingName')
+				div.rank-name-cell.edit-name.rank-list-item(ng-show='r.editingName', ng-keypress='stopEditingName($event)')
 					input(type='text', ng-model='r.name').edit-name
 
-	input.btn.btn-primary.pull-right(ng-disabled='!canCreateRank()', type='submit', value='Create Rank', ng-click="createRank()")
+	input.btn.btn-primary.pull-right(ng-disabled='!canCreateRank()', value='Create Rank', ng-click="createRank()")
 	input.btn.btn-warning.pull-right(type='reset', value='Cancel', ng-click='cancelCreate()')
 
 div(class='clearfix')
