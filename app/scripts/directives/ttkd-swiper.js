@@ -335,7 +335,7 @@ define(['./module'], function(directives){
 		return ttkdSwiperSlideItemClass;
 	}])
 
-	.directive('ttkdSwiperSlideItemStudent', ['$log', 'AttendanceSvc', 'ClassSvc', function($log, AttendanceSvc, ClassSvc) {
+	.directive('ttkdSwiperSlideItemStudent', ['$log', 'AttendanceSvc', 'ClassSvc', '$state', function($log, AttendanceSvc, ClassSvc, $state) {
 		var ttkdSwiperSlideItemStudent = {
 			restrict: 'A',
 			templateUrl: 'partials/checkin/ttkd-swiper-card-student',
@@ -352,16 +352,17 @@ define(['./module'], function(directives){
 				$scope.studentAvatar = student.avatar;
 
 				$scope.studentContinue = function() {
-					ClassSvc.read($scope.classAttended, null, false).then(function(classDoc) {
-						var model = AttendanceSvc.init({});
-						model.student = student;
-						model.classAttended = classDoc;
+					var model = AttendanceSvc.init({});
+					model.student = student._id;
+					model.classAttended = $scope.classAttended;
+					model.checkInTime = new Date();
+					model.workshop = false;
 
-						AttendanceSvc.save().then(function(saved) {
-							$log.log('student ' + $scope.studentId + ' is now checked in');
-						}, function() {
-							$log.log('student ' + $scope.studentId + ' unable to be checked in');
-						});
+					AttendanceSvc.save().then(function(saved) {
+						$log.log('student ' + $scope.studentId + ' is now checked in');
+						$state.go('checkin.home.programs');
+					}, function(error) {
+						$log.log('student ' + $scope.studentId + ' is could not be checked in');
 					});
 				};
 			},
