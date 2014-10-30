@@ -137,6 +137,11 @@ define(['../module'], function(controllers) {
                             async.each(classes,
                                 function(classItem, callback) {
                                     ProgramSvc.read(classItem.program, null, false).then(function(program) {
+                                        if (!program) {
+                                            callback();
+                                            return;
+                                        }
+
                                         classItem.programName = program.name;
                                         data.push(classItem);
                                         callback();
@@ -163,6 +168,9 @@ define(['../module'], function(controllers) {
                             async.each(attendances,
                                 function(attendance, callback) {
                                     StudentSvc.read(attendance.student, null, false).then(function(student) { // Retrieve and attach student name to attendance obj
+                                        if (!student) {
+                                            return;
+                                        }
                                         attendance.fullName = student.firstName + ' ' + student.lastName;
 
                                         AchievementSvc.list().then(function(achievements) {
@@ -209,6 +217,10 @@ define(['../module'], function(controllers) {
                                 function(attendance, callback) {
                                     if (!filterOptions || (filterOptions.classAttended && attendance.classAttended === filterOptions.classAttended)) {
                                         StudentSvc.read(attendance.student, null, false).then(function(student) {
+                                            if (!student) {
+                                                callback();
+                                                return;
+                                            }
                                             attendance.fullName = student.firstName + ' ' + student.lastName;
 
                                             if (attendance.workshop) {

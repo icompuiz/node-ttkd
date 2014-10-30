@@ -28,7 +28,7 @@ var studentSchema = new Schema({
 		home: String,
 		cell: String
 	},
-	Ranks: [{
+	ranks: [{
 		ref: 'Rank',
 		type: ObjectId
 	}],
