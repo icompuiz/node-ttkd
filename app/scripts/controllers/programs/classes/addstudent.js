@@ -24,7 +24,7 @@ define(['../../module'], function(controllers){
 				} else {
 					$state.go('admin.programs.editclass', { id: $scope.currentClass._id});
 				}
-			};
+			}
 
 			$scope.filterOptions = {
                 filterText: '',
@@ -40,8 +40,6 @@ define(['../../module'], function(controllers){
             };
 
             $scope.addSelected = function() {
-                $log.log('Removing selected students...');
-
                 _($scope.gridOptions.selectedItems).forEach(function(student) {
                     if (!student) {
                         return;
@@ -50,11 +48,13 @@ define(['../../module'], function(controllers){
                     $log.log(' |_ Adding student: ' + student.firstName + ' ' + student.lastName + ' ' + student._id + ' to class ' + $scope.currentClass.name);
 
                     $scope.currentClass.students.push(student._id);
-                    $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage);
+                    //$scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage);
+
                 });
 
                 // empty selection
                 $scope.gridOptions.selectedItems.length = 0;
+                $scope.back();
             
             };
 
