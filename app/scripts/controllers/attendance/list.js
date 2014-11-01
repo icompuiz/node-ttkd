@@ -13,7 +13,7 @@ define(['../module'], function(controllers) {
                     { field: 'checkInTime', displayName: 'Check-in Time', cellFilter: 'dateTime'},
                     { field: 'eventName', displayName: 'Event Attended'},
                     { field: 'achievementNames', displayName: 'Achievement(s)', cellFilter: 'stringArray'},
-                    { sortable: false, displayName: 'Actions', cellTemplate: '/partials/attendance/list/removeButton'}
+                    { sortable: false, displayName: 'Actions', cellTemplate: '/partials/attendance/list/studentAttendanceButtons'}
                 ],
                 classColumnDefs = [
                     { field: 'name', displayName: 'Class Name'},
@@ -315,6 +315,26 @@ define(['../module'], function(controllers) {
                 selectedItems: [],
                 columnDefs: studentColumnDefs
             };
+
+            $scope.removeAttendanceEntry = function() {
+                $scope.showRemoveConfirm = true;
+            };
+
+            $scope.confirmRemove = function(row, remove) {
+                if(remove) {
+                    //Remove attendance entry from db
+                    AttendanceSvc.read(row.entity._id, null, true).then(function(att){
+                        AttendanceSvc.remove().then(function(removed) {
+                             $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage, {student: row.entity.student});
+                        });
+                    });
+                    $scope.showRemoveConfirm = false;
+                } else {
+                    $scope.showRemoveConfirm = false;
+                }
+            };
+
+            $scope.showRemoveConfirm = false;
         }
     ]);
 });
