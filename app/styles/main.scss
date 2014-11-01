@@ -723,3 +723,23 @@ body, html {
 .checkin-toolbar button {
   width: 100%;
 }
+
+.checkin-breadcrumb {
+  text-align: center;
+  padding: 15px;
+}
+
+.checkin-breadcrumb button {
+  width: 8vw;
+  height: 8vw;
+  white-space: normal;
+}
+
+.breadcrumbs {
+  text-align: center
+}
+
+.breadcrumb-identifier {
+  font-style: italic;
+  font-size: .8em;
+}

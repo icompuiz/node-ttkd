@@ -1,4 +1,4 @@
 div Select Your Rank
 
 div(ng-repeat="rank in ranks")
-	button.btn.btn-lg.btn-default(type="button", style="width:100%", ng-click="rankSelected(rank)") {{rank.name}}
+	button.btn.btn-lg.btn-default(type="button", style="width:100%; margin: 5px; {{rank.color ? 'background-color: ' + rank.color : ''}}", ng-click="rankSelected(rank)") {{rank.name}}
