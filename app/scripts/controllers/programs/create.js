@@ -149,14 +149,34 @@ define(['../module'], function(controllers){
 								name: rankItem.name,
 								rankOrder: rankItem.rankOrder,
 								program: programAdded._id,
-								color: rankItem.color
+								color: rankItem.color,
+								intermediaryRanks: []
 							};
-							//POST each new rank and add object ID to array
-							RankSvc.init(rankToAdd);
-							RankSvc.create(true).then(function(rankAdded, err){
-								rankIDs.push(rankAdded._id);
-								callback();
-							});
+
+							var subrankIds = [];
+
+							async.each(rankItem.subrankObjs,
+								function(subrank, callback) {
+									var subrankToAdd = {
+										name: subrank.name,
+										rankOrder: subrank.rankOrder,
+										isIntermediaryRank: true,
+										program: programAdded._id
+									}
+
+									RankSvc.init(subrankToAdd);
+									RankSvc.create(true).then(function(subrankAdded, err) {
+										rankToAdd.intermediaryRanks.push(subrankAdded._id);
+										callback();
+									});
+								},
+								function(err) {
+									RankSvc.init(rankToAdd);
+									RankSvc.create(true).then(function(rankAdded, err){
+										rankIDs.push(rankAdded._id);
+										callback();
+									});
+								});	
 						},
 						function(err) {
 							callback();

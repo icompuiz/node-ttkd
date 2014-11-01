@@ -206,7 +206,6 @@ define(['../module'], function(controllers) {
                                     });
                                 },
                                 function(err) {
-                                    // Need to add achievement data
                                     $scope.setPagingData(data,page,pageSize);
                             }); 
                         });
