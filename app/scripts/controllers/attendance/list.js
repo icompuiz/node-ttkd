@@ -1,8 +1,8 @@
 define(['../module'], function(controllers) {
     'use strict';
 
-    controllers.controller('ListAttendanceCtrl', ['$scope', '$http', '$log', '$state', '$filter', 'AttendanceSvc', 'StudentSvc', 'WorkshopSvc', 'ClassSvc', 'ProgramSvc', 'AchievementSvc', 'RankSvc',
-        function($scope, $http, $log, $state, $filter, AttendanceSvc, StudentSvc, WorkshopSvc, ClassSvc, ProgramSvc, AchievementSvc, RankSvc) {
+    controllers.controller('ListAttendanceCtrl', ['$scope', '$modal', '$http', '$log', '$state', '$filter', 'AttendanceSvc', 'StudentSvc', 'WorkshopSvc', 'ClassSvc', 'ProgramSvc', 'AchievementSvc', 'RankSvc',
+        function($scope, $modal, $http, $log, $state, $filter, AttendanceSvc, StudentSvc, WorkshopSvc, ClassSvc, ProgramSvc, AchievementSvc, RankSvc) {
             var defaultColumnDefs = [
                     { field: 'checkInTime', displayName: 'Check-in Time', cellFilter: 'dateTime'},
                     { field: 'fullName', displayName: 'Student'},
@@ -176,16 +176,18 @@ define(['../module'], function(controllers) {
                                         AchievementSvc.list().then(function(achievements) {
                                             achievements = _.where(achievements, {'attendance': attendance._id});
 
-                                            var achievementNames = [];
+                                            var achievementObjs = [];
                                             async.each(achievements,
                                                 function(ach, callback) {
                                                     RankSvc.read(ach.rank, null, false).then(function(rank) {
-                                                        achievementNames.push(rank.name);
+                                                        ach.name = rank.name;
+                                                        achievementObjs.push(ach);
                                                         callback();
                                                     });
                                                 },
                                                 function(err) {
-                                                    attendance.achievementNames = achievementNames;
+                                                    attendance.achievementObjs = achievementObjs;
+                                                    attendance.achievementNames = _.map(achievementObjs, function(a){return a.name;});
 
                                                     // Attach achievement name(s) to attendance object
                                                      if (attendance.workshop) {
@@ -196,9 +198,41 @@ define(['../module'], function(controllers) {
                                                         });
                                                     } else {
                                                         ClassSvc.read(attendance.classAttended, null, false).then(function(classObj) {
+
                                                             attendance.eventName = classObj.name;
-                                                            data.push(attendance);
-                                                            callback();
+
+                                                            // Attach rank data for adding achievements
+                                                            RankSvc.list().then(function(ranks) {
+                                                                var mainRanks = _.where(ranks, {'program': classObj.program});
+
+                                                                var subranks = _.remove(ranks, function(r) {return r.isIntermediaryRank;});
+
+                                                               // mainRanks = _.sortBy(mainRanks, function(r) {return r.rankOrder;});                                                                }
+
+                                                                attendance.sortedRanks = [];
+                                                                attendance.sortedSubranks = [];
+
+                                                                _(mainRanks).forEach(function(rank) {
+                                                                    var subrankObjs = [];
+
+                                                                    if (rank.intermediaryRanks) {
+                                                                        _(rank.intermediaryRanks).forEach(function(subrankId) {
+                                                                            var subrank = _.find(subranks, function(rank) {return rank._id === subrankId;});
+
+                                                                            subrankObjs.push(subrank);
+                                                                            // _(subs).forEach(function(r) {
+                                                                            //     attendance.sortedRanks.push(r);
+                                                                            // });
+                                                                        });
+                                                                        subrankObjs = _.sortBy(subrankObjs, function(r){return r.rankOrder;});
+                                                                        attendance.sortedSubranks.push(subrankObjs);
+                                                                    }
+                                                                    attendance.sortedRanks.push(rank);
+                                                                });
+
+                                                                data.push(attendance);
+                                                                callback();
+                                                            });
                                                         });
                                                     }
                                                 });
@@ -334,6 +368,23 @@ define(['../module'], function(controllers) {
             };
 
             $scope.showRemoveConfirm = false;
+
+            $scope.editAchievements = function(attendance) {
+                var modalInstance = $modal.open({
+                    templateUrl: '/partials/attendance/list/achievementModal',
+                    controller: 'AchievementCtrl',
+                    size: 'lg',
+                    resolve: {
+                        attendanceInfo: function() {
+                            return attendance;
+                        }
+                    }
+                });
+
+                modalInstance.result.then(function (selectedItem) {
+                    $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage, {student: attendance.student});
+                }, function () {});
+            };
         }
     ]);
 });
