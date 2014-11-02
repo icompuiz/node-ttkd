@@ -13,7 +13,7 @@ define(['../module'], function(controllers) {
                     { field: 'checkInTime', displayName: 'Check-in Time', cellFilter: 'dateTime'},
                     { field: 'eventName', displayName: 'Event Attended'},
                     { field: 'achievementNames', displayName: 'Achievement(s)', cellFilter: 'stringArray'},
-                    { sortable: false, displayName: 'Actions', cellTemplate: '/partials/attendance/list/studentAttendanceButtons'}
+                    { sortable: false, displayName: 'Actions', cellTemplate: '/partials/attendance/list/studentAttendanceButtons', minWidth: '250'}
                 ],
                 classColumnDefs = [
                     { field: 'name', displayName: 'Class Name'},
