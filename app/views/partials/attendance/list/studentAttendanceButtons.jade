@@ -1,0 +1,9 @@
+.pull-left.margin-left-10
+	.btn-toolbar(ng-show='!showRemoveConfirm')
+		button.btn.btn-default.btn-sm.viewBtn(ng-click='editAchievements(row.entity)', ng-show='!row.entity.workshop') Edit Achievements
+		button.btn.btn-danger.btn-sm.viewBtn(ng-click='removeAttendanceEntry()')
+			span.glyphicon.glyphicon-remove.white
+	.btn-toolbar(ng-show='showRemoveConfirm')
+		span.text-muted Remove entry?
+		button.btn.btn-sm.btn-danger(type='button', ng-click='confirmRemove(row, true)') Yes
+		button.btn.btn-sm.btn-success(type='button', ng-click='confirmRemove(row, false)') No

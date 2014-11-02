@@ -110,7 +110,8 @@ define(['../module'], function (controllers) {
                 sortInfo: { fields: ['name'], directions: ['asc'] },
                 columnDefs: [
                     { field: 'name', displayName: 'Workshop Name' },
-                    { field: 'workshopDate', displayName: 'Date', cellTemplate: '/partials/workshops/list/workshopDate'},
+                    { field: 'workshopDate', displayName: 'Date', cellFilter: 'dateTime'},
+                    //{ field: 'workshopDate', displayName: 'Date', cellTemplate: '/partials/workshops/list/workshopDate'},
                     { cellTemplate: '/partials/workshops/list/optionsButtons', sortable: false, displayName: 'Actions'}
                 ]
             };

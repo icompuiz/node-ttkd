@@ -13,7 +13,7 @@ define(['./module'], function(directives){
 				selectedRankId: '='
 			},
 
-			controller: function($scope, ProgramSvc, ClassSvc, StudentSvc, RankSvc, $compile) {
+			controller: function($scope, $state, ProgramSvc, ClassSvc, StudentSvc, RankSvc, $compile) {
 				// Load data based on type
 
 				// store students so we don't need to reload
@@ -40,7 +40,13 @@ define(['./module'], function(directives){
 							var acronym = matches.join('');
 
 							$scope.breadcrumbs['program'] = {
-								content: acronym
+								//content: acronym
+								content: classDoc.program.name
+							}
+
+							$scope.breadcrumbs['class'] = {
+								//content: acronym
+								content: classDoc.name
 							}
 						});
 					}
@@ -49,7 +55,7 @@ define(['./module'], function(directives){
 						RankSvc.read(selectedRankId, null, false).then(function(rankDoc) {
 							if(rankDoc.color) {
 								$scope.breadcrumbs['rank'] = {
-									style: 'background-color: red;'
+									style: 'background-color: ' + rankDoc.color + ';'
 								}
 							} else {
 								$scope.breadcrumbs['rank'] = {
@@ -93,6 +99,68 @@ define(['./module'], function(directives){
 						}
 					});
 				};
+
+				$scope.goToSelectRank = function(classId) {
+					$state.go('checkin.home.ranked', {classId: classId});
+				};
+
+				$scope.goToSelectProgram = function() {
+					$state.go('checkin.home.programs');
+				};
+
+				$scope.nameFilters = [];
+				$scope.nameFilters.push({
+					filterLabel: 'A-E',
+					filterArray: ['A','B','C','D','E'],
+					isActive: false
+				});
+				$scope.nameFilters.push({
+					filterLabel: 'F-J',
+					filterArray: ['F','G','H','I','J'],
+					isActive: false
+				});
+				$scope.nameFilters.push({
+					filterLabel: 'K-O',
+					filterArray: ['K','L','M','N','O'],
+					isActive: false
+				});
+				$scope.nameFilters.push({
+					filterLabel: 'P-T',
+					filterArray: ['P','Q','R','S','T'],
+					isActive: false
+				});
+				$scope.nameFilters.push({
+					filterLabel: 'U-Z',
+					filterArray: ['U','V','W','X','Y','Z'],
+					isActive: false
+				});
+
+				$scope.currentFilter;
+				$scope.filterValueArray;
+				$scope.changeFilter = function(toFilter) {
+					if(!toFilter) {
+						$scope.currentFilter = null;
+						$scope.filterValueArray = null;
+					}
+
+					// when a filter button is clicked a second time... remove filter
+					if($scope.currentFilter === toFilter) {
+						$scope.currentFilter.isActive = false;
+						$scope.currentFilter = null;
+						$scope.filterValueArray = null;
+						return;
+					}
+
+					toFilter.isActive = true;
+					$scope.filterValueArray = toFilter.filterArray;
+
+					if($scope.currentFilter) {
+						$scope.currentFilter.isActive = false;
+					}
+
+					$scope.currentFilter = toFilter;
+				};
+
 
 				$scope.filterStudents = function(filter, filterParam) {
 					var maxLateralSlideDeck = 9;

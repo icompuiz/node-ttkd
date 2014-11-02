@@ -5,13 +5,14 @@ h2 Add Student
 	.col-md-12
 		.btn-toolbar.pull-left
 			a.btn.btn-primary(ng-click='addSelected()', ng-disabled='addDisabled()') Add Selected
+			a.btn.btn-warning.pull-right(type='button', ng-click='back()') Cancel
 .row
 	.col-md-12
 		div.gridStyle(ng-grid="gridOptions")
-.row
-	.col-md-12
-		.btn-toolbar
-			button.btn.btn-warning.pull-right(type='button', ng-click='back()')
-				| Back to Class
+//- .row
+//- 	.col-md-12
+//- 		.btn-toolbar
+//- 			button.btn.btn-warning.pull-right(type='button', ng-click='back()')
+//- 				| Back to Class
 
 div(class='clearfix')

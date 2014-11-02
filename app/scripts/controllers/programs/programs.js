@@ -48,6 +48,7 @@ define(['../module'], function(controllers){
 									var i;
 									for(i=0; i<programs.length; i++) {
 										programs[i].ranks = _.where(ranks, {'program': programs[i]._id});
+										programs[i].ranks = _.remove(programs[i].ranks, function(r){ return !r.isIntermediaryRank;});
 									}
 									callback();
 								});

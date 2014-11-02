@@ -16,7 +16,16 @@ var achievementSchema = new Schema({
 	rank: { 
 		ref: 'Rank',
 		type: ObjectId
-	}
+	},
+	program: {
+		ref: 'Program',
+		type: ObjectId
+	},
+	class: {
+		ref: 'Class',
+		type: ObjectId
+	},
+	dateAchieved: Date
 });
 
 var Achievement = mongoose.model('Achievement', achievementSchema);
