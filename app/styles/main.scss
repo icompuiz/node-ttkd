@@ -805,3 +805,12 @@ body, html {
 .white {
   color: white;
 }
+
+.modal-body {
+  display: table;
+}
+
+.modal-contents {
+  display: table-cell;
+  vertical-align: middle;
+}
