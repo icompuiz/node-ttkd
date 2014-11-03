@@ -157,16 +157,17 @@ define(['../module'], function(controllers) {
                             });
                         });
                     } else if ($scope.columnDefs === workshopColumnDefs) { // Clicked the workshops tab
-                        WorkshopSvc.list().then(function(workshops) {
-                            _(workshops).forEach(function(workshop) {
-                                workshop.numAttendees = 0;
-                                if (workshop.attendanceList) {
-                                    workshop.numAttendees = workshop.attendanceList.length;
-                                }
-                                data.push(workshop);
+                        AttendanceSvc.list().then(function(attendances) {
+                            WorkshopSvc.list().then(function(workshops) {
+                                _(workshops).forEach(function(workshop) {
+                                    workshop.numAttendees = _.where(attendances, {classAttended: workshop._id}).length;
+                                    data.push(workshop);
+                                });
+                                $scope.setPagingData(data,page,pageSize);
                             });
-                            $scope.setPagingData(data,page,pageSize);
                         });
+
+                        
                     } else if ($scope.columnDefs === studentColumnDefs) { // Viewing a student's attendace records
                         AttendanceSvc.list().then(function(attendances) {
                             attendances = _.where(attendances, filterOptions); //using filterOptions as list() param didn't work
