@@ -14,7 +14,9 @@
 									span.glyphicon.glyphicon-search
 						.col-md-4.col-sm-4.col-lg-4(ng-show='viewingStudent')
 							.attendance-subheading.pull-right
-								{{currentStudent}}
+								{{currentStudent.fullName}}
+							img.thumbnail.thumbnail-student-list.pull-right.margin-rt-6(ng-if="currentStudent.avatar", src="/api/fs/files/{{currentStudent.avatar}}/download")
+							img.thumbnail.thumbnail-student-list.pull-right.margin-rt-6(ng-if="!currentStudent.avatar", src="http://placehold.it/32x32.png")
 					.pad-top-6
 						div.gridStyle(ng-grid='gridOptions', ng-if='!viewingStudent')
 					.pad-top-6

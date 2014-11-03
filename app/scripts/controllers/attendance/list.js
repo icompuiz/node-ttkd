@@ -77,11 +77,14 @@ define(['../module'], function(controllers) {
             };
 
             $scope.viewStudentAttendance = function(row) {
-                $scope.studentTab.active = true;
-                $scope.currentStudent = row.entity.fullName;
-                $scope.viewingStudent = true;
-                $scope.columnDefs = studentColumnDefs;
-                $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage, {student: row.entity.student});
+                StudentSvc.read(row.entity.student, null, false).then(function(student) {
+                    $scope.studentTab.active = true;
+                    $scope.currentStudent = student;
+                    $scope.currentStudent.fullName = student.firstName + " " + student.lastName;
+                    $scope.viewingStudent = true;
+                    $scope.columnDefs = studentColumnDefs;
+                    $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage, {student: row.entity.student});
+                });
             };
 
             $scope.viewClassAttendance = function(row) {
