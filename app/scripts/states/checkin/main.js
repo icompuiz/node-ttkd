@@ -68,6 +68,74 @@ define(['../module'], function (states) {
             }
         });
 
+        // checkin screen registration form
+        $stateProvider.state('checkin.students', {
+            url: '',
+            abstract: true,
+            views: {
+                'application-body': {
+                    templateUrl: 'partials/students/index',
+                    controller: function() {}
+                }
+            }
+        });
+        $stateProvider.state('checkin.students.create', {
+            url: '/students/create?classId',
+            views: {
+                'section-body': {
+                    templateUrl: 'partials/students/create',
+                    controller: 'CreateStudentCtrl'
+                }
+            }
+        });
+        $stateProvider.state('checkin.students.create.basic', {
+            views: {
+                'create-student-wzd-body': {
+                    templateUrl: 'partials/students/create/basic',
+                    controller: 'CreateStudentBasicCtrl'
+                }
+            }
+        });
+        $stateProvider.state('checkin.students.create.class', {
+            views: {
+                'create-student-wzd-body': {
+                    templateUrl: 'partials/students/create/class',
+                    controller: 'CreateStudentClassCtrl'
+                }
+            }
+        });
+        $stateProvider.state('checkin.students.create.photo', {
+            views: {
+                'create-student-wzd-body': {
+                    templateUrl: 'partials/students/create/photo',
+                    controller: 'CreateStudentPhotoCtrl'
+                }
+            }
+        });
+        $stateProvider.state('checkin.students.create.signature', {
+            views: {
+                'create-student-wzd-body': {
+                    templateUrl: 'partials/students/create/signature',
+                    controller: 'CreateStudentSignatureCtrl'
+                }
+            }
+        });
+        $stateProvider.state('checkin.students.create.econtact', {
+            views: {
+                'create-student-wzd-body': {
+                    templateUrl: 'partials/students/create/econtact',
+                    controller: 'CreateStudentEContactCtrl'
+                }
+            }
+        });
+        $stateProvider.state('checkin.students.create.confirm', {
+            views: {
+                'create-student-wzd-body': {
+                    templateUrl: 'partials/students/create/confirm',
+                    controller: 'CreateStudentConfirmCtrl'
+                }
+            }
+        });
     }]);
 
 });

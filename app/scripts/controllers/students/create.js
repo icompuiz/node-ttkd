@@ -7,13 +7,16 @@ define(['../module'], function(controllers) {
 			// Check if the state is changed... will need to terminate registered wizard
 			$scope.$on('$stateChangeStart', function(event, toState, toParams, fromState) {
 				var inWizard = /^(admin.students.create|admin.students.edit)/.test(toState.name);
-				if (!inWizard) {
+				var inWizardCheckin = /^(checkin.students.create)/.test(toState.name);
+
+				if (!inWizard && !inWizardCheckin) {
 					StudentSvc.reset();
 
 					if(/edit/.test(fromState.name)) {
 						WizardService.terminate('admin.students.edit');
 					} else {
 						WizardService.terminate('admin.students.create');
+						WizardService.terminate('checkin.students.create');
 					}
 				};
 
@@ -72,6 +75,10 @@ define(['../module'], function(controllers) {
 
 				return passes;
 			}
+
+			$scope.isOnSignatureStep = function() {
+				return /(students.create.signature)$/.test($scope.wizard.current.id);
+			};
 
 
 			/**
@@ -146,11 +153,17 @@ define(['../module'], function(controllers) {
                 	if (!err) {
 
 	                    StudentSvc.reset();
-	                    if ($stateParams.classId) {
-	                    	$state.go('admin.programs.editclass', { id: $stateParams.classId });
+	                    var inWizardCheckin = /^(checkin.students.create)/.test($scope.wizard.current.id);
+
+	                    if(inWizardCheckin) {
+	                    	$state.go('checkin.home.programs');
 	                    } else {
-	                    	$state.go('admin.students.home');
-	                    }
+		                    if ($stateParams.classId) {
+		                    	$state.go('admin.programs.editclass', { id: $stateParams.classId });
+	    	                } else {
+	        	            	$state.go('admin.students.home');
+	            	        }
+	            	    }
 
                 	} else {
 	                    $log.log('Failed to save student');

@@ -5,12 +5,14 @@ nav.navbar.navbar-default.navbar-static-top(role='navigation')
 			span.icon-bar
 			span.icon-bar
 			span.icon-bar
-		a.navbar-brand(ui-sref='admin.dashboard.home') 
+		a.navbar-brand(ui-sref='checkin.home.programs') 
 			span.text ttkd
 	div#ttkd-application-menu.navbar-collapse(collapse="!applicationMenuCollapsed")
 		ul.nav.navbar-nav
 			li
 				a(ui-sref='checkin.home.programs', application-menu-item) Checkin
+			li
+				a(ui-sref='checkin.students.create', application-menu-item) Register
 		ul.nav.navbar-nav.navbar-right
 			li.btn-logout
 				a(ng-click='logout()') 
