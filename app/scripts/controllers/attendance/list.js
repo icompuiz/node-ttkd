@@ -198,7 +198,7 @@ define(['../module'], function(controllers) {
                                                     // Attach achievement name(s) to attendance object
                                                      if (attendance.workshop) {
                                                         WorkshopSvc.read(attendance.classAttended, null, false).then(function(workshop) {
-                                                            attendance.eventName = 'Workshop: ' + workshop.name;
+                                                            attendance.eventName = workshop.name;
                                                             data.push(attendance);
                                                             callback();
                                                         });
