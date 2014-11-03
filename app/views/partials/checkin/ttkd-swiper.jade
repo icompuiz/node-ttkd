@@ -17,12 +17,15 @@ div(style="height:100%;" ng-class="{'col-md-10': data.type === 'students', 'col-
 		.swiper-container.swiper-parent
 			.swiper-wrapper
 
-				ttkd-swiper-lateral-item-student(ng-if="data.type === 'students'", parent="swiperParent", items="data.students", swiper-id="0", type="type", selected-class-id="selectedClassId", id="studentholder", filtered-students="studentsFiltered")
+				ttkd-swiper-lateral-item-student(ng-if="data.type === 'students'", is-workshop="data.isWorkshop", parent="swiperParent", items="data.students", swiper-id="0", type="type", selected-class-id="selectedClassId", id="studentholder", filtered-students="studentsFiltered")
 
 
 
 				div(ng-repeat="item in data.classes", ng-if="data.type === 'class'")
 					div(parent="swiperParent", item="item", swiper-id="$index", type="type", selected-class-id="selectedClassId", ttkd-swiper-lateral-item-class)
+
+				div(ng-repeat="item in workshopData.workshops", ng-if="data.type === 'class'")
+					div(parent="swiperParent", item="item", swiper-id="9999", type="type", selected-class-id="selectedClassId", ttkd-swiper-lateral-item-class)
 
 .col-md-2.breadcrumbs(ng-if="data.type === 'students'")
 	h2 Change
