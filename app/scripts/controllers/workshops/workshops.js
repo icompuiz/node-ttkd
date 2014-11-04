@@ -1,7 +1,7 @@
 define(['../module'], function (controllers) {
 	'use strict';
-	controllers.controller('WorkshopsCtrl', ['$scope', '$state', 'WorkshopSvc', 
-		function($scope, $state, WorkshopSvc) {
+	controllers.controller('WorkshopsCtrl', ['$scope', '$state', 'WorkshopSvc', 'AttendanceSvc',
+		function($scope, $state, WorkshopSvc, AttendanceSvc) {
 
 			$scope.createWorkshop = function() {
 				WorkshopSvc.reset();
@@ -24,9 +24,25 @@ define(['../module'], function (controllers) {
 			$scope.removeWorkshop = function(workshop) {
 
 				WorkshopSvc.read(workshop._id, null, true).then(function(w) {
-					WorkshopSvc.remove().then(function() {
-						$scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage);
-						WorkshopSvc.reset();
+					AttendanceSvc.list().then(function(attendances) {
+						async.each(attendances, 
+							function(attendance, callback) {
+								if (attendance.classAttended === workshop._id) {
+									AttendanceSvc.read(attendance._id, null, true).then(function() {
+										AttendanceSvc.remove().then(function() {
+											callback();
+										});
+									});
+								} else {
+									callback();
+								}
+							},
+							function(err) {
+								WorkshopSvc.remove().then(function() {
+									$scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage);
+									WorkshopSvc.reset();
+								});								
+						});
 					});
 				});
 			};

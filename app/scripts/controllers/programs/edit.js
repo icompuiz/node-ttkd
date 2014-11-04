@@ -1,7 +1,7 @@
 define(['../module'], function(controllers){
 	'use strict';
-	controllers.controller('EditProgramCtrl', ['$rootScope', '$scope', '$state', '$stateParams', 'WizardService', 'Restangular', 'ProgramSvc', 'ClassSvc', 'RankSvc', 
-		function($rootScope, $scope, $state, $stateParams, WizardService, Restangular, ProgramSvc, ClassSvc, RankSvc) {
+	controllers.controller('EditProgramCtrl', ['$rootScope', '$scope', '$state', '$stateParams', 'AttendanceSvc', 'AchievementSvc', 'WizardService', 'Restangular', 'ProgramSvc', 'ClassSvc', 'RankSvc', 
+		function($rootScope, $scope, $state, $stateParams, AttendanceSvc, AchievementSvc, WizardService, Restangular, ProgramSvc, ClassSvc, RankSvc) {
 			$scope.currentProgram = {};
 			$scope.removedRanks = [];
 			$scope.removedClasses = [];
@@ -186,12 +186,42 @@ define(['../module'], function(controllers){
 							if (!classItem._id) {
 								callback();
 							} else {
-								ClassSvc.read(classItem._id, null, true).then(function(cls) {
-									ClassSvc.remove().then(function(removed) {
-										classIDs = _.without(classIDs, cls._id);
-										ClassSvc.reset();
-										callback();
-									});
+								ClassSvc.read(classItem._id, null, true).then(function(classToRemove) {
+									// Remove associated attendance / achievements from model
+									async.parallel([
+										function(callback, err) {
+											AttendanceSvc.list().then(function(attendances) {
+												_(attendances).forEach(function(attendance) {
+													if (attendance.classAttended === classToRemove._id) {
+														AttendanceSvc.read(attendance._id, null, true).then(function() {
+															AttendanceSvc.remove().then(function() {
+																callback();
+															});
+														});
+													}
+												});
+											});
+										},
+										function(callback, err) {
+											AchievementSvc.list().then(function(achievements) {
+												_(achievements).forEach(function(achievement) {
+													if (achievement.class === classToRemove._id) {
+														AchievementSvc.read(achievement._id, null, true).then(function() {
+															AchievementSvc.remove().then(function() {
+																callback();
+															});
+														});
+													}
+												});
+											});
+										},
+										function(err) {
+											ClassSvc.remove().then(function() {
+												classIDs = _.without(classIDs, classToRemove._id);
+												ClassSvc.reset();
+												callback();
+											});
+									}]);
 								});
 							}
 						},
