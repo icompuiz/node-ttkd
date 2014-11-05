@@ -3,5 +3,6 @@
  **/
 define([
 	'./attendance',
-	'./list'
+	'./list',
+	'./achievement'
 ], function () {});

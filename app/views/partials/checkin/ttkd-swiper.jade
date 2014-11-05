@@ -8,29 +8,36 @@ div.checkin-toolbar(ng-if="data.type === 'students'", ng-init="filterParam = 'fi
 
 	.row
 		.col-md-2.label-btn-lg Name
-		.col-md-2
-			button.btn.btn-lg.btn-default(type="button", ng-click="filterValueArray = ['A','B','C','D','E']; filterStudents(filterValueArray, filterParam); filterValue = 'A-E';", ng-class="{active: filterValue === 'A-E'}") A-E
-		.col-md-2
-			button.btn.btn-lg.btn-default(type="button", ng-click="filterValueArray = ['F','G','H','I','J']; filterStudents(filterValueArray, filterParam); filterValue = 'F-J';", ng-class="{active: filterValue === 'F-J'}") F-J
-		.col-md-2
-			button.btn.btn-lg.btn-default(type="button", ng-click="filterValueArray = ['K','L','M','N','O']; filterStudents(filterValueArray, filterParam); filterValue = 'K-O';", ng-class="{active: filterValue === 'K-O'}") K-O
-		.col-md-2
-			button.btn.btn-lg.btn-default(type="button", ng-click="filterValueArray = ['P','Q','R','S','T']; filterStudents(filterValueArray, filterParam); filterValue = 'P-T';", ng-class="{active: filterValue === 'P-T'}") P-T
-		.col-md-2
-			button.btn.btn-lg.btn-default(type="button", ng-click="filterValueArray = ['U','V','W','X','Y','Z']; filterStudents(filterValueArray, filterParam); filterValue = 'U-Z';", ng-class="{active: filterValue === 'U-Z'}") U-Z
+		.col-md-2(ng-repeat="nameFilter in nameFilters")
+			button.btn.btn-lg.btn-default(type="button", ng-click="changeFilter(nameFilter); filterStudents(filterValueArray, filterParam);", ng-class="{active: nameFilter.isActive}") {{nameFilter.filterLabel}}
+
 
 div(style="height:100%;" ng-class="{'col-md-10': data.type === 'students', 'col-md-12': data.type !== 'students'}")
 	.device
 		.swiper-container.swiper-parent
 			.swiper-wrapper
 
-				ttkd-swiper-lateral-item-student(ng-if="data.type === 'students'", parent="swiperParent", items="data.students", swiper-id="0", type="type", selected-class-id="selectedClassId", id="studentholder", filtered-students="studentsFiltered")
+				ttkd-swiper-lateral-item-student(ng-if="data.type === 'students'", is-workshop="data.isWorkshop", parent="swiperParent", items="data.students", swiper-id="0", type="type", selected-class-id="selectedClassId", id="studentholder", filtered-students="studentsFiltered")
 
 
 
 				div(ng-repeat="item in data.classes", ng-if="data.type === 'class'")
 					div(parent="swiperParent", item="item", swiper-id="$index", type="type", selected-class-id="selectedClassId", ttkd-swiper-lateral-item-class)
 
-.col-md-2(ng-if="data.type === 'students'")
-	div(ng-if="breadcrumbs.program", style="{{breadcrumbs.program.style ? breadcrumbs.program.style : ''}}") {{breadcrumbs.program.content ? breadcrumbs.program.content : ''}}
-	div(ng-if="breadcrumbs.rank", style="{{breadcrumbs.rank.style ? breadcrumbs.rank.style : ''}}") {{breadcrumbs.rank.content ? breadcrumbs.rank.content : ''}}
+				div(ng-repeat="item in workshopData.workshops", ng-if="data.type === 'class'")
+					div(parent="swiperParent", item="item", swiper-id="9999", type="type", selected-class-id="selectedClassId", ttkd-swiper-lateral-item-class)
+
+.col-md-2.breadcrumbs(ng-if="data.type === 'students'")
+	h2 Change
+	div.checkin-breadcrumb(ng-if="breadcrumbs.program", style="{{breadcrumbs.program.style ? breadcrumbs.program.style : ''}}")
+		div
+			button.btn.btn-default(ng-click="goToSelectProgram()") {{breadcrumbs.program.content ? breadcrumbs.program.content : ''}}
+		.breadcrumb-identifier Program
+	div.checkin-breadcrumb(ng-if="breadcrumbs.class", style="{{breadcrumbs.class.style ? breadcrumbs.program.style : ''}}")
+		div
+			button.btn.btn-default(ng-click="goToSelectProgram()") {{breadcrumbs.class.content ? breadcrumbs.class.content : ''}}
+		.breadcrumb-identifier Class
+	div.checkin-breadcrumb(ng-if="breadcrumbs.rank")
+		div
+			button.btn.btn-default(ng-click="goToSelectRank(selectedClassId)", style="{{breadcrumbs.rank.style ? breadcrumbs.rank.style : ''}}") {{breadcrumbs.rank.content ? breadcrumbs.rank.content : ''}}
+		.breadcrumb-identifier Rank

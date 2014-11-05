@@ -1,8 +1,8 @@
 define(['../module'], function(controllers) {
     'use strict';
 
-    controllers.controller('ListAttendanceCtrl', ['$scope', '$http', '$log', '$state', '$filter', 'AttendanceSvc', 'StudentSvc', 'WorkshopSvc', 'ClassSvc', 'ProgramSvc', 'AchievementSvc', 'RankSvc',
-        function($scope, $http, $log, $state, $filter, AttendanceSvc, StudentSvc, WorkshopSvc, ClassSvc, ProgramSvc, AchievementSvc, RankSvc) {
+    controllers.controller('ListAttendanceCtrl', ['$scope', '$modal', '$http', '$log', '$state', '$filter', 'saveAs', 'AttendanceSvc', 'StudentSvc', 'WorkshopSvc', 'ClassSvc', 'ProgramSvc', 'AchievementSvc', 'RankSvc',
+        function($scope, $modal, $http, $log, $state, $filter, saveAs, AttendanceSvc, StudentSvc, WorkshopSvc, ClassSvc, ProgramSvc, AchievementSvc, RankSvc) {
             var defaultColumnDefs = [
                     { field: 'checkInTime', displayName: 'Check-in Time', cellFilter: 'dateTime'},
                     { field: 'fullName', displayName: 'Student'},
@@ -13,7 +13,7 @@ define(['../module'], function(controllers) {
                     { field: 'checkInTime', displayName: 'Check-in Time', cellFilter: 'dateTime'},
                     { field: 'eventName', displayName: 'Event Attended'},
                     { field: 'achievementNames', displayName: 'Achievement(s)', cellFilter: 'stringArray'},
-                    { sortable: false, displayName: 'Actions', cellTemplate: '/partials/attendance/list/removeButton'}
+                    { sortable: false, displayName: 'Actions', cellTemplate: '/partials/attendance/list/studentAttendanceButtons', minWidth: '250'}
                 ],
                 classColumnDefs = [
                     { field: 'name', displayName: 'Class Name'},
@@ -26,6 +26,8 @@ define(['../module'], function(controllers) {
                     { field: 'numAttendees', displayName: 'Attendees'},
                     { sortable: false, displayName: 'Actions', cellTemplate: '/partials/attendance/list/workshopViewButton'}
                 ];
+
+            var emails = [];
 
             $scope.allData = [];
             $scope.filterStudent = {};
@@ -77,11 +79,14 @@ define(['../module'], function(controllers) {
             };
 
             $scope.viewStudentAttendance = function(row) {
-                $scope.studentTab.active = true;
-                $scope.currentStudent = row.entity.fullName;
-                $scope.viewingStudent = true;
-                $scope.columnDefs = studentColumnDefs;
-                $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage, {student: row.entity.student});
+                StudentSvc.read(row.entity.student, null, false).then(function(student) {
+                    $scope.studentTab.active = true;
+                    $scope.currentStudent = student;
+                    $scope.currentStudent.fullName = student.firstName + " " + student.lastName;
+                    $scope.viewingStudent = true;
+                    $scope.columnDefs = studentColumnDefs;
+                    $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage, {student: row.entity.student});
+                });
             };
 
             $scope.viewClassAttendance = function(row) {
@@ -152,16 +157,17 @@ define(['../module'], function(controllers) {
                             });
                         });
                     } else if ($scope.columnDefs === workshopColumnDefs) { // Clicked the workshops tab
-                        WorkshopSvc.list().then(function(workshops) {
-                            _(workshops).forEach(function(workshop) {
-                                workshop.numAttendees = 0;
-                                if (workshop.attendanceList) {
-                                    workshop.numAttendees = workshop.attendanceList.length;
-                                }
-                                data.push(workshop);
+                        AttendanceSvc.list().then(function(attendances) {
+                            WorkshopSvc.list().then(function(workshops) {
+                                _(workshops).forEach(function(workshop) {
+                                    workshop.numAttendees = _.where(attendances, {classAttended: workshop._id}).length;
+                                    data.push(workshop);
+                                });
+                                $scope.setPagingData(data,page,pageSize);
                             });
-                            $scope.setPagingData(data,page,pageSize);
                         });
+
+                        
                     } else if ($scope.columnDefs === studentColumnDefs) { // Viewing a student's attendace records
                         AttendanceSvc.list().then(function(attendances) {
                             attendances = _.where(attendances, filterOptions); //using filterOptions as list() param didn't work
@@ -176,29 +182,63 @@ define(['../module'], function(controllers) {
                                         AchievementSvc.list().then(function(achievements) {
                                             achievements = _.where(achievements, {'attendance': attendance._id});
 
-                                            var achievementNames = [];
+                                            var achievementObjs = [];
                                             async.each(achievements,
                                                 function(ach, callback) {
                                                     RankSvc.read(ach.rank, null, false).then(function(rank) {
-                                                        achievementNames.push(rank.name);
+                                                        ach.name = rank.name;
+                                                        achievementObjs.push(ach);
                                                         callback();
                                                     });
                                                 },
                                                 function(err) {
-                                                    attendance.achievementNames = achievementNames;
+                                                    attendance.achievementObjs = achievementObjs;
+                                                    attendance.achievementNames = _.map(achievementObjs, function(a){return a.name;});
 
                                                     // Attach achievement name(s) to attendance object
                                                      if (attendance.workshop) {
                                                         WorkshopSvc.read(attendance.classAttended, null, false).then(function(workshop) {
-                                                            attendance.eventName = 'Workshop: ' + workshop.name;
+                                                            attendance.eventName = workshop.name;
                                                             data.push(attendance);
                                                             callback();
                                                         });
                                                     } else {
                                                         ClassSvc.read(attendance.classAttended, null, false).then(function(classObj) {
+
                                                             attendance.eventName = classObj.name;
-                                                            data.push(attendance);
-                                                            callback();
+
+                                                            // Attach rank data for adding achievements
+                                                            RankSvc.list().then(function(ranks) {
+                                                                var mainRanks = _.where(ranks, {'program': classObj.program});
+
+                                                                var subranks = _.remove(ranks, function(r) {return r.isIntermediaryRank;});
+
+                                                               // mainRanks = _.sortBy(mainRanks, function(r) {return r.rankOrder;});                                                                }
+
+                                                                attendance.sortedRanks = [];
+                                                                attendance.sortedSubranks = [];
+
+                                                                _(mainRanks).forEach(function(rank) {
+                                                                    var subrankObjs = [];
+
+                                                                    if (rank.intermediaryRanks) {
+                                                                        _(rank.intermediaryRanks).forEach(function(subrankId) {
+                                                                            var subrank = _.find(subranks, function(rank) {return rank._id === subrankId;});
+
+                                                                            subrankObjs.push(subrank);
+                                                                            // _(subs).forEach(function(r) {
+                                                                            //     attendance.sortedRanks.push(r);
+                                                                            // });
+                                                                        });
+                                                                        subrankObjs = _.sortBy(subrankObjs, function(r){return r.rankOrder;});
+                                                                        attendance.sortedSubranks.push(subrankObjs);
+                                                                    }
+                                                                    attendance.sortedRanks.push(rank);
+                                                                });
+
+                                                                data.push(attendance);
+                                                                callback();
+                                                            });
                                                         });
                                                     }
                                                 });
@@ -206,17 +246,25 @@ define(['../module'], function(controllers) {
                                     });
                                 },
                                 function(err) {
-                                    // Need to add achievement data
                                     $scope.setPagingData(data,page,pageSize);
                             }); 
                         });
                     } else { // Viewing the default ng-grid
+                        emails = [];
                         AttendanceSvc.list().then(function(attendances){
                             // add attendances to new array for ng-grid outputting
                             async.each(attendances,
                                 function(attendance, callback) {
                                     if (!filterOptions || (filterOptions.classAttended && attendance.classAttended === filterOptions.classAttended)) {
                                         StudentSvc.read(attendance.student, null, false).then(function(student) {
+                                            if (filterOptions && $scope.viewingWorkshop) {
+                                                _(student.emailAddresses).forEach(function(email) {
+                                                    if (!_.contains(emails, email)) {
+                                                        emails.push(email);
+                                                    }
+                                                });
+                                            }
+
                                             if (!student) {
                                                 callback();
                                                 return;
@@ -225,7 +273,7 @@ define(['../module'], function(controllers) {
 
                                             if (attendance.workshop) {
                                                 WorkshopSvc.read(attendance.classAttended, null, false).then(function(workshop) {
-                                                    attendance.eventName = 'Workshop: ' + workshop.name;
+                                                    attendance.eventName = workshop.name;
                                                     data.push(attendance);
                                                     callback();
                                                 });
@@ -315,6 +363,74 @@ define(['../module'], function(controllers) {
                 selectedItems: [],
                 columnDefs: studentColumnDefs
             };
+
+            $scope.removeAttendanceEntry = function() {
+                $scope.showRemoveConfirm = true;
+            };
+
+            $scope.confirmRemove = function(row, remove) {
+                if(remove) {
+                    //Remove attendance entry from db
+                    AttendanceSvc.read(row.entity._id, null, true).then(function(att){
+                        AttendanceSvc.remove().then(function(removed) {
+                             $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage, {student: row.entity.student});
+                        });
+                    });
+                    $scope.showRemoveConfirm = false;
+                } else {
+                    $scope.showRemoveConfirm = false;
+                }
+            };
+
+            $scope.showRemoveConfirm = false;
+
+            $scope.editAchievements = function(attendance) {
+                var modalInstance = $modal.open({
+                    templateUrl: '/partials/attendance/list/achievementModal',
+                    controller: 'AchievementCtrl',
+                    size: 'lg',
+                    resolve: {
+                        attendanceInfo: function() {
+                            return attendance;
+                        }
+                    }
+                });
+
+                modalInstance.result.then(function (selectedItem) {
+                    $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage, {student: attendance.student});
+                }, function () {});
+            };
+
+            function writeEmailList() {
+                var studentFile = '';
+                var d = new Date(),
+                    year = d.getFullYear(),
+                    month = d.getMonth()+1,
+                    day = d.getDate();
+
+                var filename = $scope.currentWorkshop + '_emails_' + month + '-' + day + '-' + 
+                                year + '.txt';
+
+                _(emails).forEach(function(e) {
+                    studentFile += e + '\r\n';
+                });
+                
+                var blob = new Blob([studentFile], {type: 'text/plain;'});
+                saveAs(blob, filename);
+            }
+
+            $scope.showGenerateEmailListConfirm = false;
+
+            $scope.generateEmailList = function() {
+                $scope.showGenerateEmailListConfirm = true;
+            };
+
+            $scope.confirmGenerateEmailList = function(writeList) {
+                if (writeList) {
+                    writeEmailList();
+                }
+                $scope.showGenerateEmailListConfirm = false;
+            }
         }
     ]);
 });

@@ -185,6 +185,14 @@ define(['../module'], function (states) {
         wizardSteps['admin.students.edit.confirm'] = { id: 'admin.students.edit.confirm', name: 'Review Registration', enabled: true, isFinalStep: true };
 
 
+        // For the checkin screen
+        wizardSteps['checkin.students.create.basic'] = { id: 'checkin.students.create.basic', name: 'Basic Information', enabled: false };
+        wizardSteps['checkin.students.create.econtact'] = { id: 'checkin.students.create.econtact', name: 'Emergency Contact', enabled: false };
+        //wizardSteps['admin.students.create.class'] = { id: 'admin.students.create.class', name: 'Class Information', enabled: false };
+        wizardSteps['checkin.students.create.photo'] = { id: 'checkin.students.create.photo', name: 'Student Picture', enabled: false };
+        wizardSteps['checkin.students.create.signature'] = { id: 'checkin.students.create.signature', name: 'Waiver Signature', enabled: false };
+        wizardSteps['checkin.students.create.confirm'] = { id: 'checkin.students.create.confirm', name: 'Review Registration', enabled: false, isFinalStep: true };
+
 
         var wizardStepsOrder = [
             wizardSteps['admin.students.create.basic'],
@@ -203,8 +211,18 @@ define(['../module'], function (states) {
             wizardSteps['admin.students.edit.confirm']
         ];
 
+        var wizardStepsOrderCheckinScreen = [
+            wizardSteps['checkin.students.create.basic'],
+            wizardSteps['checkin.students.create.econtact'],
+            //wizardSteps['admin.students.create.class'],
+            wizardSteps['checkin.students.create.photo'],
+            wizardSteps['checkin.students.create.signature'],
+            wizardSteps['checkin.students.create.confirm']
+        ];
+
         WizardService.register('admin.students.create', wizardStepsOrder);
         WizardService.register('admin.students.edit', wizardStepsOrderEdit);
+        WizardService.register('checkin.students.create', wizardStepsOrderCheckinScreen);
 
     }]);
 

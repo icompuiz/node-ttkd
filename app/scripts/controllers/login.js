@@ -8,7 +8,7 @@ define(['./module'], function(controllers) {
 
         function continueToHomePage() {
             if (AuthenticationSvc.authorize('user::admin')) {
-                $state.go('admin.dashboard.home');
+                $state.go('admin.students.home');
             } else if (AuthenticationSvc.authorize('user::checkinusers')) {
                 $state.go('checkin');
             }

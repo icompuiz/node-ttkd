@@ -5,7 +5,7 @@
 				.tab-page
 					.row.pad-top-6
 						.col-md-8.col-sm-8.col-lg-8
-							.attendance-heading
+							.heading-leftpad-6
 								|Student Attendance
 						form.col-md-4(ng-show='!viewingStudent')
 							.attendance-search.input-group
@@ -13,8 +13,10 @@
 								span.input-group-addon
 									span.glyphicon.glyphicon-search
 						.col-md-4.col-sm-4.col-lg-4(ng-show='viewingStudent')
+							img.thumbnail.thumbnail-student-list.pull-right.margin-rt-6(ng-if="currentStudent.avatar", src="/api/fs/files/{{currentStudent.avatar}}/download")
+							img.thumbnail.thumbnail-student-list.pull-right.margin-rt-6(ng-if="!currentStudent.avatar", src="http://placehold.it/32x32.png")
 							.attendance-subheading.pull-right
-								{{currentStudent}}
+								{{currentStudent.fullName}}
 					.pad-top-6
 						div.gridStyle(ng-grid='gridOptions', ng-if='!viewingStudent')
 					.pad-top-6
@@ -23,7 +25,7 @@
 				.tab-page
 					.row.pad-top-6
 						.col-md-8.col-sm-8.col-lg-8
-							.attendance-heading
+							.heading-leftpad-6
 								|Class Attendance
 						.col-md-4.col-sm-4.col-lg-4
 							.attendance-subheading.pull-right
@@ -34,11 +36,21 @@
 			tab(heading='Workshops', ng-click='selectWorkshops()')
 				.tab-page
 					.row.pad-top-6
-						.col-md-8.col-sm-8.col-lg-8
-							.attendance-heading
+						.col-md-6.col-sm-6.col-lg-6
+							.heading-leftpad-6
 								|Workshop Attendance
-						.col-md-4.col-sm-4.col-lg-4
-							.attendance-subheading.pull-right
+						.col-md-6.col-sm-6.col-lg-6
+							.btn-toolbar.pull-right(ng-show='!showGenerateEmailListConfirm && viewingWorkshop')
+								button.btn.btn-default(type='button', ng-click='generateEmailList()')
+									.glyphicon.glyphicon-envelope
+							.pull-right(ng-show='showGenerateEmailListConfirm')
+								.btn-toolbar
+									span.text-muted 
+										|Generate e-mail distribution list for 
+										{{currentWorkshop}}
+									button.btn.btn-success(type='button', ng-click='confirmGenerateEmailList(true)') Yes
+									button.btn.btn-danger(type='button', ng-click='confirmGenerateEmailList(false)') No
+							.attendance-subheading.pull-right(ng-show='!showGenerateEmailListConfirm')
 								{{currentWorkshop}}
 					.pad-top-6
 						div.gridStyle(ng-grid='workshopGridOptions', ng-if='!viewingWorkshop')

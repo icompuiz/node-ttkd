@@ -2,28 +2,31 @@ doctype html
 //- This is the root view for the administrator state
 
 nav.navbar.navbar-default.navbar-static-top(role='navigation')
-	.navbar-header
-		button.navbar-toggle.collapsed(type='button', ng-click='applicationMenuCollapsed = !applicationMenuCollapsed')
-			span.sr-only Toggle navigation
-			span.icon-bar
-			span.icon-bar
-			span.icon-bar
-		a.navbar-brand(ui-sref='admin.dashboard.home') 
-			span.text ttkd
-	div#ttkd-application-menu.navbar-collapse(collapse="!applicationMenuCollapsed")
-		ul.nav.navbar-nav
-			li
-				a(ui-sref='admin.students.home', application-menu-item) Students
-			li
-				a(ui-sref='admin.programs.home', application-menu-item) Programs
-			li
-				a(ui-sref='admin.workshops.home', application-menu-item) Workshops
-			li
-				a(ui-sref='admin.attendance.home', application-menu-item) Attendance
-		ul.nav.navbar-nav.navbar-right
-			li.btn-logout
-				a(ng-click='logout()') 
-					span.glyphicon.glyphicon-log-out &nbsp;
-					| Exit
+	.container-fluid
+		.navbar-header
+			button.navbar-toggle.collapsed(type='button', ng-click='applicationMenuCollapsed = !applicationMenuCollapsed')
+				span.sr-only Toggle navigation
+				span.icon-bar
+				span.icon-bar
+				span.icon-bar
+			a.navbar-brand(ui-sref='admin.dashboard.home') 
+				span.text ttkd
+		div#ttkd-application-menu.navbar-collapse(collapse="!applicationMenuCollapsed")
+			ul.nav.navbar-nav
+				li
+					a(ui-sref='admin.students.home', application-menu-item) Students
+				li
+					a(ui-sref='admin.programs.home', application-menu-item) Programs
+				li
+					a(ui-sref='admin.workshops.home', application-menu-item) Workshops
+				li
+					a(ui-sref='admin.attendance.home', application-menu-item) Attendance
+				li
+					a(ui-sref='checkin.home.programs', application-menu-item) Checkin
+			ul.nav.navbar-nav.navbar-right
+				li.btn-logout
+					a(ng-click='logout()') 
+						span.glyphicon.glyphicon-log-out &nbsp;
+						| Exit
 .container
 	.ui-wrapper(ui-view="application-body")					
