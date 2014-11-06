@@ -231,9 +231,14 @@ define(['../module'], function(controllers) {
                                                                             // });
                                                                         });
                                                                         subrankObjs = _.sortBy(subrankObjs, function(r){return r.rankOrder;});
-                                                                        attendance.sortedSubranks.push(subrankObjs);
+
+                                                                        if (subrankObjs.length > 0) {
+                                                                            attendance.sortedSubranks.push(subrankObjs);
+                                                                        }
                                                                     }
-                                                                    attendance.sortedRanks.push(rank);
+                                                                    if (!rank.isIntermediaryRank) {
+                                                                        attendance.sortedRanks.push(rank);
+                                                                    }
                                                                 });
 
                                                                 data.push(attendance);
