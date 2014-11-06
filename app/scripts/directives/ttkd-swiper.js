@@ -428,7 +428,7 @@ define(['./module'], function(directives){
 							$scope.students[studentId] = student;
 
 							var studentHtml = '';
-							studentHtml += '<div class="col-md-4" style="height: 33%; padding: 15px;">' + '\n';
+							studentHtml += '<div class="col-xs-4" style="height: 33%; padding: 15px;">' + '\n';
 							studentHtml += '  <div class="height-full panel" is-workshop="isWorkshop" ttkd-swiper-slide-item-student students="students" class-attended="classAttended" id="\''+studentId+'\'" style="padding:10px;">' + '\n';
 							studentHtml += '  </div>' + '\n';
 							studentHtml += '</div>' + '\n';
