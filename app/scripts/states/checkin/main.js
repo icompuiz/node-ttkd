@@ -10,10 +10,11 @@ define(['../module'], function (states) {
 
 
         $stateProvider.state('checkin', {
-          url: '/checkin',
+          url: '/checkin', //
+          abstract: true,
           templateUrl: 'partials/checkinBase',
           controller: function($state) {
-            $state.go('checkin.home.programs');
+            //$state.go('checkin.home.programs');
           }
         });
 
