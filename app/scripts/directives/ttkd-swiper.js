@@ -481,7 +481,7 @@ define(['./module'], function(directives){
 		return ttkdSwiperSlideItemClass;
 	}])
 
-	.directive('ttkdSwiperSlideItemStudent', ['$log', 'AttendanceSvc', 'ClassSvc', '$state', function($log, AttendanceSvc, ClassSvc, $state) {
+	.directive('ttkdSwiperSlideItemStudent', ['$log', 'StudentSvc', 'AttendanceSvc', 'ClassSvc', '$state', function($log, StudentSvc, AttendanceSvc, ClassSvc, $state) {
 		var ttkdSwiperSlideItemStudent = {
 			restrict: 'A',
 			templateUrl: 'partials/checkin/ttkd-swiper-card-student',
@@ -510,9 +510,40 @@ define(['./module'], function(directives){
 						model.workshop = false;
 					}
 
+					function dismissMessage() {
+						$("#alert_template").fadeOut('slow', function() {
+						   	$("#alert_template span").remove();
+
+						   	$state.go('checkin.home.programs');
+						});
+					}
+
 					AttendanceSvc.save().then(function() {
 						$log.log('student ' + $scope.studentId + ' is now checked in');
-						$state.go('checkin.home.programs');
+
+						if(student.message && !student.message.viewed) {
+							// load message to remove
+							StudentSvc.read(student._id, {}, true).then(function(studentDoc) {
+								$("#alert_template button").after('<span><strong>'+student.firstName+'</strong>: '+student.message.value+'</span>');
+								$('#alert_template').fadeIn('slow');
+								$('#alert_template button').click(function(){
+									StudentSvc.current.message.viewed = Date.now();
+									StudentSvc.save();
+									dismissMessage();
+								});
+
+
+								window.setTimeout(function() {
+									StudentSvc.current.message.viewed = Date.now();
+									StudentSvc.save();
+									dismissMessage();
+								}, 15000);
+							});
+
+						} else {
+							$state.go('checkin.home.programs');
+						}
+
 					}, function() {
 						$log.log('student ' + $scope.studentId + ' is could not be checked in');
 					});

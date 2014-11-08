@@ -1,3 +1,6 @@
+div.alert.alert-danger.student-message(id="alert_template", style="display:none;")
+	button(type="button", class="close") Dismiss &times;
+
 .row(style="margin-bottom: 10px;")
 	div.checkin-toolbar(ng-if="data.type === 'students'", ng-init="filterParam = 'firstName'; filterStudents(undefined, filterParam)")
 		.col-sm-12.label-btn-lg 
@@ -28,6 +31,7 @@
 			.btn-group.btn-group-justified
 				a.btn.btn-default(ng-click="goToSelectRank(selectedClassId)", style="{{breadcrumbs.rank.style ? breadcrumbs.rank.style : ''}}") {{breadcrumbs.rank.content ? breadcrumbs.rank.content : ''}}
 		.clearfix
+
 	div(style="height:100%", ng-class="{'col-sm-9': data.type === 'students','col-sm-pull-3': data.type === 'students', 'col-sm-12': data.type !== 'students'}")
 		.device
 			.swiper-container.swiper-parent

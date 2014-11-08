@@ -830,3 +830,11 @@ body, html {
   align-items: center;
   text-align: center;
 }
+
+.student-message {
+  position: fixed;
+  top: 25%;
+  left: 20px;
+  right: 20px;
+  z-index: 7000;
+}

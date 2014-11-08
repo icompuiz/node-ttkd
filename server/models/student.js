@@ -41,7 +41,13 @@ var studentSchema = new Schema({
 		guardian: String,
 		data: String
 	},
-	message: String
+	message: {
+		value: String,
+		viewed: {
+			type: Date,
+			default: null
+		}
+	}
 });
 
 studentSchema.pre('remove', function(preRemoveDone) {
