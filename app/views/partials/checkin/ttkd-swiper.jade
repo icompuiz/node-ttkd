@@ -1,33 +1,34 @@
 .row(style="margin-bottom: 10px;")
 	div.checkin-toolbar(ng-if="data.type === 'students'", ng-init="filterParam = 'firstName'; filterStudents(undefined, filterParam)")
-		.col-md-12.label-btn-lg 
+		.col-sm-12.label-btn-lg 
 			label Sort By
-		.col-md-12
+		.col-sm-12
 			.btn-group.btn-group-justified
 				a.btn.btn-lg.btn-default(type="button", ng-click="filterParam = 'firstName'; filterStudents(filterValueArray, filterParam)", ng-class="{active: filterParam === 'firstName'}") First Name
 				a.btn.btn-lg.btn-default(type="button", ng-click="filterParam = 'lastName'; filterStudents(filterValueArray, filterParam)", ng-class="{active: filterParam === 'lastName'}") Last Name
-		.col-md-12.label-btn-lg 
+		.col-sm-12.label-btn-lg 
 			label Name
-		.col-md-12
+		.col-sm-12
 			.btn-group.btn-group-justified
 				a.btn.btn-lg.btn-default(ng-repeat="nameFilter in nameFilters", type="button", ng-click="changeFilter(nameFilter); filterStudents(filterValueArray, filterParam);", ng-class="{active: nameFilter.isActive}") {{nameFilter.filterLabel}}
-.row
-	.col-md-2.col-md-push-10.breadcrumbs(ng-if="data.type === 'students'")
+
+.row(style="height:100%")
+	.col-sm-3.col-sm-push-9.breadcrumbs(ng-if="data.type === 'students'")
 		// - h2 Change
-		div.col-md-12.col-xs-4.col-xs-4.checkin-breadcrumb(ng-if="breadcrumbs.program", style="{{breadcrumbs.program.style ? breadcrumbs.program.style : ''}}")
+		div.col-sm-12.col-xs-4.col-xs-4.checkin-breadcrumb(ng-if="breadcrumbs.program", style="{{breadcrumbs.program.style ? breadcrumbs.program.style : ''}}")
 			label.breadcrumb-identifier Program
 			.btn-group.btn-group-justified
 				a.btn.btn-default(ng-click="goToSelectProgram()") {{breadcrumbs.program.content ? breadcrumbs.program.content : ''}}
-		div.col-md-12.col-xs-4.checkin-breadcrumb(ng-if="breadcrumbs.class", style="{{breadcrumbs.class.style ? breadcrumbs.program.style : ''}}")
+		div.col-sm-12.col-xs-4.checkin-breadcrumb(ng-if="breadcrumbs.class", style="{{breadcrumbs.class.style ? breadcrumbs.program.style : ''}}")
 			label.breadcrumb-identifier Class
 			.btn-group.btn-group-justified
 				a.btn.btn-default(ng-click="goToSelectProgram()") {{breadcrumbs.class.content ? breadcrumbs.class.content : ''}}
-		div.col-md-12.col-xs-4.checkin-breadcrumb(ng-if="breadcrumbs.rank")
+		div.col-sm-12.col-xs-4.checkin-breadcrumb(ng-if="breadcrumbs.rank")
 			label.breadcrumb-identifier Rank
 			.btn-group.btn-group-justified
-				a.btn.btn-default(ng-click="goToSelectRank(selectedClassId)", style="{{breadcrumbs.rank.style ? breadcrumbs.rank.style : ''}}") {{breadcrumbs.rank.content ? breadcrumbs.rank.content : ''}
+				a.btn.btn-default(ng-click="goToSelectRank(selectedClassId)", style="{{breadcrumbs.rank.style ? breadcrumbs.rank.style : ''}}") {{breadcrumbs.rank.content ? breadcrumbs.rank.content : ''}}
 		.clearfix
-	div(ng-class="{'col-md-10': data.type === 'students','col-md-pull-2': data.type === 'students', 'col-md-12': data.type !== 'students'}")
+	div(style="height:100%", ng-class="{'col-sm-9': data.type === 'students','col-sm-pull-3': data.type === 'students', 'col-sm-12': data.type !== 'students'}")
 		.device
 			.swiper-container.swiper-parent
 				.swiper-wrapper

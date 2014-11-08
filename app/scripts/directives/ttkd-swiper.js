@@ -70,7 +70,8 @@ define(['./module'], function(directives){
 						RankSvc.read(selectedRankId, null, false).then(function(rankDoc) {
 							if(rankDoc.color) {
 								$scope.breadcrumbs.rank = {
-									style: 'background-color: ' + rankDoc.color + ';'
+									style: 'background-color: ' + rankDoc.color + ';',
+									content: rankDoc.name
 								};
 							} else {
 								$scope.breadcrumbs.rank = {
@@ -78,6 +79,10 @@ define(['./module'], function(directives){
 								};
 							}
 						});
+					} else {
+						$scope.breadcrumbs.rank = {
+							content: 'Click to Select Rank'
+						};
 					}
 				}
 
@@ -464,11 +469,11 @@ define(['./module'], function(directives){
 			controller: function($scope) {
 				$scope.className = $scope.classes[$scope.classId].name;
 				$scope.classContinue = function() {
-					if($scope.hasRanks) {
-						$state.go('checkin.home.ranked', {classId: $scope.classId});
-					} else {
-						$state.go('checkin.home.studentsUnranked', {classId: $scope.classId});
-					}
+					//if($scope.hasRanks) {
+					//	$state.go('checkin.home.ranked', {classId: $scope.classId});
+					//} else {
+					$state.go('checkin.home.studentsUnranked', {classId: $scope.classId});
+					//}
 				};
 			}
 		};
