@@ -73,5 +73,23 @@ define(['../module'], function(controllers){
                     });
                 });
             }
+
+            $scope.hasNotifications = function() {
+            	return $scope.currentStudent.message && $scope.currentStudent.message !== '';
+            };
+
+            $scope.editingNotifications = false;
+            $scope.editNotifications = function() {
+            	$scope.editingNotifications = true;
+            };
+
+            $scope.addNotifications = function() {
+            	$scope.editingNotifications = true;
+            };
+
+            $scope.saveNotifications = function() {
+            	$scope.editingNotifications = false;
+            	StudentSvc.save(); // save message
+            };
 	}]);
 });

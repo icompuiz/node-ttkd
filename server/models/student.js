@@ -40,7 +40,8 @@ var studentSchema = new Schema({
 		participant: String,
 		guardian: String,
 		data: String
-	}
+	},
+	message: String
 });
 
 studentSchema.pre('remove', function(preRemoveDone) {

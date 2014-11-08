@@ -1,4 +1,16 @@
 .row
+	.well
+		span
+			i.glyphicon.glyphicon-pushpin 
+			span(ng-if="hasNotifications() && !editingNotifications")  {{currentStudent.message}} 
+				a.btn.btn-sm.btn-default(ng-click="editNotifications()") Edit Message
+			span(ng-if="!hasNotifications() && !editingNotifications")  No messages added for {{currentStudent.firstName}}. 
+				a.btn.btn-sm.btn-default(ng-click="addNotifications()") Add Message
+			span(ng-if="editingNotifications")  Enter message in textbox below. 
+				a.btn.btn-sm.btn-default(ng-click="saveNotifications()") Save Message
+			br(ng-if="editingNotifications")
+			textarea(ng-if="editingNotifications", style="width:100%;", ng-model="currentStudent.message", cols="2")
+.row
 	.col-md-6
 		// - avatar
 		img.thumbnail.thumbnail-view-student(ng-if="currentStudent.avatar", src="/api/fs/files/{{currentStudent.avatar}}/download")
