@@ -262,17 +262,17 @@ define(['../module'], function(controllers) {
                                 function(attendance, callback) {
                                     if (!filterOptions || (filterOptions.classAttended && attendance.classAttended === filterOptions.classAttended)) {
                                         StudentSvc.read(attendance.student, null, false).then(function(student) {
+                                            if (!student) {
+                                                callback();
+                                                return;
+                                            }
+
                                             if (filterOptions && $scope.viewingWorkshop) {
                                                 _(student.emailAddresses).forEach(function(email) {
                                                     if (!_.contains(emails, email)) {
                                                         emails.push(email);
                                                     }
                                                 });
-                                            }
-
-                                            if (!student) {
-                                                callback();
-                                                return;
                                             }
                                             attendance.fullName = student.firstName + ' ' + student.lastName;
 
