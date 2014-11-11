@@ -35,46 +35,29 @@ define(['../module'], function(controllers) {
 
                     var data = [];
 
-                    StudentSvc.list().then(function(students){
-                        function attachAgeAndLastCheckin(student, callback) {
-                            var params = {
-                                student: student._id,
-                                sort: '-checkInTime',
-                                limit: 1,
-                                populate: 'student'
-                            };
+                    var params = {
+                        sort: '-checkInTime'
+                    };
 
-                            AttendanceSvc.list(params).then(function(checkins) {
+                    AttendanceSvc.list(params).then(function(attendances) {
+                        var checkins = _.uniq(attendances, true, function(att) {return att.student;});
+                       
+                        StudentSvc.list().then(function(students) {
+                            _(students).forEach(function(student) {
                                 student.age = $filter('age')(student.birthday);
-                                if (checkins.length > 0) {
-                                    student.lastCheckin = checkins[0].checkInTime;
+
+                                var lastCheckIn = _.findWhere(checkins, {student: student._id});
+                                if ( lastCheckIn ) {
+                                    student.lastCheckIn = lastCheckIn.checkInTime;
                                 } else {
-                                    student.lastCheckin = NULL_DATE.toISOString();
+                                    student.lastCheckIn = NULL_DATE.toISOString();
                                 }
+
                                 data.push(student);
-                                callback();
                             });
-                        }
-
-                        async.each(students,
-                            attachAgeAndLastCheckin,
-                            function(err) {
-                                if (err) {
-                                    return;
-                                }
-
-                                $scope.allData = _.clone(data);
-                                $scope.setPagingData(data,page,pageSize);
+                            $scope.allData = _.clone(data);
+                            $scope.setPagingData(data,page,pageSize);
                         });
-                        // add students to new array for ng-grid outputting
-                        // _(students).forEach(function(student){
-                        //     student.age = $filter('age')(student.birthday);
-                        //     data.push(student);
-                        // });
-
-                        // $scope.allData = _.clone(data);
-
-                        // $scope.setPagingData(data,page,pageSize);
                     });
                 }, 100);
             };
@@ -150,7 +133,7 @@ define(['../module'], function(controllers) {
                     { field: 'firstName', displayName: 'First Name' },
                     { field: 'lastName', displayName: 'Last Name' },
                     { field: 'age', displayName: 'Age' },
-                    { field: 'lastCheckin', displayName: 'Last Check-in', cellFilter: 'dateTime'},
+                    { field: 'lastCheckIn', displayName: 'Last Check-in', cellFilter: 'dateTime'},
                     { cellTemplate: '/partials/students/list/optionsButton', sortable: false },
                 ]   
             };
