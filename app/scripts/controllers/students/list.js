@@ -1,8 +1,8 @@
 define(['../module'], function(controllers) {
     'use strict';
 
-    controllers.controller('ListStudentCtrl', ['$scope', '$http', '$log', '$state', '$filter', 'StudentSvc',
-        function($scope, $http, $log, $state, $filter, StudentSvc) {
+    controllers.controller('ListStudentCtrl', ['$scope', '$http', '$log', '$state', '$filter', 'StudentSvc', 'AttendanceSvc',
+        function($scope, $http, $log, $state, $filter, StudentSvc, AttendanceSvc) {
             $scope.filterOptions = {
                 filterText: '',
                 useExternalFilter: true
@@ -14,6 +14,8 @@ define(['../module'], function(controllers) {
                 pageSize: 25,
                 currentPage: 1
             };
+
+            var NULL_DATE = new Date(-8640000000000000);
 
             $scope.setPagingData = function(data, page, pageSize){
                 var pagedData = data.slice((page - 1) * pageSize, page * pageSize);
@@ -34,15 +36,45 @@ define(['../module'], function(controllers) {
                     var data = [];
 
                     StudentSvc.list().then(function(students){
-                        // add students to new array for ng-grid outputting
-                        _(students).forEach(function(student){
-                            student.age = $filter('age')(student.birthday);
-                            data.push(student);
+                        function attachAgeAndLastCheckin(student, callback) {
+                            var params = {
+                                student: student._id,
+                                sort: '-checkInTime',
+                                limit: 1,
+                                populate: 'student'
+                            };
+
+                            AttendanceSvc.list(params).then(function(checkins) {
+                                student.age = $filter('age')(student.birthday);
+                                if (checkins.length > 0) {
+                                    student.lastCheckin = checkins[0].checkInTime;
+                                } else {
+                                    student.lastCheckin = NULL_DATE.toISOString();
+                                }
+                                data.push(student);
+                                callback();
+                            });
+                        }
+
+                        async.each(students,
+                            attachAgeAndLastCheckin,
+                            function(err) {
+                                if (err) {
+                                    return;
+                                }
+
+                                $scope.allData = _.clone(data);
+                                $scope.setPagingData(data,page,pageSize);
                         });
+                        // add students to new array for ng-grid outputting
+                        // _(students).forEach(function(student){
+                        //     student.age = $filter('age')(student.birthday);
+                        //     data.push(student);
+                        // });
 
-                        $scope.allData = _.clone(data);
+                        // $scope.allData = _.clone(data);
 
-                        $scope.setPagingData(data,page,pageSize);
+                        // $scope.setPagingData(data,page,pageSize);
                     });
                 }, 100);
             };
@@ -87,7 +119,6 @@ define(['../module'], function(controllers) {
                 $scope.myData = $scope.allData.slice((page - 1) * pageSize, page * pageSize);
             }
 
-
             $scope.gridOptions = {
                 data: 'myData',
                 rowHeight: 40,
@@ -119,8 +150,9 @@ define(['../module'], function(controllers) {
                     { field: 'firstName', displayName: 'First Name' },
                     { field: 'lastName', displayName: 'Last Name' },
                     { field: 'age', displayName: 'Age' },
+                    { field: 'lastCheckin', displayName: 'Last Check-in', cellFilter: 'dateTime'},
                     { cellTemplate: '/partials/students/list/optionsButton', sortable: false },
-                ]
+                ]   
             };
 
             $scope.edit = function(row){

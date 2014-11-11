@@ -47,6 +47,10 @@ var studentSchema = new Schema({
 			type: Date,
 			default: null
 		}
+	},
+	registrationDate: {
+		type: Date,
+		default: Date.now
 	}
 });
 

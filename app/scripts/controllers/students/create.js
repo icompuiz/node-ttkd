@@ -155,6 +155,8 @@ define(['../module'], function(controllers) {
 	                    StudentSvc.reset();
 	                    var inWizardCheckin = /^(checkin.students.create)/.test($scope.wizard.current.id);
 
+	                    if (!$scope.model._id) {}
+
 	                    if(inWizardCheckin) {
 	                    	$state.go('checkin.home.programs');
 	                    } else {

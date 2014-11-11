@@ -838,3 +838,26 @@ body, html {
   right: 20px;
   z-index: 7000;
 }
+
+.dropdown-group {
+  display: flex;
+}
+
+.chart-container {
+  display: table;
+}
+
+.chart-div {
+  display: table-cell;
+  text-align: center;
+}
+
+.chart {
+  height: 360px;
+  width: 600px;
+}
+
+.chart-title { 
+  font-size: 18px;
+}
+

@@ -7,6 +7,7 @@ define('app', [
     'angular-ui-router',
     'angular-bootstrap',
     'angular-file-upload',
+    'angularCharts',
     // 'text!',
     'ngGrid',
     'restangular',
@@ -25,6 +26,7 @@ define('app', [
 
     return ng.module('ttkd', [
         'ngGrid',
+        'angularCharts',
         'restangular',
         'angularFileUpload',
         'ttkd.controllers',
