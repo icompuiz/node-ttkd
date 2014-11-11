@@ -521,7 +521,7 @@ define(['./module'], function(directives){
 					AttendanceSvc.save().then(function() {
 						$log.log('student ' + $scope.studentId + ' is now checked in');
 
-						if(student.message && !student.message.viewed) {
+						if(student.message && student.message.value && student.message.value != '' && !student.message.viewed) {
 							// load message to remove
 							StudentSvc.read(student._id, {}, true).then(function(studentDoc) {
 								$("#alert_template button").after('<span><strong>'+student.firstName+'</strong>: '+student.message.value+'</span>');
