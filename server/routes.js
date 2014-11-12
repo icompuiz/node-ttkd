@@ -30,6 +30,8 @@ var InputFormat = require('./controllers/inputFormat.js');
 var OutputFormat = require('./controllers/outputFormat.js');
 var Template = require('./controllers/template.js');
 
+var ImportExport = require('./controllers/importExport.js');
+
 
 var apiRoutes = [{
     path: '/api/mocks',
@@ -138,6 +140,10 @@ var staticRoutes = [{
             user: req.user
         });
     },
+}, {
+    path: '/api/import',
+    httpMethod: 'POST',
+    middleware: [ImportExport.importStudentData]
 }];
 
 

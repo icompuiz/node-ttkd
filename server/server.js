@@ -50,7 +50,7 @@ function main(app, config, argument2, argument3) {
 	})); // get this from the configuration
 
 	app.use($express.bodyParser({
-		limit: '10mb'
+		limit: '50mb'
 	}));
 	app.use($express.query());
 	app.use($express.methodOverride());

@@ -1,0 +1,40 @@
+doctype html
+form
+	.form-group
+		label(for="csv-file")
+			| Choose a CSV file &nbsp;
+			a.text-danger(ng-click="clearQueue()") &times;
+		input.form-control(name="csv-file", type="file", nv-file-select, uploader="uploader")
+
+table.table
+	thead
+		tr
+			th(width="30%") Name
+			th(ng-show="uploader.isHTML5") Progress
+			th Status
+			th Actions
+	tbody
+		tr(ng-repeat="item in uploader.queue")
+			td
+				strong {{item.file.name}}
+			td(ng-show="uploader.isHTML5", nowrap)
+				.progress(stype="margin-bottom: 0")
+					.progress-bar(role="progressbar", ng-style="{ 'width': item.progress + '%' }")
+			td.text-center
+				span(ng-show="item.isSuccess", style="display: none;")
+					i.glyphicon.glyphicon-ok
+				span(ng-show="item.isCancel", style="display: none;")
+					i.glyphicon.glyphicon-ban-circle
+				span(ng-show="item.isError", style="display: none;")
+					i.glyphicon.glyphicon-remove
+			td(nowrap="")
+				.btn-group
+					button.btn.btn-success.btn-xs(type='button', ng-click='item.upload()', ng-disabled='item.isReady || item.isUploading || item.isSuccess')
+						span.glyphicon.glyphicon-upload
+						| Upload
+					button.btn.btn-warning.btn-xs(type='button', ng-click='item.cancel()', ng-disabled='!item.isUploading', disabled='disabled')
+						span.glyphicon.glyphicon-ban-circle
+						| Cancel
+					button.btn.btn-danger.btn-xs(type='button', ng-click='item.remove()')
+						span.glyphicon.glyphicon-trash
+						| Remove

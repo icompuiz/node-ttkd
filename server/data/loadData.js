@@ -441,7 +441,11 @@ function addMocks(doneAddingMocks) {
 }
 
 
-function addStudents(doneAddingStudents) {
+function addStudents(doneAddingStudents, data) {
+
+    data = data || studentData;
+
+
 
     console.log('loadData::addStudents::enter');
 
@@ -534,13 +538,7 @@ function addStudents(doneAddingStudents) {
 
     }
 
-
-
-
-
-    
-
-    $async.each(studentData, eachStudent, afterEachStudent);
+    $async.each(data, eachStudent, afterEachStudent);
 }
 
 
