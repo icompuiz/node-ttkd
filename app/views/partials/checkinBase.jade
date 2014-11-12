@@ -1,20 +1,23 @@
 nav.navbar.navbar-default.navbar-static-top(role='navigation')
-	.navbar-header
-		button.navbar-toggle.collapsed(type='button', ng-click='applicationMenuCollapsed = !applicationMenuCollapsed')
-			span.sr-only Toggle navigation
-			span.icon-bar
-			span.icon-bar
-			span.icon-bar
-		a.navbar-brand(ui-sref='admin.dashboard.home') 
-			span.text ttkd
-	div#ttkd-application-menu.navbar-collapse(collapse="!applicationMenuCollapsed")
-		ul.nav.navbar-nav
-			li
-				a(ui-sref='checkin.home.programs', application-menu-item) Checkin
-		ul.nav.navbar-nav.navbar-right
-			li.btn-logout
-				a(ng-click='logout()') 
-					span.glyphicon.glyphicon-log-out &nbsp;
-					| Exit
-
-div.height-inherit(ui-view="application-body")
+	.container-fluid
+		.navbar-header
+			button.navbar-toggle.collapsed(type='button', ng-click='applicationMenuCollapsed = !applicationMenuCollapsed')
+				span.sr-only Toggle navigation
+				span.icon-bar
+				span.icon-bar
+				span.icon-bar
+			a.navbar-brand(ui-sref='checkin.home.programs') 
+				span.text ttkd
+		div#ttkd-application-menu.navbar-collapse(collapse="!applicationMenuCollapsed")
+			ul.nav.navbar-nav
+				li
+					a(ui-sref='checkin.home.programs', application-menu-item) Checkin
+				li
+					a(ui-sref='checkin.students.create', application-menu-item) Register
+			ul.nav.navbar-nav.navbar-right
+				li.btn-logout
+					a(ng-click='logout()') 
+						span.glyphicon.glyphicon-log-out &nbsp;
+						| Exit
+.container.height-inherit
+	div.height-inherit(ui-view="application-body")

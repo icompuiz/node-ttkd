@@ -18,10 +18,10 @@ define(['./module'], function (states) {
             } else {
               if (AuthenticationSvc.authorize('user::admin')) {
                 if ($state.current.name === 'admin') {
-                  $state.go('admin.dashboard.home');
+                  $state.go('admin.students.home');
                 }
               } else if (AuthenticationSvc.authorize('user::checkinusers')) {
-                $state.go('checkin');
+                $state.go('checkin.home.programs');
               }
             }
           }

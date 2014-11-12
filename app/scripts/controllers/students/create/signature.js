@@ -11,7 +11,8 @@ define(['../../module'], function(controllers) {
 
 			// Make sure that the signature pad doesn't have any errosr
 			function validateSigPadSigned() {
-				if($scope.wizard.current.isFinalStep || $scope.wizard.current.id === 'admin.students.create.signature') {
+				var onSignatureStep = /(students.create.signature)$/.test($scope.wizard.current.id);
+				if($scope.wizard.current.isFinalStep || onSignatureStep) {
 					if($scope.model.signaturedata.errors && $scope.model.signaturedata.errors !== null) {
 						return false;
 					}

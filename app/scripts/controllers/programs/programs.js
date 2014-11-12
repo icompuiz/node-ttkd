@@ -1,7 +1,7 @@
 define(['../module'], function(controllers){
 	'use strict';
-	controllers.controller('ProgramsCtrl', ['$scope', '$state', 'ProgramSvc', 'ClassSvc', 'RankSvc', 
-		function($scope, $state, ProgramSvc, ClassSvc, RankSvc) {
+	controllers.controller('ProgramsCtrl', ['$scope', '$state', 'ProgramSvc', 'ClassSvc', 'RankSvc', 'AttendanceSvc', 'AchievementSvc', 
+		function($scope, $state, ProgramSvc, ClassSvc, RankSvc, AttendanceSvc, AchievementSvc) {
 
 /************ GridOptions *********************************/
 			$scope.filterOptions = {
@@ -142,10 +142,41 @@ define(['../module'], function(controllers){
 					async.each(program.classObjs,
 						function(classToRemove, callback) {
 							ClassSvc.read(classToRemove._id, null, true).then(function(c) {
-								ClassSvc.remove().then(function() {
-									ClassSvc.reset();
-									callback();
-								});
+								// Remove associated attendance / achievements from model
+								async.parallel([
+									function(callback, err) {
+										AttendanceSvc.list().then(function(attendances) {
+											_(attendances).forEach(function(attendance) {
+												if (attendance.classAttended === classToRemove._id) {
+													AttendanceSvc.read(attendance._id, null, true).then(function() {
+														AttendanceSvc.remove().then(function() {
+															callback();
+														});
+													});
+												}
+											});
+										});
+									},
+									function(callback, err) {
+										AchievementSvc.list().then(function(achievements) {
+											_(achievements).forEach(function(achievement) {
+												if (achievement.class === classToRemove._id) {
+													AchievementSvc.read(achievement._id, null, true).then(function() {
+														AchievementSvc.remove().then(function() {
+															callback();
+														});
+													});
+												}
+											});
+										});
+									},
+									function(err) {
+										ClassSvc.remove().then(function() {
+											ClassSvc.reset();
+											callback();
+										});
+								}]);
+								
 							});
 						},
 						function(err) {

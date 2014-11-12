@@ -1,1 +1,28 @@
 h1 Reporting
+
+h3 Registration
+
+.input-group.col-md-2.col-sm-2.col-lg-2.pad-top-20
+	.input-group-btn
+		.dropdown
+			button.btn.btn-default.dropdown-toggle(tope='button', data-toggle='dropdown') 
+				{{monthButtonContent}} 
+				span.caret
+			ul.dropdown-menu(role='menu')
+				li(ng-repeat='month in months' role='presentation')
+					a(role='menuitem', tabindex='-1', href='#')
+						{{month}}
+	.input-group-btn
+		.dropdown
+			button.btn.btn-default.dropdown-toggle(tope='button', data-toggle='dropdown') 
+				{{yearButtonContent}} 
+				span.caret
+			ul.dropdown-menu(role='menu')
+				li(ng-repeat='year in years' role='presentation')
+					a.dropdown-toggle(role='menuitem', tabindex='-1', href='#', ng-click='selectYear(year)')
+						{{year}}
+.chart-container.pad-top-12
+	.chart-div
+		span.chart-title.pad-top-12
+			{{chartTitle}}						
+		.chart(ac-chart='chartType', ac-data='chartData', ac-config='chartConfig', id='chart')

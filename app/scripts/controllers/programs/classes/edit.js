@@ -70,6 +70,10 @@ define(['../../module'], function(controllers){
 				$scope.currentClass.students = [];
 			}
 
+            $scope.back = function() {
+                $state.go('admin.programs.editclass', {id: $scope.currentClass._id});
+            };
+
 			function goToPrevState() {
 				if (ProgramSvc.editing) {
 					$state.go('admin.programs.edit', { id: currentProgram._id});

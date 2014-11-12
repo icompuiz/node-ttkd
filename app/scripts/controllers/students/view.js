@@ -73,5 +73,39 @@ define(['../module'], function(controllers){
                     });
                 });
             }
+
+            $scope.hasNotifications = function() {
+            	return $scope.currentStudent.message && $scope.currentStudent.message.value && $scope.currentStudent.message.value !== '';
+            };
+
+            $scope.editingNotifications = false;
+            $scope.editNotifications = function() {
+            	$scope.editingNotifications = true;
+            	$scope.currentStudent.message.show = (!$scope.currentStudent.message.viewed);
+            };
+
+            $scope.addNotifications = function() {
+            	$scope.editingNotifications = true;
+            	$scope.currentStudent.message = {};
+            };
+
+            $scope.saveNotifications = function() {
+            	if($scope.currentStudent.message) {
+            		if(!$scope.currentStudent.message.value || $scope.currentStudent.message.value == '') {
+            			$scope.currentStudent.message = null;
+            		}
+            		if($scope.currentStudent.message.show) {
+            			$scope.currentStudent.message.viewed = null;
+            		} else {
+            			if(!$scope.currentStudent.message.viewed) {
+            				//hack
+	            			$scope.currentStudent.message.viewed = 0;
+	            		}
+            		}
+            	}
+
+            	$scope.editingNotifications = false;
+            	StudentSvc.save(); // save message
+            };
 	}]);
 });

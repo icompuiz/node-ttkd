@@ -20,7 +20,7 @@ div.row
 
 			div.form_controls.pull-right
 				button.btn.btn-default(type='button', ng-click='wizard.goBack()', ng-show='displayPreviousBtn()') Previous
-				button.btn.btn-primary(type='submit', ng-show="!wizard.current.isFinalStep && wizard.current.id !== 'admin.students.create.signature'", ng-disabled='createStudent.$invalid') Continue
-				button.btn.btn-default(type='button', ng-show="wizard.current.id === 'admin.students.create.signature'", ng-disabled='submitBtnDisabled', data-action='clearsigpad') Clear Signature
-				button.btn.btn-primary(type='submit', ng-show="wizard.current.id === 'admin.students.create.signature'", ng-disabled='createStudent.$invalid', data-action='savesigpad') Continue
+				button.btn.btn-primary(type='submit', ng-show="!wizard.current.isFinalStep && !isOnSignatureStep()", ng-disabled='createStudent.$invalid') Continue
+				button.btn.btn-default(type='button', ng-show="isOnSignatureStep()", ng-disabled='submitBtnDisabled', data-action='clearsigpad') Clear Signature
+				button.btn.btn-primary(type='submit', ng-show="isOnSignatureStep()", ng-disabled='createStudent.$invalid', data-action='savesigpad') Continue
 				button.btn.btn-success(type='submit', ng-show='wizard.current.isFinalStep', ng-disabled='createStudent.$invalid || submitBtnDisabled', data-action='savesigpad') {{submitBtnContent}}

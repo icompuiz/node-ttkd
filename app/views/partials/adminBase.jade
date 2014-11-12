@@ -21,6 +21,10 @@ nav.navbar.navbar-default.navbar-static-top(role='navigation')
 					a(ui-sref='admin.workshops.home', application-menu-item) Workshops
 				li
 					a(ui-sref='admin.attendance.home', application-menu-item) Attendance
+				li
+					a(ui-sref='admin.reporting.home', application-menu-item) Reporting
+				li
+					a(ui-sref='checkin.home.programs', application-menu-item) Checkin
 			
 			ul.nav.navbar-nav.navbar-right
 				li
@@ -31,6 +35,6 @@ nav.navbar.navbar-default.navbar-static-top(role='navigation')
 					a.navbar-link.logout(ng-click="logout()") 
 						span.glyphicon.glyphicon-log-out &nbsp;
 						| Logout
-			
+		
 .container
 	.ui-wrapper(ui-view="application-body")					

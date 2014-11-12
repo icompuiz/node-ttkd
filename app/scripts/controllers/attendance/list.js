@@ -1,8 +1,8 @@
 define(['../module'], function(controllers) {
     'use strict';
 
-    controllers.controller('ListAttendanceCtrl', ['$scope', '$modal', '$http', '$log', '$state', '$filter', 'AttendanceSvc', 'StudentSvc', 'WorkshopSvc', 'ClassSvc', 'ProgramSvc', 'AchievementSvc', 'RankSvc',
-        function($scope, $modal, $http, $log, $state, $filter, AttendanceSvc, StudentSvc, WorkshopSvc, ClassSvc, ProgramSvc, AchievementSvc, RankSvc) {
+    controllers.controller('ListAttendanceCtrl', ['$scope', '$modal', '$http', '$log', '$state', '$filter', 'saveAs', 'AttendanceSvc', 'StudentSvc', 'WorkshopSvc', 'ClassSvc', 'ProgramSvc', 'AchievementSvc', 'RankSvc',
+        function($scope, $modal, $http, $log, $state, $filter, saveAs, AttendanceSvc, StudentSvc, WorkshopSvc, ClassSvc, ProgramSvc, AchievementSvc, RankSvc) {
             var defaultColumnDefs = [
                     { field: 'checkInTime', displayName: 'Check-in Time', cellFilter: 'dateTime'},
                     { field: 'fullName', displayName: 'Student'},
@@ -26,6 +26,8 @@ define(['../module'], function(controllers) {
                     { field: 'numAttendees', displayName: 'Attendees'},
                     { sortable: false, displayName: 'Actions', cellTemplate: '/partials/attendance/list/workshopViewButton'}
                 ];
+
+            var emails = [];
 
             $scope.allData = [];
             $scope.filterStudent = {};
@@ -77,11 +79,14 @@ define(['../module'], function(controllers) {
             };
 
             $scope.viewStudentAttendance = function(row) {
-                $scope.studentTab.active = true;
-                $scope.currentStudent = row.entity.fullName;
-                $scope.viewingStudent = true;
-                $scope.columnDefs = studentColumnDefs;
-                $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage, {student: row.entity.student});
+                StudentSvc.read(row.entity.student, null, false).then(function(student) {
+                    $scope.studentTab.active = true;
+                    $scope.currentStudent = student;
+                    $scope.currentStudent.fullName = student.firstName + " " + student.lastName;
+                    $scope.viewingStudent = true;
+                    $scope.columnDefs = studentColumnDefs;
+                    $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage, {student: row.entity.student});
+                });
             };
 
             $scope.viewClassAttendance = function(row) {
@@ -152,16 +157,17 @@ define(['../module'], function(controllers) {
                             });
                         });
                     } else if ($scope.columnDefs === workshopColumnDefs) { // Clicked the workshops tab
-                        WorkshopSvc.list().then(function(workshops) {
-                            _(workshops).forEach(function(workshop) {
-                                workshop.numAttendees = 0;
-                                if (workshop.attendanceList) {
-                                    workshop.numAttendees = workshop.attendanceList.length;
-                                }
-                                data.push(workshop);
+                        AttendanceSvc.list().then(function(attendances) {
+                            WorkshopSvc.list().then(function(workshops) {
+                                _(workshops).forEach(function(workshop) {
+                                    workshop.numAttendees = _.where(attendances, {classAttended: workshop._id}).length;
+                                    data.push(workshop);
+                                });
+                                $scope.setPagingData(data,page,pageSize);
                             });
-                            $scope.setPagingData(data,page,pageSize);
                         });
+
+                        
                     } else if ($scope.columnDefs === studentColumnDefs) { // Viewing a student's attendace records
                         AttendanceSvc.list().then(function(attendances) {
                             attendances = _.where(attendances, filterOptions); //using filterOptions as list() param didn't work
@@ -192,7 +198,7 @@ define(['../module'], function(controllers) {
                                                     // Attach achievement name(s) to attendance object
                                                      if (attendance.workshop) {
                                                         WorkshopSvc.read(attendance.classAttended, null, false).then(function(workshop) {
-                                                            attendance.eventName = 'Workshop: ' + workshop.name;
+                                                            attendance.eventName = workshop.name;
                                                             data.push(attendance);
                                                             callback();
                                                         });
@@ -225,9 +231,14 @@ define(['../module'], function(controllers) {
                                                                             // });
                                                                         });
                                                                         subrankObjs = _.sortBy(subrankObjs, function(r){return r.rankOrder;});
-                                                                        attendance.sortedSubranks.push(subrankObjs);
+
+                                                                        if (subrankObjs.length > 0) {
+                                                                            attendance.sortedSubranks.push(subrankObjs);
+                                                                        }
                                                                     }
-                                                                    attendance.sortedRanks.push(rank);
+                                                                    if (!rank.isIntermediaryRank) {
+                                                                        attendance.sortedRanks.push(rank);
+                                                                    }
                                                                 });
 
                                                                 data.push(attendance);
@@ -244,6 +255,7 @@ define(['../module'], function(controllers) {
                             }); 
                         });
                     } else { // Viewing the default ng-grid
+                        emails = [];
                         AttendanceSvc.list().then(function(attendances){
                             // add attendances to new array for ng-grid outputting
                             async.each(attendances,
@@ -254,11 +266,19 @@ define(['../module'], function(controllers) {
                                                 callback();
                                                 return;
                                             }
+
+                                            if (filterOptions && $scope.viewingWorkshop) {
+                                                _(student.emailAddresses).forEach(function(email) {
+                                                    if (!_.contains(emails, email)) {
+                                                        emails.push(email);
+                                                    }
+                                                });
+                                            }
                                             attendance.fullName = student.firstName + ' ' + student.lastName;
 
                                             if (attendance.workshop) {
                                                 WorkshopSvc.read(attendance.classAttended, null, false).then(function(workshop) {
-                                                    attendance.eventName = 'Workshop: ' + workshop.name;
+                                                    attendance.eventName = workshop.name;
                                                     data.push(attendance);
                                                     callback();
                                                 });
@@ -385,6 +405,37 @@ define(['../module'], function(controllers) {
                     $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage, {student: attendance.student});
                 }, function () {});
             };
+
+            function writeEmailList() {
+                var studentFile = '';
+                var d = new Date(),
+                    year = d.getFullYear(),
+                    month = d.getMonth()+1,
+                    day = d.getDate();
+
+                var filename = $scope.currentWorkshop + '_emails_' + month + '-' + day + '-' + 
+                                year + '.txt';
+
+                _(emails).forEach(function(e) {
+                    studentFile += e + '\r\n';
+                });
+                
+                var blob = new Blob([studentFile], {type: 'text/plain;'});
+                saveAs(blob, filename);
+            }
+
+            $scope.showGenerateEmailListConfirm = false;
+
+            $scope.generateEmailList = function() {
+                $scope.showGenerateEmailListConfirm = true;
+            };
+
+            $scope.confirmGenerateEmailList = function(writeList) {
+                if (writeList) {
+                    writeEmailList();
+                }
+                $scope.showGenerateEmailListConfirm = false;
+            }
         }
     ]);
 });

@@ -348,8 +348,11 @@
 				RankSvc.reset();
 				RankSvc.orig = null;
 
-				$state.go('admin.programs.edit', {id: program._id});
-				
+				if (ProgramSvc.creating) {
+					$state.go('admin.programs.create');
+				} else {
+					$state.go('admin.programs.edit', {id: program._id});
+				}				
 			};
 
 /********************** Validation **********************************/

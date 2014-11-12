@@ -21,7 +21,9 @@ requirejs.config({
         'ngGrid': '../bower_components/ng-grid/ng-grid-2.0.13.min',
         'sigPad': '../bower_components/signature_pad/signature_pad',
         'swiper': '../bower_components/idangerous-swiper/dist/idangerous.swiper',
-        'jquery-ui': '../bower_components/jquery-ui/jquery-ui'
+        'jquery-ui': '../bower_components/jquery-ui/jquery-ui',
+        'd3': '../bower_components/d3/d3',
+        'angularCharts': '../bower_components/angular-charts/dist/angular-charts'
       },
 
     /**
@@ -64,6 +66,9 @@ requirejs.config({
           },
           'jquery-ui':{
             deps:['$']
+          },
+          'angularCharts':{
+            deps:['d3', 'angular']
           }
         },
 
