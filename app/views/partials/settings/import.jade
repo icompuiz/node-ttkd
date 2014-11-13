@@ -1,9 +1,16 @@
 doctype html
+p.text-muted
+	| Import existing student data from a CSV file.
+p.text-muted.small 
+	strong Expected headers (case sensitive): 
+	br
+	| firstname, lastname, emailAddress1, emailAddress2, emailAddress3, emergencyContact1Name, emergencyContact1Phone, emergencyContact1Relationship, emergencyContact2Name, emergencyContact2Phone, emergencyContact2Relationship, birthday, streetName, city, state, zip, homePhone, cellPhone
 form
 	.form-group
 		label(for="csv-file")
-			| Choose a CSV file &nbsp;
+			| Choose a CSV file. &nbsp;
 			a.text-danger(ng-click="clearQueue()") &times;
+		p.text-muted.small Select one csv file and click upload when ready.
 		input.form-control(name="csv-file", type="file", nv-file-select, uploader="uploader")
 
 table.table
@@ -38,3 +45,16 @@ table.table
 					button.btn.btn-danger.btn-xs(type='button', ng-click='item.remove()')
 						span.glyphicon.glyphicon-trash
 						| Remove
+
+alert(ng-show="results.imported.length || results.errors.length", type="{{results.errors.length? 'danger': 'success'}}")
+	p Successfully imported {{results.imported.length}} student records with {{results.errors.length}} errors.
+		br
+		a.small(ui-sref="admin.students.home") View student data
+	
+	p.small(ng-show="results.imported.length", ng-repeat="result in results.imported") 
+		em {{result.message}}
+		em.small  ID: {{result.id}}
+
+	p.small(ng-show="results.errors.length") Check that your csv column headings are correct.
+	p.small(ng-show="results.errors.length", ng-repeat="result in results.errors") 
+		em {{result.message}}

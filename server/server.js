@@ -113,15 +113,12 @@ function main(app, config, argument2, argument3) {
             require($path.join(modelsPath, file));
         });
 
-<<<<<<< HEAD
-	app.use($express.bodyParser({
-		limit: '50mb'
-	}));
-	app.use($express.query());
-	app.use($express.methodOverride());
-=======
+        app.use($express.bodyParser({
+            limit: '50mb'
+        }));
+        app.use($express.query());
+        app.use($express.methodOverride());
         var User = $mongoose.model('User');
->>>>>>> ae6406053a2f9fd44317397e9b646d21d29fbcd5
 
         // setup $passport authentication
         app.use($passport.initialize());
@@ -166,7 +163,7 @@ function main(app, config, argument2, argument3) {
     function connect(err) {
 
         if ($argv.stop) {
-            console.log('server::connect', 'The application will now stop.');
+            console.log('server::connect', 'Initialization complete, the application will now exit.');
             process.exit();
             return;
         }
@@ -191,6 +188,53 @@ function main(app, config, argument2, argument3) {
         $routes.register(app, onRoutesRegistered);
     }
 
+    function runSerialTasks(tasks, runSerialTasksDone) {
+        async.series(tasks, function(err, results) {
+
+            if (err) {
+                console.log(err);
+                return runSerialTasksDone(err);
+            }
+
+            console.log(results);
+
+            runSerialTasksDone();
+        });
+    }
+
+    function initializeUserDataTask(initializeUserDataTaskDone) {
+
+        var $loadData = require('./data/loadData');
+
+        console.log('server::initializeUserData', 'enter');
+
+        var tasks = {
+            removeUsers: $loadData.tasks.removeUsers,
+            removeGroups: $loadData.tasks.removeGroups,
+            addGroups: $loadData.tasks.addGroups,
+            addUsers: $loadData.tasks.addUsers
+        };
+
+        runSerialTasks(tasks, initializeUserDataTaskDone);
+
+    }
+
+    function initializeAssetDataTask(initializeAssetDataTaskDone) {
+
+        var $loadData = require('./data/loadData');
+
+        console.log('server::initializeAssetData', 'enter');
+
+
+        var tasks = {
+            removeAssets: $loadData.tasks.removeAssets,
+            addAssets: $loadData.tasks.addAssets
+        };
+
+        runSerialTasks(tasks, initializeAssetDataTaskDone);
+
+    }
+
     function firstrunTask(firstrunTaskDone) {
 
         console.log('server::firstrun', 'enter');
@@ -198,7 +242,7 @@ function main(app, config, argument2, argument3) {
         var RouteModel = $mongoose.model('Route');
 
         RouteModel.findOne({
-            path: 'ttkd'
+            path: '/api/mocks'
         }, function(err, routeDoc) {
 
             if (err) {
@@ -235,9 +279,19 @@ function main(app, config, argument2, argument3) {
     }
 
     var tasks = [];
+
     if ($argv.firstrun) {
         tasks.push(firstrunTask);
     }
+    
+    if ($argv['init-users']) {
+    	tasks.push(initializeUserDataTask);
+    }
+
+    if ($argv['init-assets']) {
+    	tasks.push(initializeAssetDataTask);
+    }
+
 
     async.series(tasks, startApplicationTask);
 

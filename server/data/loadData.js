@@ -5,10 +5,6 @@ var $async = require('async'),
     path = require('path'),
     mime = require('mime');
 
-var userData = require('./users'),
-    groupData = require('./groups'),
-    assetData = require('./assets'),
-    studentData = require('./students');
 
 function removeMockObjects(doneRemovingMocks) {
     var Mock = $mongoose.model('Mock');
@@ -207,8 +203,11 @@ function addRootDirectory(doneAddingRootDirectory) {
 function addUsers(doneAddingUsers) {
 
     var User = $mongoose.model('User');
+    var userData = require('./users');
 
     function defineRootUser(doneAddingRootUser) {
+
+
         var root = userData.root;
 
         console.log('loadData::addUsers::defineRootUser::enter');
@@ -393,6 +392,8 @@ function addUsers(doneAddingUsers) {
 function addGroups(doneAddingGroups) {
     console.log('loadData::addGroups::enter');
 
+    var groupData = require('./groups');
+
     var Group = $mongoose.model('Group');
     var groups = groupData.data;
 
@@ -443,9 +444,7 @@ function addMocks(doneAddingMocks) {
 
 function addStudents(doneAddingStudents, data) {
 
-    data = data || studentData;
-
-
+    data = data || require('./students');
 
     console.log('loadData::addStudents::enter');
 
@@ -479,7 +478,7 @@ function addStudents(doneAddingStudents, data) {
         }
 
         // files located in data/photos
-        var imageDirectory = path.join(__dirname, "photos");
+        var imageDirectory = path.join(__dirname, 'photos');
 
         var filename = (studentDoc.firstName + studentDoc.lastName).replace(/\W/g, '_');
         var type = mime.lookup(avatar);
@@ -547,6 +546,9 @@ function addAssets(doneAddingAssets) {
 
     var Asset = $mongoose.model('Route'),
         AccessControlList = $mongoose.model('AccessControlList');
+
+    var  assetData = require('./assets');
+
 
     var assets = assetData.data;
 

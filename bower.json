@@ -24,10 +24,7 @@
     "signature_pad": "~1.3.3",
     "idangerous-swiper": "~2.7.0",
     "jquery-ui": "~1.11.2",
-<<<<<<< HEAD
     "d3": "~3.4.13",
-=======
->>>>>>> ae6406053a2f9fd44317397e9b646d21d29fbcd5
     "angular-charts": "~0.2.6"
   },
   "devDependencies": {
