@@ -10,7 +10,7 @@ define(['./module'], function(controllers) {
             if (AuthenticationSvc.authorize('user::admin')) {
                 $state.go('admin.students.home');
             } else if (AuthenticationSvc.authorize('user::checkinusers')) {
-                $state.go('checkin');
+                $state.go('checkin.home.programs');
             }
         }
 

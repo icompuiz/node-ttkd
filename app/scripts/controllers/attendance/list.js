@@ -231,9 +231,14 @@ define(['../module'], function(controllers) {
                                                                             // });
                                                                         });
                                                                         subrankObjs = _.sortBy(subrankObjs, function(r){return r.rankOrder;});
-                                                                        attendance.sortedSubranks.push(subrankObjs);
+
+                                                                        if (subrankObjs.length > 0) {
+                                                                            attendance.sortedSubranks.push(subrankObjs);
+                                                                        }
                                                                     }
-                                                                    attendance.sortedRanks.push(rank);
+                                                                    if (!rank.isIntermediaryRank) {
+                                                                        attendance.sortedRanks.push(rank);
+                                                                    }
                                                                 });
 
                                                                 data.push(attendance);
@@ -257,17 +262,17 @@ define(['../module'], function(controllers) {
                                 function(attendance, callback) {
                                     if (!filterOptions || (filterOptions.classAttended && attendance.classAttended === filterOptions.classAttended)) {
                                         StudentSvc.read(attendance.student, null, false).then(function(student) {
+                                            if (!student) {
+                                                callback();
+                                                return;
+                                            }
+
                                             if (filterOptions && $scope.viewingWorkshop) {
                                                 _(student.emailAddresses).forEach(function(email) {
                                                     if (!_.contains(emails, email)) {
                                                         emails.push(email);
                                                     }
                                                 });
-                                            }
-
-                                            if (!student) {
-                                                callback();
-                                                return;
                                             }
                                             attendance.fullName = student.firstName + ' ' + student.lastName;
 

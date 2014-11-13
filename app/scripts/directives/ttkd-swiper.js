@@ -70,7 +70,8 @@ define(['./module'], function(directives){
 						RankSvc.read(selectedRankId, null, false).then(function(rankDoc) {
 							if(rankDoc.color) {
 								$scope.breadcrumbs.rank = {
-									style: 'background-color: ' + rankDoc.color + ';'
+									style: 'background-color: ' + rankDoc.color + ';',
+									content: rankDoc.name
 								};
 							} else {
 								$scope.breadcrumbs.rank = {
@@ -78,6 +79,10 @@ define(['./module'], function(directives){
 								};
 							}
 						});
+					} else {
+						$scope.breadcrumbs.rank = {
+							content: 'Click to Select Rank'
+						};
 					}
 				}
 
@@ -428,7 +433,7 @@ define(['./module'], function(directives){
 							$scope.students[studentId] = student;
 
 							var studentHtml = '';
-							studentHtml += '<div class="col-md-4" style="height: 33%; padding: 15px;">' + '\n';
+							studentHtml += '<div class="col-xs-4" style="height: 33%; padding: 15px;">' + '\n';
 							studentHtml += '  <div class="height-full panel" is-workshop="isWorkshop" ttkd-swiper-slide-item-student students="students" class-attended="classAttended" id="\''+studentId+'\'" style="padding:10px;">' + '\n';
 							studentHtml += '  </div>' + '\n';
 							studentHtml += '</div>' + '\n';
@@ -464,11 +469,11 @@ define(['./module'], function(directives){
 			controller: function($scope) {
 				$scope.className = $scope.classes[$scope.classId].name;
 				$scope.classContinue = function() {
-					if($scope.hasRanks) {
-						$state.go('checkin.home.ranked', {classId: $scope.classId});
-					} else {
-						$state.go('checkin.home.studentsUnranked', {classId: $scope.classId});
-					}
+					//if($scope.hasRanks) {
+					//	$state.go('checkin.home.ranked', {classId: $scope.classId});
+					//} else {
+					$state.go('checkin.home.studentsUnranked', {classId: $scope.classId});
+					//}
 				};
 			}
 		};
@@ -476,7 +481,7 @@ define(['./module'], function(directives){
 		return ttkdSwiperSlideItemClass;
 	}])
 
-	.directive('ttkdSwiperSlideItemStudent', ['$log', 'AttendanceSvc', 'ClassSvc', '$state', function($log, AttendanceSvc, ClassSvc, $state) {
+	.directive('ttkdSwiperSlideItemStudent', ['$log', 'StudentSvc', 'AttendanceSvc', 'ClassSvc', '$state', function($log, StudentSvc, AttendanceSvc, ClassSvc, $state) {
 		var ttkdSwiperSlideItemStudent = {
 			restrict: 'A',
 			templateUrl: 'partials/checkin/ttkd-swiper-card-student',
@@ -505,9 +510,40 @@ define(['./module'], function(directives){
 						model.workshop = false;
 					}
 
+					function dismissMessage() {
+						$("#alert_template").fadeOut('slow', function() {
+						   	$("#alert_template span").remove();
+
+						   	$state.go('checkin.home.programs');
+						});
+					}
+
 					AttendanceSvc.save().then(function() {
 						$log.log('student ' + $scope.studentId + ' is now checked in');
-						$state.go('checkin.home.programs');
+
+						if(student.message && student.message.value && student.message.value != '' && !student.message.viewed) {
+							// load message to remove
+							StudentSvc.read(student._id, {}, true).then(function(studentDoc) {
+								$("#alert_template button").after('<span><strong>'+student.firstName+'</strong>: '+student.message.value+'</span>');
+								$('#alert_template').fadeIn('slow');
+								$('#alert_template button').click(function(){
+									StudentSvc.current.message.viewed = Date.now();
+									StudentSvc.save();
+									dismissMessage();
+								});
+
+
+								window.setTimeout(function() {
+									StudentSvc.current.message.viewed = Date.now();
+									StudentSvc.save();
+									dismissMessage();
+								}, 15000);
+							});
+
+						} else {
+							$state.go('checkin.home.programs');
+						}
+
 					}, function() {
 						$log.log('student ' + $scope.studentId + ' is could not be checked in');
 					});

@@ -679,9 +679,12 @@ body, html {
 }
 .swiper-wrapper .student .name {
   font-size: 18px;
+  font-size: 1.8vw;
   line-height: 18px;
+  line-height: 1.8vw;
+  background-color: #F0F0F0;
   float: left;
-  height: 18px;
+  height: initial; /*18px;*/
   width: 100%;
   color: #000;
 }
@@ -737,7 +740,7 @@ body, html {
   padding: 15px;
 }
 
-.checkin-breadcrumb button {
+.checkin-breadcrumb .btn {
   width: 8vw;
   height: 8vw;
   white-space: normal;
@@ -818,3 +821,43 @@ body, html {
 .modal-dialog {
   width: 500px;
 }
+
+.vertical-center {
+  min-height: 100%;  /* Fallback for browsers do NOT support vh unit */
+  min-height: 100vh; /* These two lines are counted as one :-)       */
+
+  display: flex;
+  align-items: center;
+  text-align: center;
+}
+
+.student-message {
+  position: fixed;
+  top: 25%;
+  left: 20px;
+  right: 20px;
+  z-index: 7000;
+}
+
+.dropdown-group {
+  display: flex;
+}
+
+.chart-container {
+  display: table;
+}
+
+.chart-div {
+  display: table-cell;
+  text-align: center;
+}
+
+.chart {
+  height: 360px;
+  width: 600px;
+}
+
+.chart-title { 
+  font-size: 18px;
+}
+

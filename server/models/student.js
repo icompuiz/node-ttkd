@@ -40,6 +40,17 @@ var studentSchema = new Schema({
 		participant: String,
 		guardian: String,
 		data: String
+	},
+	message: {
+		value: String,
+		viewed: {
+			type: Date,
+			default: null
+		}
+	},
+	registrationDate: {
+		type: Date,
+		default: Date.now
 	}
 });
 
