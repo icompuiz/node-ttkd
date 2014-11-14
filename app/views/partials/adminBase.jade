@@ -25,10 +25,16 @@ nav.navbar.navbar-default.navbar-static-top(role='navigation')
 					a(ui-sref='admin.reporting.home', application-menu-item) Reporting
 				li
 					a(ui-sref='checkin.home.programs', application-menu-item) Checkin
+			
 			ul.nav.navbar-nav.navbar-right
+				li
+					a.navbar-link(ui-sref="admin.settings.home")
+						span.glyphicon.glyphicon-wrench &nbsp;
+						| Settings
 				li.btn-logout
-					a(ng-click='logout()') 
+					a.navbar-link.logout(ng-click="logout()") 
 						span.glyphicon.glyphicon-log-out &nbsp;
-						| Exit
+						| Logout
+		
 .container
 	.ui-wrapper(ui-view="application-body")					

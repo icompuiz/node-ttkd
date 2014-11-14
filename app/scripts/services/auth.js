@@ -84,6 +84,9 @@ define(['./module'], function(services) {
 						updateCurrentUser();
 
 						$rootScope.$on('$stateChangeSuccess', updateCurrentUser);
+
+						$rootScope.currentUser = auth.currentUser;
+						
 						return auth;
 				  }
 		  ]);
