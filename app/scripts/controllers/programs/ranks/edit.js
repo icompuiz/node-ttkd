@@ -290,7 +290,9 @@
             	}
             });
 
-            $scope.edit = function(r) {
+            $scope.edit = function(r, e) {
+            	e.preventDefault();
+            	e.stopPropagation();
             	r.editingName = true;
             };
 

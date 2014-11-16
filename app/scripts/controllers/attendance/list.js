@@ -139,6 +139,171 @@ define(['../module'], function(controllers) {
                     var studentIds = [];
                     var attendances = [];
 
+                    function populateClassAttendanceGrid() {
+                        ClassSvc.list().then(function(classes) {
+                            async.each(classes,
+                                function(classItem, callback) {
+                                    ProgramSvc.read(classItem.program, null, false).then(function(program) {
+                                        if (!program) {
+                                            callback();
+                                            return;
+                                        }
+
+                                        classItem.programName = program.name;
+                                        data.push(classItem);
+                                        callback();
+                                    });
+                                },
+                                function(err) {
+                                    $scope.setPagingData(data,page,pageSize);
+                            });
+                        });
+                    }
+
+                    function populateWorkshopAttendanceGrid() {
+                        WorkshopSvc.list().then(function(workshops) {
+                            _(workshops).forEach(function(workshop) {
+                                workshop.numAttendees = _.where(attendances, {classAttended: workshop._id}).length;
+                                data.push(workshop);
+                            });
+                            $scope.setPagingData(data,page,pageSize);
+                        });
+                    }
+
+                    function populateStudentAttendanceGrid() {
+                        attendances = _.where(attendances, filterOptions); //using filterOptions as list() param didn't work
+                            async.each(attendances,
+                                function(attendance, callback) {
+                                    StudentSvc.read(attendance.student, null, false).then(function(student) { // Retrieve and attach student name to attendance obj
+                                        if (!student) {
+                                            return;
+                                        }
+                                        attendance.fullName = student.firstName + ' ' + student.lastName;
+
+                                        AchievementSvc.list().then(function(achievements) {
+                                            achievements = _.where(achievements, {'attendance': attendance._id});
+
+                                            var achievementObjs = [];
+                                            async.each(achievements,
+                                                function(ach, callback) {
+                                                    RankSvc.read(ach.rank, null, false).then(function(rank) {
+                                                        ach.name = rank.name;
+                                                        achievementObjs.push(ach);
+                                                        callback();
+                                                    });
+                                                },
+                                                function(err) {
+                                                    attendance.achievementObjs = achievementObjs;
+                                                    attendance.achievementNames = _.map(achievementObjs, function(a){return a.name;});
+
+                                                    // Attach achievement name(s) to attendance object
+                                                     if (attendance.workshop) {
+                                                        WorkshopSvc.read(attendance.classAttended, null, false).then(function(workshop) {
+                                                            attendance.eventName = workshop.name;
+                                                            data.push(attendance);
+                                                            callback();
+                                                        });
+                                                    } else {
+                                                        attachRankData(attendance, callback);
+                                                    }
+                                                });
+                                        });
+                                    });
+                                },
+                                function(err) {
+                                    $scope.setPagingData(data,page,pageSize);
+                            }); 
+                    }
+
+                    function populateDefaultAttendanceGrid() {
+                        emails = [];
+                        // add attendances to new array for ng-grid outputting
+                        async.each(attendances,
+                            function(attendance, callback) {
+                                if (!filterOptions || (filterOptions.classAttended && attendance.classAttended === filterOptions.classAttended)) {
+                                    StudentSvc.read(attendance.student, null, false).then(function(student) {
+                                        if (!student) {
+                                            callback();
+                                            return;
+                                        }
+
+                                        if (filterOptions && $scope.viewingWorkshop) {
+                                            _(student.emailAddresses).forEach(function(email) {
+                                                if (!_.contains(emails, email)) {
+                                                    emails.push(email);
+                                                }
+                                            });
+                                        }
+                                        attendance.fullName = student.firstName + ' ' + student.lastName;
+
+                                        if (attendance.workshop) {
+                                            WorkshopSvc.read(attendance.classAttended, null, false).then(function(workshop) {
+                                                attendance.eventName = workshop.name;
+                                                data.push(attendance);
+                                                callback();
+                                            });
+                                        } else {
+                                            ClassSvc.read(attendance.classAttended, null, false).then(function(classObj) {
+                                                attendance.eventName = classObj.name;
+                                                data.push(attendance);
+                                                callback();
+                                            });
+                                        }
+                                    });
+                                } else {
+                                    callback();
+                                }
+                            },
+                            function(err) {
+                                $scope.allData = data;
+                                $scope.setPagingData(data,page,pageSize);
+                        }); 
+                    }
+
+                    function attachRankData(attendance, callback) {
+                        ClassSvc.read(attendance.classAttended, null, false).then(function(classObj) {
+                            attendance.eventName = classObj.name;
+
+                            // Attach rank data for adding achievements
+                            RankSvc.list().then(function(ranks) {
+                                var mainRanks = _.where(ranks, {'program': classObj.program});
+
+                                var subranks = _.remove(ranks, function(r) {return r.isIntermediaryRank;});
+
+                               // mainRanks = _.sortBy(mainRanks, function(r) {return r.rankOrder;});                                                                }
+
+                                attendance.sortedRanks = [];
+                                attendance.sortedSubranks = [];
+
+                                _(mainRanks).forEach(function(rank) {
+                                    var subrankObjs = [];
+
+                                    if (rank.intermediaryRanks) {
+                                        _(rank.intermediaryRanks).forEach(function(subrankId) {
+                                            var subrank = _.find(subranks, function(rank) {return rank._id === subrankId;});
+
+                                            subrankObjs.push(subrank);
+                                            // _(subs).forEach(function(r) {
+                                            //     attendance.sortedRanks.push(r);
+                                            // });
+                                        });
+                                        subrankObjs = _.sortBy(subrankObjs, function(r){return r.rankOrder;});
+
+                                        if (subrankObjs.length > 0) {
+                                            attendance.sortedSubranks.push(subrankObjs);
+                                        }
+                                    }
+                                    if (!rank.isIntermediaryRank) {
+                                        attendance.sortedRanks.push(rank);
+                                    }
+                                });
+
+                                data.push(attendance);
+                                callback();
+                            });
+                        });
+                    }
+
                     StudentSvc.list().then(function(students) {
                         studentIds = _.map(students, function(s) { return s._id; });
 
@@ -152,161 +317,16 @@ define(['../module'], function(controllers) {
                             });
 
                             if ($scope.columnDefs === classColumnDefs) { // Clicked the class tab
-                                ClassSvc.list().then(function(classes) {
-                                    async.each(classes,
-                                        function(classItem, callback) {
-                                            ProgramSvc.read(classItem.program, null, false).then(function(program) {
-                                                if (!program) {
-                                                    callback();
-                                                    return;
-                                                }
-
-                                                classItem.programName = program.name;
-                                                data.push(classItem);
-                                                callback();
-                                            });
-                                        },
-                                        function(err) {
-                                            $scope.setPagingData(data,page,pageSize);
-                                    });
-                                });
+                                populateClassAttendanceGrid();
 
                             } else if ($scope.columnDefs === workshopColumnDefs) { // Clicked the workshops tab
-                                WorkshopSvc.list().then(function(workshops) {
-                                    _(workshops).forEach(function(workshop) {
-                                        workshop.numAttendees = _.where(attendances, {classAttended: workshop._id}).length;
-                                        data.push(workshop);
-                                    });
-                                    $scope.setPagingData(data,page,pageSize);
-                                });
+                                populateWorkshopAttendanceGrid();
                                 
                             } else if ($scope.columnDefs === studentColumnDefs) { // Viewing a student's attendace records
-                                attendances = _.where(attendances, filterOptions); //using filterOptions as list() param didn't work
-                                async.each(attendances,
-                                    function(attendance, callback) {
-                                        StudentSvc.read(attendance.student, null, false).then(function(student) { // Retrieve and attach student name to attendance obj
-                                            if (!student) {
-                                                return;
-                                            }
-                                            attendance.fullName = student.firstName + ' ' + student.lastName;
+                                populateStudentAttendanceGrid();
 
-                                            AchievementSvc.list().then(function(achievements) {
-                                                achievements = _.where(achievements, {'attendance': attendance._id});
-
-                                                var achievementObjs = [];
-                                                async.each(achievements,
-                                                    function(ach, callback) {
-                                                        RankSvc.read(ach.rank, null, false).then(function(rank) {
-                                                            ach.name = rank.name;
-                                                            achievementObjs.push(ach);
-                                                            callback();
-                                                        });
-                                                    },
-                                                    function(err) {
-                                                        attendance.achievementObjs = achievementObjs;
-                                                        attendance.achievementNames = _.map(achievementObjs, function(a){return a.name;});
-
-                                                        // Attach achievement name(s) to attendance object
-                                                         if (attendance.workshop) {
-                                                            WorkshopSvc.read(attendance.classAttended, null, false).then(function(workshop) {
-                                                                attendance.eventName = workshop.name;
-                                                                data.push(attendance);
-                                                                callback();
-                                                            });
-                                                        } else {
-                                                            ClassSvc.read(attendance.classAttended, null, false).then(function(classObj) {
-
-                                                                attendance.eventName = classObj.name;
-
-                                                                // Attach rank data for adding achievements
-                                                                RankSvc.list().then(function(ranks) {
-                                                                    var mainRanks = _.where(ranks, {'program': classObj.program});
-
-                                                                    var subranks = _.remove(ranks, function(r) {return r.isIntermediaryRank;});
-
-                                                                   // mainRanks = _.sortBy(mainRanks, function(r) {return r.rankOrder;});                                                                }
-
-                                                                    attendance.sortedRanks = [];
-                                                                    attendance.sortedSubranks = [];
-
-                                                                    _(mainRanks).forEach(function(rank) {
-                                                                        var subrankObjs = [];
-
-                                                                        if (rank.intermediaryRanks) {
-                                                                            _(rank.intermediaryRanks).forEach(function(subrankId) {
-                                                                                var subrank = _.find(subranks, function(rank) {return rank._id === subrankId;});
-
-                                                                                subrankObjs.push(subrank);
-                                                                                // _(subs).forEach(function(r) {
-                                                                                //     attendance.sortedRanks.push(r);
-                                                                                // });
-                                                                            });
-                                                                            subrankObjs = _.sortBy(subrankObjs, function(r){return r.rankOrder;});
-
-                                                                            if (subrankObjs.length > 0) {
-                                                                                attendance.sortedSubranks.push(subrankObjs);
-                                                                            }
-                                                                        }
-                                                                        if (!rank.isIntermediaryRank) {
-                                                                            attendance.sortedRanks.push(rank);
-                                                                        }
-                                                                    });
-
-                                                                    data.push(attendance);
-                                                                    callback();
-                                                                });
-                                                            });
-                                                        }
-                                                    });
-                                            });
-                                        });
-                                    },
-                                    function(err) {
-                                        $scope.setPagingData(data,page,pageSize);
-                                }); 
                             } else { // Viewing the default ng-grid
-                                emails = [];
-                                // add attendances to new array for ng-grid outputting
-                                async.each(attendances,
-                                    function(attendance, callback) {
-                                        if (!filterOptions || (filterOptions.classAttended && attendance.classAttended === filterOptions.classAttended)) {
-                                            StudentSvc.read(attendance.student, null, false).then(function(student) {
-                                                if (!student) {
-                                                    callback();
-                                                    return;
-                                                }
-
-                                                if (filterOptions && $scope.viewingWorkshop) {
-                                                    _(student.emailAddresses).forEach(function(email) {
-                                                        if (!_.contains(emails, email)) {
-                                                            emails.push(email);
-                                                        }
-                                                    });
-                                                }
-                                                attendance.fullName = student.firstName + ' ' + student.lastName;
-
-                                                if (attendance.workshop) {
-                                                    WorkshopSvc.read(attendance.classAttended, null, false).then(function(workshop) {
-                                                        attendance.eventName = workshop.name;
-                                                        data.push(attendance);
-                                                        callback();
-                                                    });
-                                                } else {
-                                                    ClassSvc.read(attendance.classAttended, null, false).then(function(classObj) {
-                                                        attendance.eventName = classObj.name;
-                                                        data.push(attendance);
-                                                        callback();
-                                                    });
-                                                }
-                                            });
-                                        } else {
-                                            callback();
-                                        }
-                                    },
-                                    function(err) {
-                                        $scope.allData = data;
-                                        $scope.setPagingData(data,page,pageSize);
-                                });    
+                                populateDefaultAttendanceGrid();
                             }
                         });
                     });

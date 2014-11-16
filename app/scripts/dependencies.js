@@ -10,6 +10,8 @@ requirejs.config({
         'angular': '../bower_components/angular/angular',
         'angular-ui-router': '../bower_components/angular-ui-router/release/angular-ui-router',
         'handlebars': '../bower_components/handlebars/handlebars',
+        'hammer': '../bower_components/hammerjs/hammer',
+        'angular-hammer': '../bower_components/angular-hammer/angular-hammer',
         // 'text': '../bower_components/requirejs-text/text',
         '_': '../bower_components/lodash/dist/lodash',
         'aysnc': '../bower_components/async/lib/async',
@@ -23,7 +25,8 @@ requirejs.config({
         'swiper': '../bower_components/idangerous-swiper/dist/idangerous.swiper',
         'jquery-ui': '../bower_components/jquery-ui/jquery-ui',
         'd3': '../bower_components/d3/d3',
-        'angularCharts': '../bower_components/angular-charts/dist/angular-charts'
+        'angularCharts': '../bower_components/angular-charts/dist/angular-charts',
+        'jqueryui-touch-punch': '../bower_components/jqueryui-touch-punch/jquery.ui.touch-punch'
       },
 
     /**
@@ -69,6 +72,12 @@ requirejs.config({
           },
           'angularCharts':{
             deps:['d3', 'angular']
+          },
+          'angular-hammer':{
+            deps:['angular', 'hammer']
+          },
+          'jqueryui-touch-punch':{
+            deps:['jquery-ui']
           }
         },
 
