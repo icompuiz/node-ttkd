@@ -19,10 +19,8 @@ define(['./module'], function (directives) {
                         '<colorpicker-saturation><i></i></colorpicker-saturation>' +
                         '<colorpicker-hue><i></i></colorpicker-hue>' +
                         '<colorpicker-alpha><i></i></colorpicker-alpha>' +
-                        '<colorpicker-preview></colorpicker-preview>' +
                         inputTemplate +
-                        '<button class="close close-colorpicker">&times;</button>' +
-                        '<div class="bottom-row-colorpicker">' +
+                        '<div>' +
                           '<button class="none-colorpicker" ng-click="clearColor()">None</button>' +
                           '<div class="white-colorpicker" ng-click="whiteColor()">&nbsp;</div>' +
                         '</div>' +
