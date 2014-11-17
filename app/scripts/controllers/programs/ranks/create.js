@@ -40,7 +40,6 @@ define(['../../module'], function(controllers){
 						},
 						function(err) {
 							$scope.rank.subrankObjs = subrankObjs;
-							setSortableWidth();
 						});
 				}
 			}
@@ -76,17 +75,6 @@ define(['../../module'], function(controllers){
 					);
 				});					
 			} 
-
-            function setSortableWidth() {
-            	var maxlen = 0;
-            	_($scope.subrankObjs).forEach(function(subrank) {
-            		maxlen = subrank.name.length > maxlen ? subrank.name.length : maxlen;
-            	});
-            	
-            	maxlen = maxlen*10 + 80; 
-
-            	$('#sortable').css('width', maxlen);
-            }
 
 			$scope.setRankOrder = function(newVal) {
 				if (!$scope.origRankOrder) {
@@ -246,7 +234,6 @@ define(['../../module'], function(controllers){
                 if(!$scope.$$phase) {
                		$scope.$apply();
                	}
-               	setSortableWidth();
             };
 
             $scope.intermediaryRanks = tmpRanks;
@@ -270,7 +257,6 @@ define(['../../module'], function(controllers){
 	        			r.editingName = false;
 	        			$scope.$apply();
 	        		});
-	        		setSortableWidth();
 	        	}
             }
 
@@ -294,14 +280,16 @@ define(['../../module'], function(controllers){
 		               	}
             		});
             	}
-            	setSortableWidth();
             });
 
             $scope.edit = function(r) {
             	r.editingName = true;
             };
 
-            $scope.select = function(r, $event) {
+            $scope.select = function(r, e) {
+            	if (e.target.className.indexOf('edit-name') > -1 || r.editingName) {
+            		return;
+            	}
             	r.isSelected = !r.isSelected;
             	if (r.isSelected) {
         			$('#' + r.divId + ' .rank-list-item').css('background-color', '#c9dde1');
@@ -309,7 +297,6 @@ define(['../../module'], function(controllers){
         			$('#' + r.divId + ' .rank-list-item').css('background-color', '#d4d4d4');
             	}
             };
-
 
             $scope.showRemoveConfirm = false;
 

@@ -437,9 +437,21 @@ colorpicker-preview {
   background-position: 0 100%;
 }
 
-none-colorpicker {
-    width: 50;
-    height: 30;
+.none-colorpicker {
+  display: inline;
+  width: 50px;
+  height: 25px;
+}
+
+.white-colorpicker {
+  display: inline;
+  width: 50px !important;
+  height: 25px !important;
+  border: 1px;
+}
+
+.bottom-row-colorpicker {
+  width: 100%;
 }
 
 /* Specify Swiper's Size: */
@@ -574,10 +586,6 @@ none-colorpicker {
   align-items: center;
 }
 
-#sortable {
-  width: 250px;
-}
-
 .no-pad-left {
   padding-left: 0px !important;
   margin-left: 0px !important;
@@ -589,28 +597,47 @@ none-colorpicker {
 
 #sortable li {
   list-style: none;
-  margin: 0 8px 8px 8px;
-  padding: 0.4em;
-  padding-left: 1.5em;
   font-size: 1.4em;
-  height: 30px;
 }
 
-#sortable .rank-row {
-  display: flex;
-  cursor: pointer;
+#sortable .rank-order-cell {
+  float: left;
+  display: table;
+  height: 40px;
+  margin: 5px;
 }
 
 #sortable .rank-order {
-  padding-right: 20px;
+  display: table-cell;
+  vertical-align: middle;
 }
 
 #sortable .rank-name-cell {
-  height: 30px;
+  float: left;
+  display: table;
+  height: 40px;
+  margin: 5px;
+}
+
+#sortable .rank-name {
+  display: table-cell;
+  vertical-align: middle;
 }
 
 #sortable .rank-list-item {
+  margin: 5px;
   background-color: #d4d4d4;
+  cursor: pointer;
+  width: 400px;
+  height: 50px;
+}
+
+#sortable .rank-edit {  
+  float: right;
+  width: 30px;
+  height: 30px;
+  margin: 10px;
+  z-index: 9999;
 }
 
 .pad-bottom-0 {
