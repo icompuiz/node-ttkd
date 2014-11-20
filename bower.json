@@ -25,7 +25,8 @@
     "idangerous-swiper": "~2.7.0",
     "jquery-ui": "~1.11.2",
     "d3": "~3.4.13",
-    "angular-charts": "~0.2.6"
+    "angular-charts": "~0.2.6",
+    "csv": "~1.0.2"
   },
   "devDependencies": {
     "angular-mocks": "1.2.15",

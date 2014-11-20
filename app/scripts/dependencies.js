@@ -23,7 +23,8 @@ requirejs.config({
         'swiper': '../bower_components/idangerous-swiper/dist/idangerous.swiper',
         'jquery-ui': '../bower_components/jquery-ui/jquery-ui',
         'd3': '../bower_components/d3/d3',
-        'angularCharts': '../bower_components/angular-charts/dist/angular-charts'
+        'angularCharts': '../bower_components/angular-charts/dist/angular-charts',
+        'jqueryui-touch-punch': '../bower_components/jqueryui-touch-punch/jquery.ui.touch-punch'
       },
 
     /**
@@ -69,6 +70,9 @@ requirejs.config({
           },
           'angularCharts':{
             deps:['d3', 'angular']
+          },
+          'jqueryui-touch-punch':{
+            deps:['jquery-ui']
           }
         },
 
