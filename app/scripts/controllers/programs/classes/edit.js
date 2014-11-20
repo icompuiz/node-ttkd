@@ -31,12 +31,10 @@ define(['../../module'], function(controllers){
                 populateStudentObjs();  
 				currentProgram = ProgramSvc.current;
 				currentProgram.populated = true;
-				if (!ClassSvc.orig) {
-					ClassSvc.orig = {
-						name: ClassSvc.current.name,
-						students: ClassSvc.current.students
-					};
-				}
+				ClassSvc.orig = {
+					name: ClassSvc.current.name,
+					students: ClassSvc.current.students
+				};
 				orig = ClassSvc.orig;
 			} else if ($stateParams.id) {
 				ClassSvc.read($stateParams.id, null, true).then(function(c) {
@@ -124,7 +122,7 @@ define(['../../module'], function(controllers){
                     if (c.name !== ClassSvc.orig.name) {
                         classes.push(c);
                     }
-                })
+                });
                 classes.push($scope.currentClass);
 
                 ProgramSvc.current.classObjs = classes;
