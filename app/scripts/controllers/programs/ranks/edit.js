@@ -68,15 +68,12 @@
 				}
 
 				program = ProgramSvc.current;
-				if (!RankSvc.orig) {
-					RankSvc.orig = {
-						name: RankSvc.current.name
-					};
-					orig = RankSvc.orig;
-				}
+				RankSvc.orig = {
+					name: RankSvc.current.name
+				};
+				orig = RankSvc.orig;
 				program.populated = true;
 				setDropdownItems();
-				setSortableWidth();
 			// Otherwise get them from db
 			} else if ($stateParams.id) { 
 				RankSvc.read($stateParams.id, null, true).then(function(r) {
@@ -116,7 +113,6 @@
 								program.rankObjs = rankObjs;
 								program.populated = true;
 								setDropdownItems();
-								setSortableWidth();
 							}
 						);
 					});
@@ -183,6 +179,10 @@
             	$scope.rank.color = '';
             };
 
+            $scope.whiteColor = function() {
+            	$scope.rank.color = '#FFFFFF';
+            }
+
             $scope.$watch('rank.color', function (newVal, oldVal) {
             	if ($scope.rank.color === '') {
             		$('.rank-color').css('background', '#FFFFFF');
@@ -192,17 +192,6 @@
             		$('.rank-color').text('');
             	}
             }, true);
-
-            function setSortableWidth() {
-            	var maxlen = 0;
-            	_($scope.rank.subrankObjs).forEach(function(subrank) {
-            		maxlen = subrank.name.length > maxlen ? subrank.name.length : maxlen;
-            	});
-            	
-            	maxlen = maxlen*10 + 80; 
-
-            	$('#sortable').css('width', maxlen);
-            }
 
             $scope.addSubrank = function() {
             	var newRankOrder = tmpRanks.length + 1;
@@ -215,7 +204,6 @@
             	};
 
             	tmpRanks.push(newRank);
-            	setSortableWidth();
             };
 
             $scope.removeDisabled = function() {
@@ -252,8 +240,7 @@
                 }
                 if(!$scope.$$phase) {
                		$scope.$apply();
-               	}               	
-            	setSortableWidth();
+               	}
             };
 
            $scope.stopEditingName = function(e) {
@@ -262,7 +249,6 @@
 	        			r.editingName = false;
 	        			$scope.$apply();
 	        		});
-	        		setSortableWidth();
 	        	}
             }
 
@@ -286,7 +272,6 @@
             			r.editingName = false;
             			$scope.$apply();
             		});
-            		setSortableWidth();
             	}
             });
 
@@ -304,7 +289,10 @@
 			    return 'r' + text;
 			}
 
-            $scope.select = function(r, $event) {
+            $scope.select = function(r, e) {
+            	if (e.target.className.indexOf('edit-name') > -1 || r.editingName) {
+            		return;
+            	}
             	r.isSelected = !r.isSelected;
             	if (r.isSelected) {
         			$('#' + r.divId + ' .rank-list-item').css('background-color', '#c9dde1');

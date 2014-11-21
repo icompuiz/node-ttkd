@@ -17,13 +17,13 @@ function login(user, req, res, next) {
 
         $toastySession.user = req.user;
 
-        authenticaltionCtrl.currentUser(req, res, next);
+        authenticationCtrl.currentUser(req, res, next);
 
         // res.json(200, user);
     });
 }
 
-var authenticaltionCtrl = {
+var authenticationCtrl = {
     currentUser: function(req, res, next) {
 
         var Route = $mongoose.model('Route');
@@ -41,7 +41,7 @@ var authenticaltionCtrl = {
     login: function(req, res, next) {
 
         if (req.isAuthenticated()) {
-            console.log('authenticaltionCtrl::login::isAuthenticated', 'User is already logged in', 'resetting session');
+            console.log('authenticationCtrl::login::isAuthenticated', 'User is already logged in', 'resetting session');
             req.logout();
         }
 
@@ -92,4 +92,4 @@ var authenticaltionCtrl = {
 };
 
 
-module.exports = authenticaltionCtrl;
+module.exports = authenticationCtrl;

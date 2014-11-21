@@ -14,6 +14,7 @@ define('app', [
     'sigPad',
     'swiper',
     'jquery-ui',
+    'jqueryui-touch-punch',
     './controllers/index',
     './directives/index',
     './factories/index',

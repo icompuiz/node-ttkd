@@ -539,7 +539,7 @@ define(['./module'], function(directives){
 									StudentSvc.current.message.viewed = Date.now();
 									StudentSvc.save();
 									dismissMessage();
-								}, 15000);
+								}, 5000);
 							});
 
 						} else {

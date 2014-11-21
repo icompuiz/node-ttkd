@@ -39,21 +39,25 @@ form
 					span.text-muted.error(ng-show='getNumSelected() > 1') Are you sure you wish to remove the {{getNumSelected()}} selected ranks?
 					span.text-muted.error(ng-show='getNumSelected() == 1') Are you sure you wish to remove the selected ranks?
 					button.btn.btn-danger(type='button', ng-click='confirmRemove(true)') Yes
-					button.btn.btn-success(type='button', ng-click='confirmRemove(false)') No
+					button.btn.btn-success(type='button', ng-click='confirmRemove(false)') No				
 	.row
 		.col-md-12
 			p.text-muted.error(ng-show='showSubrankNameMessage()') Sub-rank names must be unique.
-	
-	ul.no-pad-left(id='sortable', ng-model='subrankObjs')
-		li.no-pad-left(id='{{r.divId}}', ng-repeat='r in subrankObjs')
-			.rank-row.rank-list-item.no-pad-left(ng-click='select(r, $event)')
-				div.rank-order.rank-list-item
-					{{r.rankOrder}}
-					|. 
-				div.rank-name-cell.rank-list-item(ng-show='!r.editingName', ng-dblClick='edit(r)')
-					{{r.name}}
-				div.rank-name-cell.edit-name.rank-list-item(ng-show='r.editingName', ng-keypress='stopEditingName($event)')
-					input(type='text', ng-model='r.name').edit-name
+	.row
+		.col-md-12
+			ul.no-pad-left(id='sortable', ng-model='subrankObjs')
+				li.no-pad-left(id='{{r.divId}}', ng-repeat='r in subrankObjs')
+					.rank-list-item.no-pad-left(ng-click='select(r, $event)', hm-double-tap='edit(r)')
+						.rank-order-cell
+							.rank-order
+								{{r.rankOrder}}.
+						.rank-name-cell(ng-show='!r.editingName')
+							.rank-name
+								{{r.name}}
+						button.btn.btn-sm.btn-default.rank-edit.edit-name(type='button', ng-click='edit(r)', ng-show='!r.editingName')
+							.glyphicon.glyphicon-pencil.edit-name
+						.rank-name.edit-name(ng-show='r.editingName', ng-keypress='stopEditingName($event)')
+							input.edit-name(type='text', maxlength='32', ng-model='r.name')
 
 	input.btn.btn-primary.pull-right(ng-disabled='!canCreateRank()', value='Create Rank', ng-click="createRank()")
 	input.btn.btn-warning.pull-right(type='reset', value='Cancel', ng-click='cancelCreate()')

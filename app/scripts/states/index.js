@@ -11,5 +11,6 @@ define([
 	'./workshops/index',
 	'./dashboard/index',
 	'./programs/index',
+	'./settings/index',
 	'./students/index'
 ], function () {});
