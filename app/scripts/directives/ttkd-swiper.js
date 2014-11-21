@@ -80,9 +80,11 @@ define(['./module'], function(directives){
 							}
 						});
 					} else {
-						$scope.breadcrumbs.rank = {
-							content: 'Click to Select Rank'
-						};
+						if(!isWorkshop) {
+							$scope.breadcrumbs.rank = {
+								content: 'Click to Select Rank'
+							};
+						}
 					}
 				}
 
