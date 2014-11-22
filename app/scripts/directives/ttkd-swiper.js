@@ -329,7 +329,7 @@ define(['./module'], function(directives){
 
 
 
-	.directive('ttkdSwiperLateralItemClass', ['$log', '$compile', function($log, $compile) {
+	.directive('ttkdSwiperLateralItemClass', ['$log', '$compile', '$window', function($log, $compile, $window) {
 		var compileHack = $compile;
 
 		var ttkdSwiperLateralItemClass = {
@@ -353,8 +353,6 @@ define(['./module'], function(directives){
 
 				lateralSwiperWrapper.append();
 
-				swiperParent.hit = 'hit';
-
 				var newLateralSwiperWrapper = new Swiper('.' + slideClassName, {
 					mode: 'horizontal',
 					slidesPerView: 4,
@@ -363,10 +361,13 @@ define(['./module'], function(directives){
 					resistance: '100%'
 				});
 
+
 				var lateralHeight;
 				if(swiperParent.slides.length > 0){
 					lateralHeight = swiperParent.slides[0].style.height;
 				}
+
+				$scope.lateral = newLateralSwiperWrapper;
 
 				$scope.classes = {};
 
@@ -379,6 +380,14 @@ define(['./module'], function(directives){
 					compileHack(newHSlide)($scope);
 					resizeLateralSlides(newLateralSwiperWrapper, lateralHeight);
 				}
+
+				angular.element($window).bind('orientationchange', function () {
+					var lateralHeight = $scope.parent.slides[0].style.height;
+
+					for(var i=0; i<$scope.lateral.slides.length; i++) {
+						$scope.lateral.slides[i].style.height = lateralHeight;
+					}
+				});
 
 				//calculateHeight not working... quick/hacky fix
 				function resizeLateralSlides(swiper, newHeight) {
@@ -435,7 +444,7 @@ define(['./module'], function(directives){
 							$scope.students[studentId] = student;
 
 							var studentHtml = '';
-							studentHtml += '<div class="col-xs-4" style="height: 33%; padding: 15px;">' + '\n';
+							studentHtml += '<div class="col-xs-4" style="height: 25%; padding: 5px;">' + '\n';
 							studentHtml += '  <div class="height-full panel" is-workshop="isWorkshop" ttkd-swiper-slide-item-student students="students" class-attended="classAttended" id="\''+studentId+'\'" style="padding:10px;">' + '\n';
 							studentHtml += '  </div>' + '\n';
 							studentHtml += '</div>' + '\n';
