@@ -26,7 +26,7 @@ div.form-group
 	p.text-muted.error(ng-show="createStudent.address.$invalid && !createStudent.address.$pristine") Student's address must be between 2 and 128 characters long and include both the number and street.
 
 div.form-group.row
-	div.col-md-5
+	div.col-md-5.col-sm-5
 		div.input-group
 			input.form-control(type='text', name="city", placeholder='City', ng-model="model.address.city", required, ng-minlength='2', ng-maxlength='64')
 			span.input-group-addon
@@ -35,10 +35,10 @@ div.form-group.row
 				span.glyphicon.glyphicon-ok(ng-show="createStudent.city.$valid")
 		p.text-muted.error(ng-show="createStudent.city.$invalid && !createStudent.city.$pristine") Student's city must be between 2 and 64 characters long.
 
-	div.col-md-3
+	div.col-md-3.col-sm-3
 		select.form-control(ng-model='model.address.state')
 			option(ng-repeat='state in states', ng-selected='state==model.address.state', value='{{state}}') {{state}}
-	div.col-md-4
+	div.col-md-4.col-sm-4
 		div.input-group
 			input.form-control(type='text', name="zipcode", placeholder='Zip code', ng-model="model.address.zip", required, ng-minlength='5', ng-maxlength='5', maxlength='5')
 			span.input-group-addon
