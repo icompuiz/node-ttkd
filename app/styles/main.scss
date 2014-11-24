@@ -212,12 +212,6 @@ form .text-muted.error {
 
 canvas {
     background-color: #f3f3f3;
-    -webkit-box-shadow: 3px 3px 3px 0 #e3e3e3;
-    -moz-box-shadow: 3px 3px 3px 0 #e3e3e3;
-    box-shadow: 3px 3px 3px 0 #e3e3e3;
-    border: 1px solid #c3c3c3;
-    height: 100px;
-    margin: 6px 0 0 6px;
 }
 
 .thumbnail-student-list {
@@ -972,3 +966,21 @@ body, html {
   font-size: 18px;
 }
 
+.photo-preview .overlay {
+  position: absolute;
+  z-index: 2;
+}
+
+.photo-preview .preview {
+  overflow: hidden;
+  width: 400px;
+  height: 400px;
+}
+
+.photo-preview .preview canvas {
+  z-index: 1;
+}
+
+.photo-preview .preview canvas {
+    width: 100%;
+}

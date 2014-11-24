@@ -11,3 +11,6 @@ form
 			a.btn.text-danger(ng-click="item.remove()") 
 				span.glyphicon.glyphicon-trash
 			| {{item.file.name}}
+
+		.photo-preview
+			.preview(image-upload-thumb="{ file: item._file, width: 500 }", ng-file="item._file", ng-width="500", ng-placeholder-height="400")
