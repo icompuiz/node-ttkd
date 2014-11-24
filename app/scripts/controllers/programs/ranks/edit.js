@@ -68,12 +68,10 @@
 				}
 
 				program = ProgramSvc.current;
-				if (!RankSvc.orig) {
-					RankSvc.orig = {
-						name: RankSvc.current.name
-					};
-					orig = RankSvc.orig;
-				}
+				RankSvc.orig = {
+					name: RankSvc.current.name
+				};
+				orig = RankSvc.orig;
 				program.populated = true;
 				setDropdownItems();
 			// Otherwise get them from db

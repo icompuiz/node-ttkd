@@ -15,7 +15,7 @@ div.alert.alert-danger.student-message(id="alert_template", style="display:none;
 			.btn-group.btn-group-justified
 				a.btn.btn-lg.btn-default(ng-repeat="nameFilter in nameFilters", type="button", ng-click="changeFilter(nameFilter); filterStudents(filterValueArray, filterParam);", ng-class="{active: nameFilter.isActive}") {{nameFilter.filterLabel}}
 
-.row(style="height:100%")
+.row(style="height:75%")
 	.col-sm-3.col-sm-push-9.breadcrumbs(ng-if="data.type === 'students'")
 		// - h2 Change
 		div.col-sm-12.col-xs-4.col-xs-4.checkin-breadcrumb(ng-if="breadcrumbs.program", style="{{breadcrumbs.program.style ? breadcrumbs.program.style : ''}}")

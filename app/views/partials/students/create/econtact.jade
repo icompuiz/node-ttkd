@@ -10,7 +10,7 @@ div.form-group
 	p.text-muted.error(ng-show="createStudent.fullName1.$invalid && !createStudent.fullName1.$pristine") Primary emergency contact's full name must be between 4 and 128 characters.
 
 div.form-group.row
-	div.col-md-6
+	div.col-md-6.col-sm-6
 		div.input-group
 			input.form-control(type='tel', name="phoneNumber1", phone-number-input, placeholder='Phone number', ng-model="model.emergencyContacts[0].phoneNumber", ng-pattern='/^[0-9]{10}$/', maxlength='12', required)
 			span.input-group-addon
@@ -19,7 +19,7 @@ div.form-group.row
 				span.glyphicon.glyphicon-ok(ng-show="createStudent.phoneNumber1.$valid")
 		p.text-muted.error(ng-show="createStudent.phoneNumber1.$invalid && !createStudent.phoneNumber1.$pristine") Primary emergency contact's phone number must be a valid 10 digit number. E.g. 555-555-5555
 
-	div.col-md-6
+	div.col-md-6.col-sm-6
 		div.input-group
 			input.form-control(type='text', name="relationship1", placeholder='Relationship', ng-model="model.emergencyContacts[0].relationship", typeahead="relation for relation in relations | filter:$viewValue | limitTo:5", required)
 			span.input-group-addon
@@ -41,7 +41,7 @@ div.form-group
 	p.text-muted.error(ng-show="createStudent.fullName2.$invalid && !createStudent.fullName2.$pristine") Secondary emergency contact's full name must be between 4 and 128 characters.
 
 div.form-group.row
-	div.col-md-6
+	div.col-md-6.col-sm-6
 		div.input-group
 			input.form-control(type='tel', name="phoneNumber2", phone-number-input, placeholder='Phone number', ng-model="model.emergencyContacts[1].phoneNumber", ng-pattern='/^[0-9]{10}$/', maxlength='12', required)
 			span.input-group-addon
@@ -50,7 +50,7 @@ div.form-group.row
 				span.glyphicon.glyphicon-ok(ng-show="createStudent.phoneNumber2.$valid")
 		p.text-muted.error(ng-show="createStudent.phoneNumber2.$invalid && !createStudent.phoneNumber2.$pristine") Secondary emergency contact's phone number must be a valid 10 digit number. E.g. 555-555-5555
 
-	div.col-md-6
+	div.col-md-6.col-sm-6
 		div.input-group
 			input.form-control(type='text', name="relationship2", placeholder='Relationship', ng-model="model.emergencyContacts[1].relationship", typeahead="relation for relation in relations | filter:$viewValue | limitTo:5", required)
 			span.input-group-addon

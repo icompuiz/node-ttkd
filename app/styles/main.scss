@@ -212,12 +212,6 @@ form .text-muted.error {
 
 canvas {
     background-color: #f3f3f3;
-    -webkit-box-shadow: 3px 3px 3px 0 #e3e3e3;
-    -moz-box-shadow: 3px 3px 3px 0 #e3e3e3;
-    box-shadow: 3px 3px 3px 0 #e3e3e3;
-    border: 1px solid #c3c3c3;
-    height: 100px;
-    margin: 6px 0 0 6px;
 }
 
 .thumbnail-student-list {
@@ -459,13 +453,97 @@ colorpicker-preview {
 }
 
 /* Specify Swiper's Size: */
+.swiper-container.nested {
+  width: 720px;
+}
+
+/** since the container is 80% of the window width, make the inside containers also 80% */
+@media (min-width: 301px) {
+  .swiper-container.nested {
+    width: 240px;
+  }
+}
+@media (min-width: 501px) {
+  .swiper-container.nested {
+    width: 400px;
+  }
+}
+@media (min-width: 701px) {
+  .swiper-container.nested {
+    width: 560px;
+  }
+}
+@media (min-width: 901px) {
+  .swiper-container.nested {
+    width: 720px;
+  }
+}
+@media (min-width: 1101px) {
+  .swiper-container.nested {
+    width: 880px;
+  }
+}
+@media (min-width: 1301px) {
+  .swiper-container.nested {
+    width: 1040px;
+  }
+}
+@media (min-width: 1501px) {
+  .swiper-container.nested {
+    width: 1200px;
+  }
+}
+@media (min-width: 1701px) {
+  .swiper-container.nested {
+    width: 1360px;
+  }
+}
+@media (min-width: 1901px) {
+  .swiper-container.nested {
+    width: 1520px;
+  }
+}
+
+.swiper-container.swiper-parent {
+  width: 100%;
+}
+
+.device {
+/*  height: 100%;*/
+  height: 700px;
+}
+
+/** subtract nav bar of height 75 px */
+@media (min-height: 300px) { .device { height: 225px; } }
+@media (min-height: 350px) { .device { height: 275px; } }
+@media (min-height: 400px) { .device { height: 325px; } }
+@media (min-height: 450px) { .device { height: 375px; } }
+@media (min-height: 500px) { .device { height: 425px; } }
+@media (min-height: 550px) { .device { height: 475px; } }
+@media (min-height: 600px) { .device { height: 525px; } }
+@media (min-height: 650px) { .device { height: 575px; } }
+@media (min-height: 700px) { .device { height: 625px; } }
+@media (min-height: 750px) { .device { height: 675px; } }
+@media (min-height: 800px) { .device { height: 725px; } }
+@media (min-height: 850px) { .device { height: 775px; } }
+@media (min-height: 900px) { .device { height: 825px; } }
+@media (min-height: 950px) { .device { height: 875px; } }
+@media (min-height: 1000px) { .device { height: 925px; } }
+@media (min-height: 1050px) { .device { height: 975px; } }
+@media (min-height: 1100px) { .device { height: 1025px; } }
+@media (min-height: 1150px) { .device { height: 1075px; } }
+@media (min-height: 1200px) { .device { height: 1125px; } }
+@media (min-height: 1250px) { .device { height: 1175px; } }
+@media (min-height: 1300px) { .device { height: 1225px; } }
+@media (min-height: 1350px) { .device { height: 1275px; } }
+
+
 
 .swiper-parent {
   height: inherit;
 }
 
 .swiper-container {
-  width: 100%;
   color: #fff;
   text-align: center;
   height:inherit;
@@ -475,7 +553,7 @@ colorpicker-preview {
   height: inherit;
 }
 .swiper-container.nested {
-  width: 100%;
+  /*width: 720px;*/
 }
 .red-slide {
   background: #ca4040;
@@ -704,15 +782,11 @@ body, html {
   height: 90%;
 }
 
-.device {
-  height: 100%;
-  /*height: 300px;*/
-}
 .swiper-wrapper .student .name {
   font-size: 18px;
-  font-size: 1.8vw;
-  line-height: 18px;
-  line-height: 1.8vw;
+  font-size: 1.8vh;
+  /*line-height: 18px;*/
+  line-height: 1.8vh;
   background-color: #F0F0F0;
   float: left;
   height: initial; /*18px;*/
@@ -892,3 +966,21 @@ body, html {
   font-size: 18px;
 }
 
+.photo-preview .overlay {
+  position: absolute;
+  z-index: 2;
+}
+
+.photo-preview .preview {
+  overflow: hidden;
+  width: 400px;
+  height: 400px;
+}
+
+.photo-preview .preview canvas {
+  z-index: 1;
+}
+
+.photo-preview .preview canvas {
+    width: 100%;
+}
