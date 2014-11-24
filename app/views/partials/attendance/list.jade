@@ -13,8 +13,9 @@
 								span.input-group-addon
 									span.glyphicon.glyphicon-search
 						.col-md-4.col-sm-4.col-lg-4(ng-show='viewingStudent')
-							img.thumbnail.thumbnail-student-list.pull-right.margin-rt-6(ng-if="currentStudent.avatar", src="/api/fs/files/{{currentStudent.avatar}}/download")
-							img.thumbnail.thumbnail-student-list.pull-right.margin-rt-6(ng-if="!currentStudent.avatar", src="http://placehold.it/32x32.png")
+							.thumbnail-container-attendance.pull-right.pargin-rt-6
+								img.thumbnail.thumbnail-student-list(ng-if="currentStudent.avatar", src="/api/fs/files/{{currentStudent.avatar}}/download")
+								img.thumbnail.thumbnail-student-list(ng-if="!currentStudent.avatar", src="http://placehold.it/32x32.png")
 							.attendance-subheading.pull-right
 								{{currentStudent.fullName}}
 					.pad-top-6

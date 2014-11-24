@@ -17,6 +17,21 @@ define(['../module'], function(controllers) {
 
             var NULL_DATE = new Date(-8640000000000000);
 
+            // Figure out how to call this after all thumbnail imgs have been loaded
+            //  if it is decided that we want to allow portrait AND landscape student pics
+            $scope.scaleThumbnails = function() {
+                $('.thumbnail-student-list').each(function() {
+                    if ( $(this).width() === $(this).height()) {
+                        $(this).css('height', '40px');
+                        $(this).css('width', '40px');                        
+                    } else if ( $(this).width() > $(this).height() ) {
+                        $(this).css('height', '40px');
+                    } else {
+                        $(this).css('width', '40px');
+                    }
+                });
+            };
+
             $scope.setPagingData = function(data, page, pageSize){
                 var pagedData = data.slice((page - 1) * pageSize, page * pageSize);
                 $scope.myData = pagedData;
