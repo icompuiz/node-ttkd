@@ -47,6 +47,8 @@ define(['../module'], function(controllers) {
 
             $scope.columnDefs = defaultColumnDefs;
 
+            $scope.showRemoveConfirm = [];
+
             function resetNewTab() {
                 $scope.viewingStudent = false;
                 $scope.viewingClass = false;
@@ -172,6 +174,7 @@ define(['../module'], function(controllers) {
 
                     function populateStudentAttendanceGrid() {
                         attendances = _.where(attendances, filterOptions); //using filterOptions as list() param didn't work
+                            var count = 0;
                             async.each(attendances,
                                 function(attendance, callback) {
                                     StudentSvc.read(attendance.student, null, false).then(function(student) { // Retrieve and attach student name to attendance obj
@@ -200,6 +203,8 @@ define(['../module'], function(controllers) {
                                                      if (attendance.workshop) {
                                                         WorkshopSvc.read(attendance.classAttended, null, false).then(function(workshop) {
                                                             attendance.eventName = workshop.name;
+                                                            attendance.i = count;
+                                                            count++;
                                                             data.push(attendance);
                                                             callback();
                                                         });
@@ -212,6 +217,8 @@ define(['../module'], function(controllers) {
                                 },
                                 function(err) {
                                     $scope.setPagingData(data,page,pageSize);
+                                    $scope.showRemoveConfirm = new Array(count);
+                                    for (var i = 0; i < $scope.showRemoveConfirm.length; ++i) { $scope.showRemoveConfirm[i] = false; }
                             }); 
                     }
 
@@ -399,8 +406,8 @@ define(['../module'], function(controllers) {
                 columnDefs: studentColumnDefs
             };
 
-            $scope.removeAttendanceEntry = function() {
-                $scope.showRemoveConfirm = true;
+            $scope.removeAttendanceEntry = function(a) {
+                $scope.showRemoveConfirm[a.i] = true;
             };
 
             $scope.confirmRemove = function(row, remove) {
@@ -411,13 +418,11 @@ define(['../module'], function(controllers) {
                              $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage, {student: row.entity.student});
                         });
                     });
-                    $scope.showRemoveConfirm = false;
+                    $scope.showRemoveConfirm[row.entity.i] = false;
                 } else {
-                    $scope.showRemoveConfirm = false;
+                    $scope.showRemoveConfirm[row.entity.i] = false;
                 }
             };
-
-            $scope.showRemoveConfirm = false;
 
             $scope.editAchievements = function(attendance) {
                 var modalInstance = $modal.open({
