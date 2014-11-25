@@ -173,53 +173,53 @@ define(['../module'], function(controllers) {
                     }
 
                     function populateStudentAttendanceGrid() {
-                        attendances = _.where(attendances, filterOptions); //using filterOptions as list() param didn't work
-                            var count = 0;
-                            async.each(attendances,
-                                function(attendance, callback) {
-                                    StudentSvc.read(attendance.student, null, false).then(function(student) { // Retrieve and attach student name to attendance obj
-                                        if (!student) {
-                                            return;
-                                        }
-                                        attendance.fullName = student.firstName + ' ' + student.lastName;
+                        //attendances = _.where(attendances, filterOptions); //using filterOptions as list() param didn't work
+                        var count = 0;
+                        async.each(attendances,
+                            function(attendance, callback) {
+                                StudentSvc.read(attendance.student, null, false).then(function(student) { // Retrieve and attach student name to attendance obj
+                                    if (!student) {
+                                        return;
+                                    }
+                                    attendance.fullName = student.firstName + ' ' + student.lastName;
 
-                                        AchievementSvc.list().then(function(achievements) {
-                                            achievements = _.where(achievements, {'attendance': attendance._id});
+                                    AchievementSvc.list().then(function(achievements) {
+                                        achievements = _.where(achievements, {'attendance': attendance._id});
 
-                                            var achievementObjs = [];
-                                            async.each(achievements,
-                                                function(ach, callback) {
-                                                    RankSvc.read(ach.rank, null, false).then(function(rank) {
-                                                        ach.name = rank.name;
-                                                        achievementObjs.push(ach);
+                                        var achievementObjs = [];
+                                        async.each(achievements,
+                                            function(ach, callback) {
+                                                RankSvc.read(ach.rank, null, false).then(function(rank) {
+                                                    ach.name = rank.name;
+                                                    achievementObjs.push(ach);
+                                                    callback();
+                                                });
+                                            },
+                                            function(err) {
+                                                attendance.achievementObjs = achievementObjs;
+                                                attendance.achievementNames = _.map(achievementObjs, function(a){return a.name;});
+
+                                                // Attach achievement name(s) to attendance object
+                                                 if (attendance.workshop) {
+                                                    WorkshopSvc.read(attendance.classAttended, null, false).then(function(workshop) {
+                                                        attendance.eventName = workshop.name;
+                                                        attendance.i = count;
+                                                        count++;
+                                                        data.push(attendance);
                                                         callback();
                                                     });
-                                                },
-                                                function(err) {
-                                                    attendance.achievementObjs = achievementObjs;
-                                                    attendance.achievementNames = _.map(achievementObjs, function(a){return a.name;});
-
-                                                    // Attach achievement name(s) to attendance object
-                                                     if (attendance.workshop) {
-                                                        WorkshopSvc.read(attendance.classAttended, null, false).then(function(workshop) {
-                                                            attendance.eventName = workshop.name;
-                                                            attendance.i = count;
-                                                            count++;
-                                                            data.push(attendance);
-                                                            callback();
-                                                        });
-                                                    } else {
-                                                        attachRankData(attendance, callback);
-                                                    }
-                                                });
-                                        });
+                                                } else {
+                                                    attachRankData(attendance, callback);
+                                                }
+                                            });
                                     });
-                                },
-                                function(err) {
-                                    $scope.setPagingData(data,page,pageSize);
-                                    $scope.showRemoveConfirm = new Array(count);
-                                    for (var i = 0; i < $scope.showRemoveConfirm.length; ++i) { $scope.showRemoveConfirm[i] = false; }
-                            }); 
+                                });
+                            },
+                            function(err) {
+                                $scope.setPagingData(data,page,pageSize);
+                                $scope.showRemoveConfirm = new Array(count);
+                                for (var i = 0; i < $scope.showRemoveConfirm.length; ++i) { $scope.showRemoveConfirm[i] = false; }
+                        }); 
                     }
 
                     function populateDefaultAttendanceGrid() {
@@ -314,7 +314,7 @@ define(['../module'], function(controllers) {
                     StudentSvc.list().then(function(students) {
                         studentIds = _.map(students, function(s) { return s._id; });
 
-                        AttendanceSvc.list().then(function(allAttendances) {
+                        AttendanceSvc.list(filterOptions).then(function(allAttendances) {
                             _(allAttendances).forEach(function(attendance) {
                                 var found = _.find(studentIds, function(s) { return s == attendance.student; });
 
