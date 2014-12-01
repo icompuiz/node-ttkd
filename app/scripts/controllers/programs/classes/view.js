@@ -48,23 +48,56 @@ define(['../../module'], function(controllers){
                 currentPage: 1
             };
 
+            $scope.sortInfo = {fields: ['id'], directions: ['asc']};
+
+            function sortData(field, direction) {
+                if(!$scope.allData) return;
+
+                $scope.allData.sort(function(a, b) {
+                    if(direction === 'asc') {
+                        return a[field] > b[field] ? 1 : -1;
+                    } else {
+                        return a[field] > b[field] ? -1 : 1;
+                    }
+                });
+            }
+
+            $scope.$watch('sortInfo', function(newVal, oldVal){
+                if (newVal.fields[0] === oldVal.fields[0] && newVal.directions[0] === oldVal.directions[0]) {
+                    return;
+                }
+
+                sortData(newVal.fields[0], newVal.directions[0]);
+                $scope.pagingOptions.currentPage = 1;
+                setPagingData($scope.pagingOptions.currentPage, $scope.pagingOptions.pageSize);
+            }, true);
+
+            function setPagingData(page, pageSize) {
+                if(!$scope.allData) return;
+                $scope.totalServerItems = $scope.allData.length;
+                $scope.myData = $scope.allData.slice((page - 1) * pageSize, page * pageSize);
+            }
+
             $scope.setPagingData = function(data, page, pageSize){
                 var pagedData = data.slice((page - 1) * pageSize, page * pageSize);
                 $scope.myData = pagedData;
                 $scope.totalServerItems = data.length;
-                if (!$scope.$$phase) {
-                    $scope.$apply();
-                }
             };
 
-            $scope.getPagedDataAsync = function(pageSize, page, searchText) {
+            $scope.getPagedDataAsync = function(pageSize, page, useCachedData) {
+                if(useCachedData) {
+                    $scope.setPagingData(_.clone($scope.allData),page,pageSize);
+                    return;
+                }
+
                 var data = [];
                 if ($scope.currentClass.studentObjs && $scope.currentClass.studentObjs.length > 0) {
-                    _.each($scope.currentClass.studentObjs, function(s) {
+                    _($scope.currentClass.studentObjs).forEach(function(s) {
                         s.age = $filter('age')(s.birthday);
                         data.push(s);
                     });
                 }
+                $scope.allData = _.clone(data);
                 $scope.setPagingData(data, page, pageSize);
             };
 
@@ -105,13 +138,13 @@ define(['../../module'], function(controllers){
 
             $scope.$watch('pagingOptions', function (newVal, oldVal) {
                 if (newVal !== oldVal && newVal.currentPage !== oldVal.currentPage) {
-                    $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage, $scope.filterOptions.filterText);
+                    $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage, true);
                 }
             }, true);
 
             $scope.$watch('filterOptions', function (newVal, oldVal) {
                 if (newVal !== oldVal) {
-                    $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage, $scope.filterOptions.filterText);
+                    $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage, true);
                 }
             }, true);
 
@@ -124,7 +157,7 @@ define(['../../module'], function(controllers){
                 pagingOptions: $scope.pagingOptions,
                 filterOptions: $scope.filterOptions,
                 selectedItems: [],
-                sortInfo: { fields: ['lastName', 'firstname'], directions: ['asc', 'asc'] },
+                sortInfo: $scope.sortInfo,
                 columnDefs: [
                     { cellTemplate: '/partials/students/list/studentAvatar', sortable: false, width: 70, height: 70, cellClass: 'grid-student-list-icon-cell' },
                     { field: 'firstName', displayName: 'First Name' },
