@@ -126,6 +126,31 @@ define(['../module'], function(controllers) {
                 $scope.searchByStudent();
             });
 
+
+            $scope.sortInfo = {fields: ['id'], directions: ['asc']};
+
+            $scope.$watch('sortInfo', function(newVal, oldVal){
+                if (newVal.fields[0] === oldVal.fields[0] && newVal.directions[0] === oldVal.directions[0]) {
+                    return;
+                }
+
+                sortData(newVal.fields[0], newVal.directions[0]);
+                $scope.pagingOptions.currentPage = 1;
+                $scope.setPagingData($scope.allData, $scope.pagingOptions.currentPage, $scope.pagingOptions.pageSize);
+            }, true);
+
+            function sortData(field, direction) {
+                if(!$scope.allData) return;
+
+                $scope.allData.sort(function(a, b) {
+                    if(direction === 'asc') {
+                        return a[field] > b[field] ? 1 : -1;
+                    } else {
+                        return a[field] > b[field] ? -1 : 1;
+                    }
+                });
+            }
+
             $scope.setPagingData = function(data, page, pageSize){
                 var pagedData = data.slice((page - 1) * pageSize, page * pageSize);
                 $scope.myData = pagedData;
@@ -135,8 +160,13 @@ define(['../module'], function(controllers) {
                 }
             };
 
-            $scope.getPagedDataAsync = function (pageSize, page, filterOptions) {
+            $scope.getPagedDataAsync = function (pageSize, page, filterOptions, useCachedData) {
                 setTimeout(function () {
+                    if (useCachedData) {
+                        $scope.setPagingData($scope.allData, $scope.pagingOptions.currentPage, $scope.pagingOptions.pageSize);
+                        return;
+                    }
+
                     var data = [];
                     var studentIds = [];
                     var attendances = [];
@@ -343,7 +373,7 @@ define(['../module'], function(controllers) {
             $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage);
             $scope.$watch('pagingOptions', function (newVal, oldVal) {
                 if (newVal !== oldVal && newVal.currentPage !== oldVal.currentPage) {
-                    $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage, $scope.filterOptions.filterText);
+                    $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage, $scope.filterOptions.filterText, true);
                 }
             }, true);
 
@@ -358,7 +388,8 @@ define(['../module'], function(controllers) {
                 data: 'myData',
                 rowHeight: 40,
                 enablePaging: true,
-                showFooter: true,                
+                showFooter: true,   
+                sortInfo: $scope.sortInfo,             
                 enableRowSelection: false,
                 totalServerItems: 'totalServerItems',
                 pagingOptions: $scope.pagingOptions,
