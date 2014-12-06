@@ -90,22 +90,26 @@ define(['../module'], function(controllers){
             };
 
             $scope.saveNotifications = function() {
-            	if($scope.currentStudent.message) {
-            		if(!$scope.currentStudent.message.value || $scope.currentStudent.message.value == '') {
-            			$scope.currentStudent.message = null;
-            		}
-            		if($scope.currentStudent.message.show) {
-            			$scope.currentStudent.message.viewed = null;
-            		} else {
-            			if(!$scope.currentStudent.message.viewed) {
-            				//hack
-	            			$scope.currentStudent.message.viewed = 0;
-	            		}
-            		}
-            	}
+                if($scope.currentStudent.message) {
+                    if(!$scope.currentStudent.message.value || $scope.currentStudent.message.value == '') {
+                        $scope.currentStudent.message = null;
+                    }
+                    if($scope.currentStudent.message.show) {
+                        $scope.currentStudent.message.viewed = null;
+                    } else {
+                        if(!$scope.currentStudent.message.viewed) {
+                            //hack
+                            $scope.currentStudent.message.viewed = 0;
+                        }
+                    }
+                }
 
-            	$scope.editingNotifications = false;
-            	StudentSvc.save(); // save message
+                $scope.editingNotifications = false;
+                StudentSvc.save(); // save message
+            };
+
+            $scope.saveNotes = function() {
+                StudentSvc.save(); // save notes
             };
 	}]);
 });

@@ -63,7 +63,15 @@
 		img(src="{{currentStudent.signaturedata.data}}")
 
 .row
-	h2.col-md-12 Student Ranks
+	.well
+		span
+			i.glyphicon.glyphicon-pushpin 
+			span &nbsp;Enter Notes for {{currentStudent.firstName}} Below
+			span &nbsp;
+				a.btn.btn-sm.btn-default(ng-click="saveNotes()") Save Notes
+			textarea(style="width:100%;margin-top:5px;", ng-model="currentStudent.notes", cols="3", rows="5")
+
+.row
 	.btn-toolbar.pull-left
 		button.btn.btn-default(type='button', ng-click='backToHome()') Back
 		button.btn.btn-default(type='button', ng-click='editStudent()') Edit
