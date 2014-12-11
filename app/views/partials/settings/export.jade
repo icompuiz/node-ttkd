@@ -1,0 +1,41 @@
+doctype html
+p.text-muted
+	| Export System Data to a CSV file
+.row
+	.col-md-12
+		a.btn.btn-primary(ng-click="exportStudents()") Export Student Data
+		p.text-muted.small 
+			strong Student Export Format
+			br
+			| id, firstname, lastname, emailAddress1, emailAddress2, emailAddress3, emergencyContact1Name, emergencyContact1Phone, emergencyContact1Relationship, emergencyContact2Name, emergencyContact2Phone, emergencyContact2Relationship, birthday, streetName, city, state, zip, homePhone, cellPhone
+	.col-md-12
+		a.btn.btn-primary(ng-click="exportProgram()") Export Program Data
+		p.text-muted.small 
+			strong Program Export Format
+			br
+			| id, name, ranks, classes
+	.col-md-12
+		a.btn.btn-primary(ng-click="exportClass()") Export Class Data
+		p.text-muted.small 
+			strong Class Export Format
+			br
+			| id, name, program, students, meetingTimes
+	.col-md-12
+		a.btn.btn-primary(ng-click="exportWorkshop()") Export Workshop Data
+		p.text-muted.small 
+			strong Workshop Export Format
+			br
+			| id, name, workshopDate
+	.col-md-12
+		a.btn.btn-primary(ng-click="exportAttendance()") Export Attendance Data
+		p.text-muted.small 
+			strong Attendance Export Format
+			br
+			| id, student, checkInTime, workshop
+	.col-md-12
+		a.btn.btn-primary(ng-click="exportRank()") Export Rank Data
+		p.text-muted.small 
+			strong Rank Export Format
+			br
+			| id, name, rankOrder, isIntermediaryRank, intermediaryRanks
+

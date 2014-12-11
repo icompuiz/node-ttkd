@@ -1,3 +1,4 @@
+
 'use strict';
 
 var _ = require('lodash');
@@ -125,14 +126,34 @@ var staticRoutes = [{
         });
     }
 }, {
-    path: '/',
+    path: '/api/import',
+    httpMethod: 'POST',
+    middleware: [ImportExport.importStudentData]
+}, {
+    path: '/api/export/students',
     httpMethod: 'GET',
-    middleware: function(req, res) {
-        res.render('index', {
-            user: req.user
-        });
-    },
+    middleware: [ImportExport.exportStudentData]
+}, {
+    path: '/api/export/programs',
+    httpMethod: 'GET',
+    middleware: [ImportExport.exportProgramData]
+}, {
+    path: '/api/export/workshops',
+    httpMethod: 'GET',
+    middleware: [ImportExport.exportWorkshopData]
+}, {
+    path: '/api/export/classes',
+    httpMethod: 'GET',
+    middleware: [ImportExport.exportClassData]
+}, {
+    path: '/api/export/attendance',
+    httpMethod: 'GET',
+    middleware: [ImportExport.exportAttendanceData]
 },{
+    path: '/api/export/ranks',
+    httpMethod: 'GET',
+    middleware: [ImportExport.exportRankData]
+}, {
     path: '/*',
     httpMethod: 'GET',
     middleware: function(req, res) {
@@ -140,10 +161,6 @@ var staticRoutes = [{
             user: req.user
         });
     },
-}, {
-    path: '/api/import',
-    httpMethod: 'POST',
-    middleware: [ImportExport.importStudentData]
 }];
 
 

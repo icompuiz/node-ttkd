@@ -1,9 +1,15 @@
 'use strict';
 
 var fs = require('fs'),
+    os = require('os'),
+    path = require('path'),
     _ = require('lodash'),
     async = require('async'),
-    csv = require('csv');
+    csv = require('csv'),
+    moment = require('moment');
+
+var mongoose = require('mongoose');
+
 
 
 var parseCSV = function(csvContent, parseCSVTaskDone) {
@@ -38,9 +44,10 @@ var parseCSV = function(csvContent, parseCSVTaskDone) {
 
 };
 
+
+
 var saveStudents = function(studentRecords, saveStudentsTaskDone) {
 
-    var mongoose = require('mongoose');
     var StudentModel = mongoose.model('Student');
     var results = {
         errors: [],
@@ -104,10 +111,16 @@ var saveStudents = function(studentRecords, saveStudentsTaskDone) {
             delete studentRecord.cellPhone;
         }
 
+        if (studentRecord.streetName) {
+            studentRecord.address.street = studentRecord.streetName;
+            delete studentRecord.streetName;
+        }        
+
         if (studentRecord.city) {
             studentRecord.address.city = studentRecord.city;
             delete studentRecord.city;
         }
+
         if (studentRecord.state) {
             studentRecord.address.state = studentRecord.state;
             delete studentRecord.state;
@@ -117,7 +130,8 @@ var saveStudents = function(studentRecords, saveStudentsTaskDone) {
             delete studentRecord.zip;
         }
 
-
+        studentRecord.firstName = studentRecord.firstName || studentRecord.firstname;
+        studentRecord.lastName = studentRecord.lastName || studentRecord.lastname;
 
         var student = new StudentModel(studentRecord);
 
@@ -149,38 +163,455 @@ var saveStudents = function(studentRecords, saveStudentsTaskDone) {
     });
 };
 
+var mapStudents = function(studentRecords) {
+
+    var results = _.map(studentRecords, function(studentRecord) {
+        var returnObj = {
+            id: studentRecord._id,
+            firstname: studentRecord.firstName || studentRecord.firstname,
+            lastname: studentRecord.lastName || studentRecord.lastname,
+            birthday: studentRecord.birthday,
+            streetName: studentRecord.address.street,
+            city: studentRecord.address.city,
+            state: studentRecord.address.state,
+            zip: studentRecord.address.zip,
+            homePhone: studentRecord.phone.home,
+            cellPhone:studentRecord.phone.cell
+        };
+
+        if (studentRecord.emailAddresses[0]) {
+         returnObj.emailAddress1 = studentRecord.emailAddresses[0];
+
+        }
+
+        if (studentRecord.emailAddresses[1]) {
+
+         returnObj.emailAddress2 = studentRecord.emailAddresses[1];
+        }
+
+        if (studentRecord.emailAddresses[2]) {
+         returnObj.emailAddress3 = studentRecord.emailAddresses[2];
+        } 
+
+        if (studentRecord.emergencyContacts[0]) {
+            returnObj.emergencyContact1Name = studentRecord.emergencyContacts[0].name;
+            returnObj.emergencyContact1Phone = studentRecord.emergencyContacts[0].phone;
+            returnObj.emergencyContact1Relationship = studentRecord.emergencyContacts[0].relationship;
+            returnObj.emergencyContact1Email = studentRecord.emergencyContacts[0].email;
+        }
+        if (studentRecord.emergencyContacts[1]) {
+            returnObj.emergencyContact2Name = studentRecord.emergencyContacts[1].name;
+            returnObj.emergencyContact2Phone = studentRecord.emergencyContacts[1].phone;
+            returnObj.emergencyContact2Relationship = studentRecord.emergencyContacts[1].relationship;
+            returnObj.emergencyContact2Email = studentRecord.emergencyContacts[1].email;
+        }
+
+        return returnObj;
+    });
+
+    var columns = ['id', 'firstname', 'lastname', 'emailAddress1', 'emailAddress2', 'emailAddress3', 'emergencyContact1Name', 'emergencyContact1Phone', 'emergencyContact1Relationship', 'emergencyContact2Name', 'emergencyContact2Phone', 'emergencyContact2Relationship', 'birthday', 'streetName', 'city', 'state', 'zip', 'homePhone', 'cellPhone'];
+    var csvData = _.map(results, function(result) {
+        var row = [];
+        _.forEach(columns, function(column) {
+            if (result[column]) {
+                row.push(result[column].toString().replace(',', '(comma)'));
+            } else {
+                row.push('null');
+            }
+        });
+        return row;
+    });
+
+    csvData.unshift(columns);
+
+    csvData = _.map(csvData, function(row) {
+        return row.join(',');
+    }).join('\n');
+
+    return csvData;
+
+};
+
+var mapPrograms = function(programRecords) {
+
+    var results = _.map(programRecords, function(programRecord) {
+        var returnObj = {
+            id: programRecord._id,
+            name: programRecord.name,
+            ranks: programRecord.ranks && programRecord.ranks.join('/'),
+            classes: programRecord.classes && programRecord.classes.join('/')
+        };
+
+        return returnObj;
+    });
+
+    var columns = ['id', 'name', 'ranks', 'classes'];
+    var csvData = _.map(results, function(result) {
+        var row = [];
+        _.forEach(columns, function(column) {
+            if (result[column]) {
+                row.push(result[column].toString().replace(',', '(comma)'));
+            } else {
+                row.push('null');
+            }
+        });
+        return row;
+    });
+
+    csvData.unshift(columns);
+
+    csvData = _.map(csvData, function(row) {
+        return row.join(',');
+    }).join('\n');
+
+    return csvData;
+
+};
+
+var mapWorkshops = function(records) {
+
+    var results = _.map(records, function(record) {
+        var returnObj = {
+            id: record._id,
+            name: record.name,
+            workshopDate: record.workshopDate.toString()
+        };
+        
+        return returnObj;
+    });
+
+    var columns = ['id', 'name', 'workshopDate'];
+    var csvData = _.map(results, function(result) {
+        var row = [];
+        _.forEach(columns, function(column) {
+            if (result[column]) {
+                row.push(result[column].toString().replace(',', '(comma)'));
+            } else {
+                row.push('null');
+            }
+        });
+        return row;
+    });
+
+    csvData.unshift(columns);
+
+    csvData = _.map(csvData, function(row) {
+        return row.join(',');
+    }).join('\n');
+
+    return csvData;
+
+};
+
+var mapClasses = function(records) {
+
+    var results = _.map(records, function(record) {
+        var returnObj = {
+            id: record._id,
+            name: record.name,
+            program: record.program,
+            students: record.students && record.students.join('/'),
+            meetingTimes: record.meetingTimes && record.meetingTimes.join('/'),
+        };
+        
+        return returnObj;
+    });
+
+    var columns = ['id', 'name', 'program', 'students', 'meetingTimes'];
+    var csvData = _.map(results, function(result) {
+        var row = [];
+        _.forEach(columns, function(column) {
+            if (result[column]) {
+                row.push(result[column].toString().replace(',', '(comma)'));
+            } else {
+                row.push('null');
+            }
+        });
+        return row;
+    });
+
+    csvData.unshift(columns);
+
+    csvData = _.map(csvData, function(row) {
+        return row.join(',');
+    }).join('\n');
+
+    return csvData;
+
+};
+
+var mapAttendance = function(records) {
+
+    var results = _.map(records, function(record) {
+        var returnObj = {
+            id: record._id,
+            student: record.student,
+            checkInTime: record.checkInTime,
+            workshop: record.workshop
+        };
+        
+        return returnObj;
+    });
+
+    var columns = ['id', 'student', 'checkInTime', 'workshop'];
+    var csvData = _.map(results, function(result) {
+        var row = [];
+        _.forEach(columns, function(column) {
+            if (result[column]) {
+                row.push(result[column].toString().replace(',', '(comma)'));
+            } else {
+                row.push('null');
+            }
+        });
+        return row;
+    });
+
+    csvData.unshift(columns);
+
+    csvData = _.map(csvData, function(row) {
+        return row.join(',');
+    }).join('\n');
+
+    return csvData;
+
+};
+
+var mapRanks = function(records) {
+
+    var results = _.map(records, function(record) {
+        var returnObj = {
+            id: record._id,
+            name: record.name,
+            rankOrder: record.rankOrder,
+            isIntermediaryRank: record.isIntermediaryRank,
+            intermediaryRanks: record.intermediaryRanks && record.intermediaryRanks.join('/')
+        };
+        
+        return returnObj;
+    });
+
+    var columns = ['id', 'name', 'rankOrder', 'isIntermediaryRank', 'intermediaryRanks'];
+    var csvData = _.map(results, function(result) {
+        var row = [];
+        _.forEach(columns, function(column) {
+            if (result[column]) {
+                row.push(result[column].toString().replace(',', '(comma)'));
+            } else {
+                row.push('null');
+            }
+        });
+        return row;
+    });
+
+    csvData.unshift(columns);
+
+    csvData = _.map(csvData, function(row) {
+        return row.join(',');
+    }).join('\n');
+
+    return csvData;
+
+};
+
 var ImportExportCtrl = {
 
-    importStudentData: function(req, res) {
+    importStudentData: function(req,res) {
 
         var keys = _.keys(req.files);
 
         if (!_.isEmpty(keys)) {
             var file = req.files[keys[0]];
-
-            console.log(file);
-
             var contents = fs.readFileSync(file.path, {
                 encoding: 'utf8'
             });
 
             parseCSV(contents, function(err, records) {
-
                 if (err) {
                     return res.send(400, err.message || err);
                 }
-
                 saveStudents(records, function(err, results) {
                     return res.jsonp(200, results);
                 });
-
-
             });
 
         }
 
-    }
+    },
+    exportStudentData: function(req, res) {
+        var StudentModel = mongoose.model('Student');
+        StudentModel.find().lean().exec(function(err, studentDocs) {
 
+            if (err) {
+                return res.jsonp(400, err);
+            } else {
+                var studentCSV = mapStudents(studentDocs);
+
+                var tmpFile = path.join(os.tmpdir(), moment().format('YYYYMMDD-hh-mm-ss') + '-students.csv');
+                fs.writeFile(tmpFile, studentCSV , function(err) {
+                    if (err) {
+                        return res.jsonp(400, err);
+                    }
+                    res.download(tmpFile, tmpFile, function(err){
+                      if (err) {
+                        // handle error, keep in mind the response may be partially-sent
+                        // so check res.headerSent
+                        fs.unlink(tmpFile, function() {});
+                      } else {
+                        // decrement a download credit etc
+                        fs.unlink(tmpFile, function() {});
+                      }
+                    });
+                });
+
+            }
+
+        });
+    },
+    exportProgramData: function(req, res) {
+        var ProgramModel = mongoose.model('Program');
+        ProgramModel.find().exec(function(err, programDocs) {
+
+            if (err) {
+                return res.jsonp(400, err);
+            } else {
+                var programCSV = mapPrograms(programDocs);
+
+                var tmpFile = path.join(os.tmpdir(), moment().format('YYYYMMDD-hh-mm-ss') + '-programs.csv');
+                fs.writeFile(tmpFile, programCSV , function(err) {
+                    if (err) {
+                        return res.jsonp(400, err);
+                    }
+                    res.download(tmpFile, tmpFile, function(err){
+                      if (err) {
+                        // handle error, keep in mind the response may be partially-sent
+                        // so check res.headerSent
+                        fs.unlink(tmpFile, function() {});
+                      } else {
+                        // decrement a download credit etc
+                        fs.unlink(tmpFile, function() {});
+                      }
+                    });
+                });
+            }
+
+        });
+    },
+    exportWorkshopData: function(req, res) {
+        var WorkshopModel = mongoose.model('Workshop');
+        WorkshopModel.find().exec(function(err, workshopDocs) {
+
+            if (err) {
+                return res.jsonp(400, err);
+            } else {
+                var workshopCSV = mapWorkshops(workshopDocs);
+
+                var tmpFile = path.join(os.tmpdir(), moment().format('YYYYMMDD-hh-mm-ss') + '-workshops.csv');
+                fs.writeFile(tmpFile, workshopCSV , function(err) {
+                    if (err) {
+                        return res.jsonp(400, err);
+                    }
+                    res.download(tmpFile, tmpFile, function(err){
+                      if (err) {
+                        // handle error, keep in mind the response may be partially-sent
+                        // so check res.headerSent
+                        fs.unlink(tmpFile, function() {});
+                      } else {
+                        // decrement a download credit etc
+                        fs.unlink(tmpFile, function() {});
+                      }
+                    });
+                });
+            }
+
+        });
+    },
+    exportClassData: function(req, res) {
+        var ClassModel = mongoose.model('Class');
+        ClassModel.find().exec(function(err, classDocs) {
+
+            if (err) {
+                return res.jsonp(400, err);
+            } else {
+                var classCSV = mapClasses(classDocs);
+
+                var tmpFile = path.join(os.tmpdir(), moment().format('YYYYMMDD-hh-mm-ss') + '-classes.csv');
+                fs.writeFile(tmpFile, classCSV , function(err) {
+                    if (err) {
+                        return res.jsonp(400, err);
+                    }
+                    res.download(tmpFile, tmpFile, function(err){
+                      if (err) {
+                        // handle error, keep in mind the response may be partially-sent
+                        // so check res.headerSent
+                        fs.unlink(tmpFile, function() {});
+                      } else {
+                        // decrement a download credit etc
+                        fs.unlink(tmpFile, function() {});
+                      }
+                    });
+                });
+            }
+
+        });
+    },
+    exportRankData: function(req, res) {
+        var RankModel = mongoose.model('Rank');
+        RankModel.find().exec(function(err, rankDoc) {
+
+            if (err) {
+                return res.jsonp(400, err);
+            } else {
+                var rankCSV = mapRanks(rankDoc);
+
+                var tmpFile = path.join(os.tmpdir(), moment().format('YYYYMMDD-hh-mm-ss') + '-ranks.csv');
+                fs.writeFile(tmpFile, rankCSV , function(err) {
+                    if (err) {
+                        return res.jsonp(400, err);
+                    }
+                    res.download(tmpFile, tmpFile, function(err){
+                      if (err) {
+                        // handle error, keep in mind the response may be partially-sent
+                        // so check res.headerSent
+                        fs.unlink(tmpFile, function() {});
+                      } else {
+                        // decrement a download credit etc
+                        fs.unlink(tmpFile, function() {});
+                      }
+                    });
+                });
+            }
+
+        });
+    },
+    exportAttendanceData: function(req, res) {
+        var AttendanceModel = mongoose.model('Attendance');
+        AttendanceModel.find().exec(function(err, attendanceDocs) {
+
+            if (err) {
+                return res.jsonp(400, err);
+            } else {
+                var attendanceCSV = mapAttendance(attendanceDocs);
+
+                var tmpFile = path.join(os.tmpdir(), moment().format('YYYYMMDD-hh-mm-ss') + '-attendance.csv');
+                fs.writeFile(tmpFile, attendanceCSV , function(err) {
+                    if (err) {
+                        return res.jsonp(400, err);
+                    }
+                    res.download(tmpFile, tmpFile, function(err){
+                      if (err) {
+                        // handle error, keep in mind the response may be partially-sent
+                        // so check res.headerSent
+                        fs.unlink(tmpFile, function() {});
+                      } else {
+                        // decrement a download credit etc
+                        fs.unlink(tmpFile, function() {});
+                      }
+                    });
+                });
+            }
+
+        });
+    }
 };
 
 module.exports = ImportExportCtrl;

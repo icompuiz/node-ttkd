@@ -113,6 +113,24 @@ var assets = [{
     name: '/api/import',
 	items: [admin]
 }, {
+    name: '/api/export/students',
+	items: [admin]
+}, {
+    name: '/api/export/programs',
+	items: [admin]
+}, {
+    name: '/api/export/workshops',
+	items: [admin]
+}, {
+    name: '/api/export/classes',
+	items: [admin]
+}, {
+    name: '/api/export/attendance',
+	items: [admin]
+}, {
+    name: '/api/export/ranks',
+	items: [admin]
+}, {
 	name: 'user::admin',
 	items: [admin]
 }, {

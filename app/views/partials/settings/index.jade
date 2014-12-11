@@ -1,9 +1,13 @@
 .col-md-3
 	ul.nav.nav-pills.nav-stacked
 		li
-			a(ui-sref='admin.settings.import', application-menu-item) 
+			a(ui-sref='admin.settings.import', application-menu-item)
 				span.glyphicon.glyphicon-transfer 
 				|  Import Student Data
+		li
+			a(ui-sref='admin.settings.export', application-menu-item)
+				span.glyphicon.glyphicon-transfer
+				|  Export System Data
 hr.hidden-lg.hidden-md
 .col-md-9
 	div(ui-view="section-body")
