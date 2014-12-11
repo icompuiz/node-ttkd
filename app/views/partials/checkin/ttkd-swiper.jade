@@ -1,5 +1,7 @@
 div.alert.alert-danger.student-message(id="alert_template", style="display:none;")
 	button(type="button", class="close") Dismiss &times;
+div.alert.alert-success.student-message(id="success_template", style="display:none;")
+	button(type="button", class="close") Dismiss &times;
 
 .row(style="margin-bottom: 10px;")
 	div.checkin-toolbar(ng-if="data.type === 'students'", ng-init="filterParam = 'firstName'; filterStudents(undefined, filterParam)")

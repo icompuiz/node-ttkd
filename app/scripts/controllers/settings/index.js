@@ -3,5 +3,6 @@
  **/
 define([
 	'./settings.ctrl',
-	'./import.ctrl'
+	'./import.ctrl',
+	'./export.ctrl'
 ], function () {});

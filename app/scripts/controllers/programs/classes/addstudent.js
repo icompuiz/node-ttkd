@@ -48,7 +48,6 @@ define(['../../module'], function(controllers){
                     $log.log(' |_ Adding student: ' + student.firstName + ' ' + student.lastName + ' ' + student._id + ' to class ' + $scope.currentClass.name);
 
                     $scope.currentClass.students.push(student._id);
-                    //$scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage);
 
                 });
 
@@ -57,6 +56,29 @@ define(['../../module'], function(controllers){
                 $scope.back();
             
             };
+
+            $scope.sortInfo = {fields: ['id'], directions: ['asc']};
+
+            $scope.$watch('sortInfo', function(newVal, oldVal){
+                if (!$scope.allData) return;
+                if (newVal.fields[0] === oldVal.fields[0] && newVal.directions[0] === oldVal.directions[0]) return;
+
+                sortData(newVal.fields[0], newVal.directions[0]);
+                $scope.pagingOptions.currentPage = 1;
+                $scope.setPagingData($scope.allData, $scope.pagingOptions.currentPage, $scope.pagingOptions.pageSize);
+            }, true);
+
+            function sortData(field, direction) {
+                if(!$scope.allData) return;
+
+                $scope.allData.sort(function(a, b) {
+                    if(direction === 'asc') {
+                        return a[field] > b[field] ? 1 : -1;
+                    } else {
+                        return a[field] > b[field] ? -1 : 1;
+                    }
+                });
+            }
 
             $scope.setPagingData = function(data, page, pageSize){
                 var pagedData = data.slice((page - 1) * pageSize, page * pageSize);
@@ -67,27 +89,24 @@ define(['../../module'], function(controllers){
                 }
             };
 
-            $scope.getPagedDataAsync = function (pageSize, page) {
+            $scope.getPagedDataAsync = function (pageSize, page, useCachedData) {
                 setTimeout(function () {
+                    if (useCachedData) {
+                        $scope.setPagingData($scope.allData, $scope.pagingOptions.currentPage, $scope.pagingOptions.pageSize);
+                        return;
+                    }
+
                     var data = [];
 
                     StudentSvc.list().then(function(allStudents) {
 						var students = allStudents;
                         _(students).forEach(function(student){
-                            // data.push({
-                            //     'firstName': student.firstName,
-                            //     'lastName': student.lastName,
-                            //     'age': $filter('age')(student.birthday),
-                            //     '_id': student._id
-                            // })
-
-                            // Display students who are not already in the class
                             if (!_.find($scope.currentClass.students, function(id){ return id === student._id;})) {
                                 data.push(student);
                             }
                         });
 
-
+                        $scope.allData = data;
                         $scope.setPagingData(data,page,pageSize);
 					});
                 }, 100);
@@ -97,13 +116,13 @@ define(['../../module'], function(controllers){
 
             $scope.$watch('pagingOptions', function (newVal, oldVal) {
                 if (newVal !== oldVal && newVal.currentPage !== oldVal.currentPage) {
-                    $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage, $scope.filterOptions.filterText);
+                    $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage, true);
                 }
             }, true);
 
             $scope.$watch('filterOptions', function (newVal, oldVal) {
                 if (newVal !== oldVal) {
-                    $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage, $scope.filterOptions.filterText);
+                    $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage);
                 }
             }, true);
 
@@ -112,27 +131,11 @@ define(['../../module'], function(controllers){
                 rowHeight: 40,
                 enablePaging: true,
                 showFooter: true,
-                //beforeSelectionChange: function(){},
-                //afterSelectionChange: function(){},
-                // beforeSelectionChange: function (rowItem, event) {
-                //     // check if one of the options buttons was clicked
-                //     if(event.target.tagName === 'BUTTON') {
-                //         return false;
-                //     } else {
-                //         return true;
-                //     }
-                // },
-                // afterSelectionChange: function () {
-                //     if($scope.gridOptions.selectedItems.length === 0) {
-                //         $scope.showRemoveConfirm = false;
-                //     }
-                //     return true;
-                // },
+                sortInfo: $scope.sortInfo,
                 totalServerItems: 'totalServerItems',
                 pagingOptions: $scope.pagingOptions,
                 filterOptions: $scope.filterOptions,
                 selectedItems: [],
-                sortInfo: { fields: ['lastName', 'firstname'], directions: ['asc', 'asc'] },
                 columnDefs: [
                     { cellTemplate: '/partials/students/list/studentAvatar', sortable: false, width: 70, height: 70, cellClass: 'grid-student-list-icon-cell' },
                     { field: 'firstName', displayName: 'First Name' },

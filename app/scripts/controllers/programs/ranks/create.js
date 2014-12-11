@@ -148,6 +148,10 @@ define(['../../module'], function(controllers){
                 currentPage: 1
             };
 
+            $scope.whiteColor = function() {
+            	$scope.rank.color = '#FFFFFF';
+            }
+
 			$scope.getNumSelected = function() {
 				var selected = _.where(tmpRanks, {isSelected: true});
 				return selected.length;

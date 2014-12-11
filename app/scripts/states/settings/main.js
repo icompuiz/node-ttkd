@@ -32,9 +32,18 @@ define(['../module'], function (states) {
         $stateProvider.state('admin.settings.import', {
             url: '/import',
             views: {
+                'section-body': {
+                    templateUrl: 'partials/settings/import',
+                    controller: 'DataImportCtrl'
+                }
+            }
+        });
+        $stateProvider.state('admin.settings.export', {
+            url: '/export',
+            views: {
             	'section-body': {
-            		templateUrl: 'partials/settings/import',
-            		controller: 'DataImportCtrl'
+            		templateUrl: 'partials/settings/export',
+            		controller: 'DataExportCtrl'
             	}
             }
         });

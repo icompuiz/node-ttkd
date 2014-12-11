@@ -47,6 +47,8 @@ define(['../module'], function(controllers) {
 
             $scope.columnDefs = defaultColumnDefs;
 
+            $scope.showRemoveConfirm = [];
+
             function resetNewTab() {
                 $scope.viewingStudent = false;
                 $scope.viewingClass = false;
@@ -124,6 +126,31 @@ define(['../module'], function(controllers) {
                 $scope.searchByStudent();
             });
 
+
+            $scope.sortInfo = {fields: ['id'], directions: ['asc']};
+
+            $scope.$watch('sortInfo', function(newVal, oldVal){
+                if (newVal.fields[0] === oldVal.fields[0] && newVal.directions[0] === oldVal.directions[0]) {
+                    return;
+                }
+
+                sortData(newVal.fields[0], newVal.directions[0]);
+                $scope.pagingOptions.currentPage = 1;
+                $scope.setPagingData($scope.allData, $scope.pagingOptions.currentPage, $scope.pagingOptions.pageSize);
+            }, true);
+
+            function sortData(field, direction) {
+                if(!$scope.allData) return;
+
+                $scope.allData.sort(function(a, b) {
+                    if(direction === 'asc') {
+                        return a[field] > b[field] ? 1 : -1;
+                    } else {
+                        return a[field] > b[field] ? -1 : 1;
+                    }
+                });
+            }
+
             $scope.setPagingData = function(data, page, pageSize){
                 var pagedData = data.slice((page - 1) * pageSize, page * pageSize);
                 $scope.myData = pagedData;
@@ -133,8 +160,13 @@ define(['../module'], function(controllers) {
                 }
             };
 
-            $scope.getPagedDataAsync = function (pageSize, page, filterOptions) {
+            $scope.getPagedDataAsync = function (pageSize, page, filterOptions, useCachedData) {
                 setTimeout(function () {
+                    if (useCachedData) {
+                        $scope.setPagingData($scope.allData, $scope.pagingOptions.currentPage, $scope.pagingOptions.pageSize);
+                        return;
+                    }
+
                     var data = [];
                     var studentIds = [];
                     var attendances = [];
@@ -171,48 +203,53 @@ define(['../module'], function(controllers) {
                     }
 
                     function populateStudentAttendanceGrid() {
-                        attendances = _.where(attendances, filterOptions); //using filterOptions as list() param didn't work
-                            async.each(attendances,
-                                function(attendance, callback) {
-                                    StudentSvc.read(attendance.student, null, false).then(function(student) { // Retrieve and attach student name to attendance obj
-                                        if (!student) {
-                                            return;
-                                        }
-                                        attendance.fullName = student.firstName + ' ' + student.lastName;
+                        //attendances = _.where(attendances, filterOptions); //using filterOptions as list() param didn't work
+                        var count = 0;
+                        async.each(attendances,
+                            function(attendance, callback) {
+                                StudentSvc.read(attendance.student, null, false).then(function(student) { // Retrieve and attach student name to attendance obj
+                                    if (!student) {
+                                        return;
+                                    }
+                                    attendance.fullName = student.firstName + ' ' + student.lastName;
 
-                                        AchievementSvc.list().then(function(achievements) {
-                                            achievements = _.where(achievements, {'attendance': attendance._id});
+                                    AchievementSvc.list().then(function(achievements) {
+                                        achievements = _.where(achievements, {'attendance': attendance._id});
 
-                                            var achievementObjs = [];
-                                            async.each(achievements,
-                                                function(ach, callback) {
-                                                    RankSvc.read(ach.rank, null, false).then(function(rank) {
-                                                        ach.name = rank.name;
-                                                        achievementObjs.push(ach);
+                                        var achievementObjs = [];
+                                        async.each(achievements,
+                                            function(ach, callback) {
+                                                RankSvc.read(ach.rank, null, false).then(function(rank) {
+                                                    ach.name = rank.name;
+                                                    achievementObjs.push(ach);
+                                                    callback();
+                                                });
+                                            },
+                                            function(err) {
+                                                attendance.achievementObjs = achievementObjs;
+                                                attendance.achievementNames = _.map(achievementObjs, function(a){return a.name;});
+
+                                                // Attach achievement name(s) to attendance object
+                                                 if (attendance.workshop) {
+                                                    WorkshopSvc.read(attendance.classAttended, null, false).then(function(workshop) {
+                                                        attendance.eventName = workshop.name;
+                                                        attendance.i = count;
+                                                        count++;
+                                                        data.push(attendance);
                                                         callback();
                                                     });
-                                                },
-                                                function(err) {
-                                                    attendance.achievementObjs = achievementObjs;
-                                                    attendance.achievementNames = _.map(achievementObjs, function(a){return a.name;});
-
-                                                    // Attach achievement name(s) to attendance object
-                                                     if (attendance.workshop) {
-                                                        WorkshopSvc.read(attendance.classAttended, null, false).then(function(workshop) {
-                                                            attendance.eventName = workshop.name;
-                                                            data.push(attendance);
-                                                            callback();
-                                                        });
-                                                    } else {
-                                                        attachRankData(attendance, callback);
-                                                    }
-                                                });
-                                        });
+                                                } else {
+                                                    attachRankData(attendance, callback);
+                                                }
+                                            });
                                     });
-                                },
-                                function(err) {
-                                    $scope.setPagingData(data,page,pageSize);
-                            }); 
+                                });
+                            },
+                            function(err) {
+                                $scope.setPagingData(data,page,pageSize);
+                                $scope.showRemoveConfirm = new Array(count);
+                                for (var i = 0; i < $scope.showRemoveConfirm.length; ++i) { $scope.showRemoveConfirm[i] = false; }
+                        }); 
                     }
 
                     function populateDefaultAttendanceGrid() {
@@ -307,7 +344,7 @@ define(['../module'], function(controllers) {
                     StudentSvc.list().then(function(students) {
                         studentIds = _.map(students, function(s) { return s._id; });
 
-                        AttendanceSvc.list().then(function(allAttendances) {
+                        AttendanceSvc.list(filterOptions).then(function(allAttendances) {
                             _(allAttendances).forEach(function(attendance) {
                                 var found = _.find(studentIds, function(s) { return s == attendance.student; });
 
@@ -336,7 +373,7 @@ define(['../module'], function(controllers) {
             $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage);
             $scope.$watch('pagingOptions', function (newVal, oldVal) {
                 if (newVal !== oldVal && newVal.currentPage !== oldVal.currentPage) {
-                    $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage, $scope.filterOptions.filterText);
+                    $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage, $scope.filterOptions.filterText, true);
                 }
             }, true);
 
@@ -351,7 +388,8 @@ define(['../module'], function(controllers) {
                 data: 'myData',
                 rowHeight: 40,
                 enablePaging: true,
-                showFooter: true,                
+                showFooter: true,   
+                sortInfo: $scope.sortInfo,             
                 enableRowSelection: false,
                 totalServerItems: 'totalServerItems',
                 pagingOptions: $scope.pagingOptions,
@@ -399,8 +437,8 @@ define(['../module'], function(controllers) {
                 columnDefs: studentColumnDefs
             };
 
-            $scope.removeAttendanceEntry = function() {
-                $scope.showRemoveConfirm = true;
+            $scope.removeAttendanceEntry = function(a) {
+                $scope.showRemoveConfirm[a.i] = true;
             };
 
             $scope.confirmRemove = function(row, remove) {
@@ -411,13 +449,11 @@ define(['../module'], function(controllers) {
                              $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage, {student: row.entity.student});
                         });
                     });
-                    $scope.showRemoveConfirm = false;
+                    $scope.showRemoveConfirm[row.entity.i] = false;
                 } else {
-                    $scope.showRemoveConfirm = false;
+                    $scope.showRemoveConfirm[row.entity.i] = false;
                 }
             };
-
-            $scope.showRemoveConfirm = false;
 
             $scope.editAchievements = function(attendance) {
                 var modalInstance = $modal.open({

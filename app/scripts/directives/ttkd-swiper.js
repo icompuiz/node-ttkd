@@ -529,6 +529,14 @@ define(['./module'], function(directives){
 						});
 					}
 
+					function dismissSuccessMessage() {
+						$("#success_template").fadeOut('slow', function() {
+						   	$("#success_template span").remove();
+
+						   	$state.go('checkin.home.programs');
+						});
+					}
+
 					AttendanceSvc.save().then(function() {
 						$log.log('student ' + $scope.studentId + ' is now checked in');
 
@@ -552,7 +560,15 @@ define(['./module'], function(directives){
 							});
 
 						} else {
-							$state.go('checkin.home.programs');
+							$("#success_template button").after('<span>Check-in successful!</span>');
+							$('#success_template').fadeIn('slow');
+							$('#success_template button').click(function(){
+								dismissSuccessMessage();
+							});
+
+							window.setTimeout(function() {
+								dismissSuccessMessage();
+							}, 2000);
 						}
 
 					}, function() {

@@ -51,7 +51,8 @@ var studentSchema = new Schema({
 	registrationDate: {
 		type: Date,
 		default: Date.now
-	}
+	},
+	notes: String
 });
 
 studentSchema.pre('remove', function(preRemoveDone) {

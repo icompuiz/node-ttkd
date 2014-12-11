@@ -72,7 +72,7 @@ div.form-group
 				i.glyphicon.glyphicon-minus
 			button.btn.btn-success(type='button', ng-hide='currentEmail.isRemovable', ng-click='insertNewEmail()')
 				i.glyphicon.glyphicon-plus
-		input.form-control(type='email', name="{{currentEmail.id}}", placeholder='{{currentEmail.placeholder}}',ng-model="currentEmail.value", ng-change="currentEmail.isPristine = false")
+		input.form-control(type='email', required, name="{{currentEmail.id}}", placeholder='{{currentEmail.placeholder}}',ng-model="currentEmail.value", ng-change="currentEmail.isPristine = false")
 		span.input-group-addon
 			span.glyphicon.glyphicon-asterisk(ng-show="!isEmailFieldValid(currentEmail) && currentEmail.isPristine")
 			span.glyphicon.glyphicon-remove(ng-show="!isEmailFieldValid(currentEmail) && !currentEmail.isPristine")
