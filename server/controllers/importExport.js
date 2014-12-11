@@ -171,12 +171,12 @@ var mapStudents = function(studentRecords) {
             firstname: studentRecord.firstName || studentRecord.firstname,
             lastname: studentRecord.lastName || studentRecord.lastname,
             birthday: studentRecord.birthday,
-            streetName: studentRecord.address.street,
-            city: studentRecord.address.city,
-            state: studentRecord.address.state,
-            zip: studentRecord.address.zip,
-            homePhone: studentRecord.phone.home,
-            cellPhone:studentRecord.phone.cell
+            streetName: studentRecord.address && studentRecord.address.street,
+            city: studentRecord.address && studentRecord.address.city,
+            state: studentRecord.address && studentRecord.address.state,
+            zip: studentRecord.address && studentRecord.address.zip,
+            homePhone:  studentRecord.phone && studentRecord.phone.home,
+            cellPhone: studentRecord.phone && studentRecord.phone.cell
         };
 
         if (studentRecord.emailAddresses[0]) {
